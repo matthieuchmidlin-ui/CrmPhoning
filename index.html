@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Commercial Pro">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%232563eb'/%3E%3Crect x='20' y='56' width='140' height='68' rx='10' fill='white' opacity='.15'/%3E%3Ctext x='90' y='108' font-family='Georgia,serif' font-size='72' font-weight='700' fill='white' text-anchor='middle'%3EC%3C/text%3E%3Ccircle cx='138' cy='48' r='18' fill='%2322c55e'/%3E%3Ctext x='138' y='54' font-family='Arial' font-size='18' font-weight='700' fill='white' text-anchor='middle'%3E%E2%98%8E%3C/text%3E%3C/svg%3E">
-<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Commercial%20Pro%22%2C%22short_name%22%3A%22CommPro%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%232563eb%22%2C%22theme_color%22%3A%22%232563eb%22%7D">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='38' fill='%232563eb'/%3E%3C!-- Van body --%3E%3Crect x='18' y='85' width='144' height='54' rx='10' fill='white'/%3E%3Crect x='18' y='64' width='85' height='32' rx='8' fill='white' opacity='.9'/%3E%3C!-- Windshield --%3E%3Crect x='86' y='67' width='30' height='26' rx='5' fill='%232563eb' opacity='.5'/%3E%3C!-- Pub strip --%3E%3Crect x='19' y='94' width='142' height='24' rx='4' fill='%23fbbf24'/%3E%3Ctext x='90' y='111' font-family='Arial' font-size='14' font-weight='900' fill='%231d4ed8' text-anchor='middle'%3EINFOCOM%3C/text%3E%3C!-- Wheels --%3E%3Ccircle cx='48' cy='140' r='16' fill='%231d4ed8'/%3E%3Ccircle cx='48' cy='140' r='7' fill='white'/%3E%3Ccircle cx='130' cy='140' r='16' fill='%231d4ed8'/%3E%3Ccircle cx='130' cy='140' r='7' fill='white'/%3E%3C!-- Phone badge --%3E%3Ccircle cx='148' cy='36' r='22' fill='%2322c55e'/%3E%3Ctext x='148' y='44' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3E%F0%9F%93%9E%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Infocom%20Pro%22%2C%22short_name%22%3A%22Infocom%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%232563eb%22%2C%22theme_color%22%3A%22%232563eb%22%7D">
 <title>Commercial Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -139,7 +139,7 @@ select.fsel{background:var(--white);border:1px solid var(--border);border-radius
 .drop-zone.drag,.drop-zone:active{border-color:var(--acc);background:var(--acc-l)}
 .overlay{display:none;position:fixed;inset:0;z-index:3000;background:rgba(26,25,22,.45);backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;padding-bottom:var(--sab)}
 .overlay.open{display:flex}
-.modal{background:var(--white);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:su .25s ease;padding-bottom:var(--sab)}
+.modal{background:var(--white);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-width:600px;max-height:92vh;overflow-y:scroll;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;animation:su .25s ease;padding-bottom:var(--sab)}
 .modal::before{content:'';display:block;width:36px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 4px}
 .mh{padding:8px 20px 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .mt{font-family:'Fraunces',serif;font-size:20px;font-weight:700}
@@ -197,6 +197,19 @@ select.fsel{background:var(--white);border:1px solid var(--border);border-radius
 .obj-wrap{margin:14px 0;border:1px solid #fcd34d;border-radius:var(--r);overflow:hidden}
 .obj-hdr{background:var(--gold-l);padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
 .obj-body{display:flex;flex-direction:column;gap:0}
+/* INTERDITS rows */
+.int-row{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #fee2e2;font-size:12px;align-items:center}
+.int-bad{color:var(--red);text-decoration:line-through;min-width:140px;flex-shrink:0;font-weight:500}
+.int-arr{color:var(--ink3);flex-shrink:0}
+.int-good{color:var(--green);font-weight:600}
+/* Scroll fix - trackpad & mouse */
+main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+/* Logo Infocom */
+.logo-infocom{display:flex;align-items:center;gap:8px}
+.logo-infocom-badge{width:30px;height:30px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.logo-infocom-text{display:flex;flex-direction:column;line-height:1}
+.logo-infocom-main{font-family:'Fraunces',serif;font-size:13px;font-weight:700;color:var(--ink)}
+.logo-infocom-sub{font-size:9px;color:var(--ink3);letter-spacing:.3px;text-transform:uppercase}
 .obj-item{border-top:1px solid #fef3c7;cursor:pointer;transition:background .1s}
 .obj-item:first-child{border-top:none}
 .obj-q{padding:10px 14px;font-size:12px;font-weight:600;color:var(--ink2);display:flex;justify-content:space-between;align-items:center}
@@ -346,7 +359,32 @@ select.fsel{background:var(--white);border:1px solid var(--border);border-radius
 </div></div>
 
 <div class="topbar">
-  <div class="logo"><div class="logo-dot">C</div>Commercial Pro</div>
+  <div class="logo logo-infocom">
+    <div class="logo-infocom-badge">
+      <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+        <rect width="30" height="30" rx="8" fill="#2563eb"/>
+        <!-- Van shape -->
+        <rect x="3" y="14" width="24" height="9" rx="2" fill="white" opacity=".95"/>
+        <rect x="3" y="11" width="14" height="5" rx="1.5" fill="white" opacity=".8"/>
+        <!-- Windshield -->
+        <rect x="14" y="11.5" width="5" height="4" rx="1" fill="#2563eb" opacity=".6"/>
+        <!-- Wheels -->
+        <circle cx="8" cy="23.5" r="2.5" fill="#1d4ed8"/>
+        <circle cx="8" cy="23.5" r="1.2" fill="white"/>
+        <circle cx="21" cy="23.5" r="2.5" fill="#1d4ed8"/>
+        <circle cx="21" cy="23.5" r="1.2" fill="white"/>
+        <!-- Pub strip on van -->
+        <rect x="3.5" y="15.5" width="23" height="4" rx="1" fill="#fbbf24" opacity=".7"/>
+        <!-- Antenna / signal -->
+        <circle cx="24" cy="7" r="3" fill="#22c55e"/>
+        <text x="24" y="9.5" font-family="Arial" font-size="5" font-weight="900" fill="white" text-anchor="middle">TEL</text>
+      </svg>
+    </div>
+    <div class="logo-infocom-text">
+      <span class="logo-infocom-main">Infocom <span style="color:var(--acc)">Pro</span></span>
+      <span class="logo-infocom-sub">Commercial Assistant</span>
+    </div>
+  </div>
   <div id="profile-badge-wrap" style="margin-left:6px"></div>
   <div class="tpills"><div class="tpill">Appels <b id="h-total">0</b></div><div class="tpill">RDV <b id="h-rdv">0</b></div></div>
 </div>
@@ -686,8 +724,22 @@ Cordialement,
         🚫 <span style="color:var(--red)">Interdits lors de la prise de RDV</span>
         <span style="font-size:10px;color:var(--ink3);margin-left:auto">▾</span>
       </div>
-      <div class="checklist-body" id="int-body" style="display:none;background:#fef2f2">
-        ${[['Il passe','Il est chargé de vous présenter'],['Vers 16h','À 16h'],['Vous ne pouvez pas ?','Vous pouvez certainement'],['Passé / conditionnel','Présent / futur'],['Peut-être','Toujours être sûr de soi'],['OK','D\'accord'],['Ouais','Oui'],['Publicité','Espace de communication'],['De la mairie','Pour la mairie (mandatés par la mairie)'],['Je ne sais pas','Toujours être sûr de soi'],['Commercial','Collaborateur'],['Questions ouvertes','Questions alternatives']].map(([x,y])=>`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #fee2e2;font-size:12px;align-items:baseline"><span style="color:var(--red);text-decoration:line-through;min-width:130px;flex-shrink:0">${x}</span><span style="color:var(--ink3)">→</span><span style="color:var(--green);font-weight:600">${y}</span></div>`).join('')}
+      <div class="checklist-body" id="int-body" style="display:none;background:#fef2f2;flex-direction:column;gap:0;padding:8px 14px">
+        <div class="int-row"><span class="int-bad">Il passe</span><span class="int-arr">→</span><span class="int-good">Il est chargé de vous présenter</span></div>
+        <div class="int-row"><span class="int-bad">Vers 16h</span><span class="int-arr">→</span><span class="int-good">À 16h précises</span></div>
+        <div class="int-row"><span class="int-bad">Vous ne pouvez pas ?</span><span class="int-arr">→</span><span class="int-good">Vous pouvez certainement</span></div>
+        <div class="int-row"><span class="int-bad">Passé / conditionnel</span><span class="int-arr">→</span><span class="int-good">Présent / futur</span></div>
+        <div class="int-row"><span class="int-bad">Peut-être</span><span class="int-arr">→</span><span class="int-good">Toujours être sûr de soi</span></div>
+        <div class="int-row"><span class="int-bad">OK</span><span class="int-arr">→</span><span class="int-good">D'accord</span></div>
+        <div class="int-row"><span class="int-bad">Ouais</span><span class="int-arr">→</span><span class="int-good">Oui</span></div>
+        <div class="int-row"><span class="int-bad">Publicité</span><span class="int-arr">→</span><span class="int-good">Espace de communication</span></div>
+        <div class="int-row"><span class="int-bad">De la mairie</span><span class="int-arr">→</span><span class="int-good">Pour la mairie (mandatés)</span></div>
+        <div class="int-row"><span class="int-bad">Je ne sais pas</span><span class="int-arr">→</span><span class="int-good">Toujours être sûr de soi</span></div>
+        <div class="int-row"><span class="int-bad">Vous vous arrangerez</span><span class="int-arr">→</span><span class="int-good">Vous verrez avec lui</span></div>
+        <div class="int-row"><span class="int-bad">Commercial</span><span class="int-arr">→</span><span class="int-good">Collaborateur</span></div>
+        <div class="int-row"><span class="int-bad">Questions ouvertes</span><span class="int-arr">→</span><span class="int-good">Questions alternatives</span></div>
+        <div class="int-row"><span class="int-bad">Projet</span><span class="int-arr">→</span><span class="int-good">La réalisation</span></div>
+        <div class="int-row" style="border:none"><span class="int-bad">Confirmation</span><span class="int-arr">→</span><span class="int-good">Si pas reçue, le RDV tombe à l'eau</span></div>
       </div>
     </div>
 
@@ -713,8 +765,20 @@ Cordialement,
         <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Vous n'êtes pas de la mairie !" <span class="arr">▾</span></div><div class="obj-a">En effet, nous sommes <b>Infocom France</b>, mandatés par Mr [Maire] pour réaliser son [véhicule/support]. Mon collaborateur Mr [prénom] est chargé de vous rencontrer. <b>+ Enchaînement RDV tiroir.</b></div></div>
         <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Donnez-moi les tarifs sinon pas de RDV" <span class="arr">▾</span></div><div class="obj-a">Mr le Maire a tout prévu — tous types de formats et tarifs. C'est <b>JUSTEMENT</b> pour ça que je vous propose de voir mon collaborateur qui va tout vous montrer visuellement. Je suis sûr qu'il trouvera un budget adapté.</div></div>
         <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Appel en numéro masqué !" <span class="arr">▾</span></div><div class="obj-a">Ah bon, je ne savais pas — vous êtes le premier à me le dire ! L'essentiel c'est que vous m'avez répondu… [→ argumentaire].</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Je suis en retraite / je ferme bientôt" <span class="arr">▾</span></div><div class="obj-a">Je comprends. C'est <b>JUSTEMENT</b> l'occasion de partir sur une belle image — une dernière communication forte pour que les gens se souviennent de vous et de votre travail. Mon collaborateur peut vous proposer quelque chose d'adapté. <b>Matin ou après-midi ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Je viens juste d'ouvrir, c'est trop tôt" <span class="arr">▾</span></div><div class="obj-a">Au contraire, c'est le <b>meilleur moment</b> ! Vous vous faites connaître dès le départ sur toute la commune. Ce véhicule sera votre vitrine mobile dès votre ouverture. <b>Matin ou après-midi ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Je travaille uniquement par recommandation" <span class="arr">▾</span></div><div class="obj-a"><b>JUSTEMENT</b> — la recommandation fonctionne encore mieux quand les gens vous voient régulièrement. Ce véhicule rappelle votre existence à ceux qui vous connaissent et vous fait découvrir par ceux qui ne vous connaissent pas encore.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"J'ai déjà un site internet / réseaux sociaux" <span class="arr">▾</span></div><div class="obj-a">C'est complémentaire. Le digital touche ceux qui vous cherchent déjà — ce véhicule touche ceux qui ne vous cherchent <b>pas encore</b>. Visibilité passive, quotidienne, dans votre zone de chalandise directe.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Rappelez-moi dans 3 mois" <span class="arr">▾</span></div><div class="obj-a">Je comprends, mais nous finalisons les réservations <b>cette semaine</b> — les emplacements sont limités. Si vous attendez 3 mois, l'espace qui vous correspond aura été pris par un concurrent. <b>Même 10 minutes ce week-end ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"C'est moi qui décide, pas mon associé" <span class="arr">▾</span></div><div class="obj-a">Vous êtes sûr ? En général comment vous faites — vous prenez les infos et vous voyez ensemble ? Je tiens à ce que vous ayez 100% des informations et les meilleurs emplacements. <b>Il y a un moment où vous êtes tous les deux — entre midi et deux ou fin de journée ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Je ne travaille pas avec la mairie" <span class="arr">▾</span></div><div class="obj-a"><b>JUSTEMENT</b> il faut montrer que vous êtes là. Ce n'est pas une participation — c'est une communication <b>pour vous</b>. La majorité des annonceurs ne travaillent pas avec la mairie. C'est une opportunité de vous rapprocher des habitants.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Envoyez-moi un mail d'abord" <span class="arr">▾</span></div><div class="obj-a">Bien sûr, je vous envoie ça de suite. Mais mon collaborateur a des visuels concrets bien plus parlants qu'un mail. Pour vous projeter vraiment, le mieux c'est qu'il vous les montre en direct — <b>matin ou après-midi cette semaine ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"On est une association, on n'a pas de budget" <span class="arr">▾</span></div><div class="obj-a">C'est <b>JUSTEMENT</b> pour les associations que ce véhicule existe — il transporte vos membres et vos événements. Votre présence dessus montre votre ancrage dans la commune. Mon collaborateur a des formats très accessibles. <b>Matin ou après-midi ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Nous sommes une franchise, je ne décide pas seul" <span class="arr">▾</span></div><div class="obj-a">Je comprends. Mais la communication locale, c'est souvent laissée à l'initiative du franchisé — c'est vous qui connaissez votre territoire. Mon collaborateur peut vous aider à le présenter à votre siège avec des arguments concrets. <b>Matin ou après-midi ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Il n'a qu'à venir sur le chantier" <span class="arr">▾</span></div><div class="obj-a">Vous êtes où en chantier ? Donnez-moi l'adresse exacte — vous êtes sûr d'y être ? Mr [prénom] vient vraiment pour vous. <b>Pensez à votre chéquier et carte de visite</b> car je suis sûr que vous allez trouver quelque chose qui vous permettra de vous y représenter.</div></div>
       </div>
     </div>
+
 
     <!-- ARGUMENTAIRE -->
     <div class="checklist-wrap" style="border-color:#a5b4fc">
