@@ -589,10 +589,179 @@ Cordialement,
 </div></div>
 
 <div class="overlay" id="ov-ger" onclick="ovBg(event,'ov-ger')"><div class="modal">
-  <div class="mh"><div><div class="mt" id="ger-title">Fiche</div><div style="font-size:12px;color:var(--ink3);margin-top:2px" id="ger-sub"></div></div><button class="mc" onclick="closeM('ov-ger')">✕</button></div>
+  <div class="mh">
+    <div><div class="mt" id="ger-title">Fiche</div><div style="font-size:12px;color:var(--ink3);margin-top:2px" id="ger-sub"></div></div>
+    <button class="mc" onclick="closeM('ov-ger')">✕</button>
+  </div>
   <div class="mb">
+
+    <!-- ZONE GÉRANT (avant appel) -->
     <div id="ger-zone"></div>
     <div class="ger-tips" id="ger-tips" style="display:none"></div>
+    <button class="call-now-btn" id="ger-call-btn" onclick="doDialNow()" style="display:none">
+      <span class="ring">📞</span><span id="ger-call-lbl">Appeler</span>
+    </button>
+    <div class="ger-src" id="ger-src"></div>
+
+    <!-- ZONE POST-APPEL (après raccroché) — cachée au départ -->
+    <div id="postcall-zone" style="display:none">
+      <div style="background:var(--acc-l);border:1px solid var(--acc-m);border-radius:var(--r);padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:12px">📞 Appel terminé — <span id="pc-name2"></span></div>
+        <div style="font-size:13px;color:var(--ink2);margin-bottom:10px;font-weight:600">Rendez-vous pris ?</div>
+        <div class="rtrow">
+          <div class="rtbtn yes" id="rdv-yes" onclick="rdvToggle(true)">✓ Oui !</div>
+          <div class="rtbtn no" id="rdv-no" onclick="rdvToggle(false)">✕ Non</div>
+        </div>
+        <div class="rdv-fields" id="rdv-fields">
+          <div class="fgrid2">
+            <div class="fg"><label>Date RDV</label><input id="rdv-date" type="date"></div>
+            <div class="fg"><label>Heure</label><input id="rdv-time" type="time"></div>
+          </div>
+          <div class="fg"><label>Adresse</label><input id="rdv-addr"></div>
+          <div class="fg"><label>Email contact</label><input id="rdv-email" type="email"></div>
+          <div class="fg"><label>Notes</label><textarea id="rdv-notes" placeholder="Points à aborder…"></textarea></div>
+          <div class="infobox">✓ Export .ics Calendrier iOS · ✉ Email auto si email renseigné</div>
+        </div>
+        <div id="no-rdv-fields" style="display:none">
+          <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Quand rappeler ?</div>
+          <div class="fu-grid" id="fu-grid"></div>
+          <div class="fg"><label>Ou date précise</label><input id="pc-followup" type="date" oninput="clearFuBtns()"></div>
+          <div class="fg"><label>Raison</label><select id="pc-reason"><option>Rappeler plus tard</option><option>Pas intéressé</option><option>Messagerie</option><option>Pas de réponse</option><option>Réfléchit encore</option><option>Envoyer mail de rappel</option><option>Envoyer mail dossier</option><option>Envoyer coordonnées par mail</option><option>Autre</option></select></div>
+          <div class="fg"><label>Notes</label><textarea id="pc-notes" placeholder="Résumé de l'échange…"></textarea></div>
+        </div>
+        <div class="mact" style="margin-top:12px">
+          <button class="btn bg" onclick="closeM('ov-ger')">Ignorer</button>
+          <button class="btn bp" onclick="savePostCall()">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SÉPARATEUR visible uniquement pendant l'appel -->
+    <div id="ger-divider" style="display:none;height:1px;background:var(--border);margin:14px 0"></div>
+
+    <!-- CHECKLIST — toujours visible -->
+    <div class="checklist-wrap" id="ger-checklist">
+      <div class="checklist-hdr" onclick="toggleSection('chk-body')">
+        ✅ Checklist appel
+        <span class="chk-progress" id="chk-pct">0 / 7</span>
+        <span style="font-size:10px;color:var(--ink3);margin-left:4px">▾</span>
+      </div>
+      <div class="checklist-body" id="chk-body">
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Vérifier qu'on parle au gérant / décisionnaire</div><div class="chk-sub">"Vous êtes bien le Gérant ? Ou puis-je m'entretenir avec lui ?"</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Mentionner le courrier du Maire</div><div class="chk-sub">"Suite au courrier de Mr [Maire] de [Commune]…"</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Présenter le véhicule NEUF de transport</div><div class="chk-sub">Minibus municipal · enfants, seniors, associations · films publicitaires multicolores anti-UV</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Proposer le RDV tiroir (matin ou après-midi ?)</div><div class="chk-sub">"Plutôt le matin ou l'après-midi ?" — jamais de question ouverte</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Vérifier les co-décisionnaires</div><div class="chk-sub">"Je suppose que vous n'êtes pas le seul gérant ?"</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Confirmer adresse + récupérer email</div><div class="chk-sub">Pour envoyer le récap RDV + lettre accréditive du Maire</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Confirmer le RDV + souhaiter un très bon RDV</div><div class="chk-sub">📧 Mailer la lettre accréditive avec jour/heure du RDV</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERDITS -->
+    <div class="checklist-wrap" style="border-color:#fca5a5">
+      <div class="checklist-hdr" style="background:#fef2f2" onclick="toggleSection('int-body')">
+        🚫 <span style="color:var(--red)">Interdits lors de la prise de RDV</span>
+        <span style="font-size:10px;color:var(--ink3);margin-left:auto">▾</span>
+      </div>
+      <div class="checklist-body" id="int-body" style="display:none;background:#fef2f2">
+        ${[['Il passe','Il est chargé de vous présenter'],['Vers 16h','À 16h'],['Vous ne pouvez pas ?','Vous pouvez certainement'],['Passé / conditionnel','Présent / futur'],['Peut-être','Toujours être sûr de soi'],['OK','D\'accord'],['Ouais','Oui'],['Publicité','Espace de communication'],['De la mairie','Pour la mairie (mandatés par la mairie)'],['Je ne sais pas','Toujours être sûr de soi'],['Commercial','Collaborateur'],['Questions ouvertes','Questions alternatives']].map(([x,y])=>`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #fee2e2;font-size:12px;align-items:baseline"><span style="color:var(--red);text-decoration:line-through;min-width:130px;flex-shrink:0">${x}</span><span style="color:var(--ink3)">→</span><span style="color:var(--green);font-weight:600">${y}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <!-- OBJECTIONS -->
+    <div class="obj-wrap">
+      <div class="obj-hdr" onclick="toggleSection('obj-body')">
+        💬 Objections &amp; Questions pièges
+        <span style="font-size:10px;color:var(--gold);margin-left:auto">▾</span>
+      </div>
+      <div class="obj-body" id="obj-body" style="display:none">
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Quel est le prix ?" <span class="arr">▾</span></div><div class="obj-a">Nous disposons de tous types de formats et de tarifs, ce que nous voulons surtout c'est que tout le monde puisse être représenté. C'est <b>JUSTEMENT</b> pour ça que je vous propose un RDV avec mon collaborateur. <b>Vous préférez le matin ou l'après-midi ?</b><br><br><em style="color:var(--red);font-size:11px">⚠ Ne jamais donner les tarifs au téléphone.</em></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Je n'ai pas le temps" <span class="arr">▾</span></div><div class="obj-a">Je comprends que vous soyez occupé, mais nous finalisons les réservations cette semaine — il suffit de 10 mn, 1/4 d'heure, même en fin ou début de journée. <b>Vous préférez le matin ou l'après-midi ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Ça ne m'intéresse pas" <span class="arr">▾</span></div><div class="obj-a">Je suis étonné, tous les gens que j'ai contactés trouvent cela très positif — vous n'avez pas encore vu de quoi il s'agit réellement. Ce serait dommage de passer à côté. C'est <b>JUSTEMENT</b> pour ça que je vous propose un RDV. <b>Vous préférez le matin ou l'après-midi ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Il faut que je réfléchisse" <span class="arr">▾</span></div><div class="obj-a">Je pense vous avoir tout expliqué — dites-moi ce qui vous gêne pour qu'on en discute maintenant, car nous finalisons les réservations.<br><em style="font-size:11px;color:var(--ink3)">Détecter le vrai frein. Mieux vaut un non franc qu'un "oui peut-être".</em></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"C'est trop cher" <span class="arr">▾</span></div><div class="obj-a">C'est un investissement pour votre image — communication quadrichromie sur 2 ans minimum. C'est <b>JUSTEMENT</b> pour ça que je vous propose un RDV pour voir la meilleure façon de vous représenter. <b>Matin ou après-midi ?</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Je suis déjà connu" <span class="arr">▾</span></div><div class="obj-a">C'est <b>JUSTEMENT</b> pour cela que nous vous contactons en priorité — il faut faire perdurer votre image et ne pas laisser place à la concurrence. Regardez Coca, Kellogs : ils continuent à communiquer pour rester en avant.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"J'ai déjà une pub sur mon village" <span class="arr">▾</span></div><div class="obj-a">C'est une bonne chose. <b>JUSTEMENT</b> je vous propose de vous faire connaître à l'extérieur pour agrandir votre zone de chalandise — que les habitants des communes voisines viennent chez vous plutôt que chez un concurrent.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Je l'ai fait, ça n'a rien rapporté" <span class="arr">▾</span></div><div class="obj-a">Comment avez-vous pu mesurer ? Les gens ne savent pas toujours d'où ils vous connaissent. C'est le <b>répétitif qui paye</b> — c'est à force de voir la pub Coca qu'on boit du Coca. Vous avez bien plus de chances d'avoir des retombées en y étant qu'en n'y étant pas.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Bouche à oreille" <span class="arr">▾</span></div><div class="obj-a"><b>JUSTEMENT</b> c'est ce qui relance le bouche à oreille : c'est en communiquant qu'on parle de vous. Le bouche à oreille ne donne pas votre numéro de téléphone…</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"J'ai trop de travail" <span class="arr">▾</span></div><div class="obj-a">Je souhaite que cela continue ! Toutefois on ne sait pas de quoi demain sera fait — il faut semer pour récolter. C'est en communiquant maintenant que vous aurez les retombées nécessaires plus tard.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Je fais déjà les Pages Jaunes" <span class="arr">▾</span></div><div class="obj-a">On y retrouve tous les artisans — je vous propose de vous <b>démarquer de la concurrence</b>. Et nos tarifs sont bien plus accessibles que les Pages Jaunes.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">🚧 Barrage secrétaire <span class="arr">▾</span></div><div class="obj-a">"Je suis désolé(e) mais on m'a demandé de m'entretenir avec le directeur — c'est pour un projet municipal avec Mr [Maire], il a dû recevoir un courrier. Si il n'est pas disponible, à quel moment puis-je le recontacter ?"<br><em style="color:var(--red);font-size:11px">Ne pas s'attarder — rappeler plus tard.</em></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Vous n'êtes pas de la mairie !" <span class="arr">▾</span></div><div class="obj-a">En effet, nous sommes <b>Infocom France</b>, mandatés par Mr [Maire] pour réaliser son [véhicule/support]. Mon collaborateur Mr [prénom] est chargé de vous rencontrer. <b>+ Enchaînement RDV tiroir.</b></div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Donnez-moi les tarifs sinon pas de RDV" <span class="arr">▾</span></div><div class="obj-a">Mr le Maire a tout prévu — tous types de formats et tarifs. C'est <b>JUSTEMENT</b> pour ça que je vous propose de voir mon collaborateur qui va tout vous montrer visuellement. Je suis sûr qu'il trouvera un budget adapté.</div></div>
+        <div class="obj-item" onclick="toggleObj(this)"><div class="obj-q">"Appel en numéro masqué !" <span class="arr">▾</span></div><div class="obj-a">Ah bon, je ne savais pas — vous êtes le premier à me le dire ! L'essentiel c'est que vous m'avez répondu… [→ argumentaire].</div></div>
+      </div>
+    </div>
+
+    <!-- ARGUMENTAIRE -->
+    <div class="checklist-wrap" style="border-color:#a5b4fc">
+      <div class="checklist-hdr" style="background:#eef2ff" onclick="toggleSection('script-body')">
+        📋 <span style="color:#4338ca">Argumentaire téléphonique</span>
+        <span style="font-size:10px;color:var(--ink3);margin-left:auto;font-weight:400">Véhicule Transport de Personnes ▾</span>
+      </div>
+      <div id="script-body" style="display:none;padding:14px 16px;font-size:12px;line-height:2;background:#eef2ff;border-top:1px solid #c7d2fe">
+        <div style="background:white;border-radius:8px;padding:14px 16px;line-height:2">
+          <b>Bonjour,</b> Madame/Monsieur <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[Gérant]</span> pour la Mairie de <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[Commune]</span> — vous êtes bien le Gérant ?<br><br>
+          <b>Parfait,</b> je vous appelle suite au courrier de Mr <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[Maire]</span> concernant la mise en service d'un <b>nouveau Véhicule de Transport de Personnes</b> sur la Commune.<br><br>
+          Il s'agit d'un véhicule <b>NEUF</b> <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[Renault Trafic / Kangoo…]</span> habillé de <b>films publicitaires multicolores</b> anti-UV, réservés aux commerçants et artisans souhaitant <b>mieux se faire connaître sur le secteur.</b><br><br>
+          Mon collaborateur Mr <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[Prénom]</span> est chargé de vous présenter ce <b>Concept de Communication Dynamique.</b><br><br>
+          Il est <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[jour]</span> sur votre commune — <b style="color:#16a34a">pouvez-vous le recevoir plutôt le matin ou l'après-midi ?</b>
+        </div>
+        <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:11px;color:var(--gold)">
+          ⏱ <b>Durée moyenne : 1min30</b> · DIVA : <b>Débit, Intonation, Volume, Articulation</b><br>
+          📧 Mailer la lettre accréditive avec jour/heure du RDV
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div></div>
+
+<!-- Ancien modal post-appel conservé pour les appels manuels depuis l'historique -->
+<div class="overlay" id="ov-postcall" onclick="ovBg(event,'ov-postcall')"><div class="modal">
+  <div class="mh"><div class="mt">📞 Résultat appel</div><button class="mc" onclick="closeM('ov-postcall')">✕</button></div>
+  <div class="mb">
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:12px;font-weight:500">Rendez-vous pris ?</div>
+    <div class="rtrow"><div class="rtbtn yes" id="rdv-yes2" onclick="rdvToggle2(true)">✓ Oui !</div><div class="rtbtn no" id="rdv-no2" onclick="rdvToggle2(false)">✕ Non</div></div>
+    <div class="rdv-fields" id="rdv-fields2">
+      <div class="fgrid2">
+        <div class="fg"><label>Date RDV</label><input id="rdv-date2" type="date"></div>
+        <div class="fg"><label>Heure</label><input id="rdv-time2" type="time"></div>
+      </div>
+      <div class="fg"><label>Adresse</label><input id="rdv-addr2"></div>
+      <div class="fg"><label>Email contact</label><input id="rdv-email2" type="email"></div>
+      <div class="fg"><label>Notes</label><textarea id="rdv-notes2" placeholder="Points à aborder…"></textarea></div>
+    </div>
+    <div id="no-rdv-fields2" style="display:none">
+      <div class="fu-grid" id="fu-grid2"></div>
+      <div class="fg"><label>Date précise</label><input id="pc-followup2" type="date"></div>
+      <div class="fg"><label>Raison</label><select id="pc-reason2"><option>Rappeler plus tard</option><option>Pas intéressé</option><option>Messagerie</option><option>Pas de réponse</option><option>Réfléchit encore</option><option>Autre</option></select></div>
+      <div class="fg"><label>Notes</label><textarea id="pc-notes2" placeholder="Résumé…"></textarea></div>
+    </div>
+    <div class="mact"><button class="btn bg" onclick="closeM('ov-postcall')">Ignorer</button><button class="btn bp" onclick="savePostCall2()">Enregistrer</button></div>
+  </div>
+</div></div>
 
     <!-- CHECKLIST APPEL -->
     <div class="checklist-wrap" id="ger-checklist">
@@ -775,32 +944,6 @@ Cordialement,
     </div>
     <div class="fg"><label>Notes</label><textarea id="call-notes" placeholder="Résumé…"></textarea></div>
     <div class="mact"><button class="btn bg" onclick="closeM('ov-call')">Annuler</button><button class="btn bp" onclick="saveManualCall()">Enregistrer</button></div>
-  </div>
-</div></div>
-
-<div class="overlay" id="ov-postcall" onclick="ovBg(event,'ov-postcall')"><div class="modal">
-  <div class="mh"><div class="mt">📞 <span id="pc-name"></span></div><button class="mc" onclick="closeM('ov-postcall')">✕</button></div>
-  <div class="mb">
-    <div style="font-size:13px;color:var(--ink3);margin-bottom:12px;font-weight:500">Rendez-vous pris ?</div>
-    <div class="rtrow"><div class="rtbtn yes" id="rdv-yes" onclick="rdvToggle(true)">✓ Oui !</div><div class="rtbtn no" id="rdv-no" onclick="rdvToggle(false)">✕ Non</div></div>
-    <div class="rdv-fields" id="rdv-fields">
-      <div class="fgrid2">
-        <div class="fg"><label>Date RDV</label><input id="rdv-date" type="date"></div>
-        <div class="fg"><label>Heure</label><input id="rdv-time" type="time"></div>
-      </div>
-      <div class="fg"><label>Adresse</label><input id="rdv-addr"></div>
-      <div class="fg"><label>Email contact</label><input id="rdv-email" type="email"></div>
-      <div class="fg"><label>Notes</label><textarea id="rdv-notes" placeholder="Points à aborder…"></textarea></div>
-      <div class="infobox">✓ Export .ics Calendrier iOS · ✉ Email auto si email renseigné</div>
-    </div>
-    <div id="no-rdv-fields" style="display:none">
-      <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Quand rappeler ?</div>
-      <div class="fu-grid" id="fu-grid"></div>
-      <div class="fg"><label>Ou date précise</label><input id="pc-followup" type="date" oninput="clearFuBtns()"></div>
-      <div class="fg"><label>Raison</label><select id="pc-reason"><option>Rappeler plus tard</option><option>Pas intéressé</option><option>Messagerie</option><option>Pas de réponse</option><option>Réfléchit encore</option><option>Envoyer mail de rappel</option><option>Envoyer mail dossier</option><option>Envoyer coordonnées par mail</option><option>Autre</option></select></div>
-      <div class="fg"><label>Notes</label><textarea id="pc-notes" placeholder="Résumé de l'échange…"></textarea></div>
-    </div>
-    <div class="mact"><button class="btn bg" onclick="closeM('ov-postcall')">Ignorer</button><button class="btn bp" onclick="savePostCall()">Enregistrer</button></div>
   </div>
 </div></div>
 
@@ -1540,12 +1683,76 @@ function toggleSection(id){
 }
 function toggleObj(el){el.classList.toggle('open');}
 
-function doDialNow(){var co=S.companies.find(function(x){return x.id===pendCoId;});if(!co)return;var g=co.gerant;var call={id:'call'+Date.now(),companyId:co.id,contact:(g&&g.nom)?g.nom:(co.contact||co.name),company:co.name,phone:co.phone,date:new Date().toISOString(),status:'En cours',temp:co.temp,notes:'',rdvId:null};S.calls.unshift(call);save();
-  // Sauvegarder position scroll avant appel
+function doDialNow(){
+  var co=S.companies.find(function(x){return x.id===pendCoId;});
+  if(!co)return;
+  var g=co.gerant;
+  var call={id:'call'+Date.now(),companyId:co.id,contact:(g&&g.nom)?g.nom:(co.contact||co.name),company:co.name,phone:co.phone,date:new Date().toISOString(),status:'En cours',temp:co.temp,notes:'',rdvId:null};
+  S.calls.unshift(call);save();
   var m=document.querySelector('main');if(m)localStorage.setItem('scroll_precall_'+currentPid,m.scrollTop);
-  closeM('ov-ger');window.location.href='tel:'+co.phone.replace(/\s/g,'');setTimeout(function(){openPostCall(call.id);},1500);}
+  // Lance l'appel téléphonique
+  window.location.href='tel:'+co.phone.replace(/\s/g,'');
+  // Après raccroché : montrer la zone post-appel DANS le même modal
+  setTimeout(function(){
+    postCallId=call.id;
+    rdvSel=null;fuSelected=null;
+    // Remplir les champs
+    document.getElementById('pc-name2').textContent=call.contact||call.company||'';
+    ['rdv-yes','rdv-no'].forEach(function(id){document.getElementById(id).classList.remove('sel');});
+    document.getElementById('rdv-fields').classList.remove('show');
+    document.getElementById('no-rdv-fields').style.display='none';
+    document.getElementById('rdv-date').value=new Date().toISOString().split('T')[0];
+    document.getElementById('rdv-time').value='10:00';
+    document.getElementById('rdv-addr').value=co?(co.addr||''):'';
+    document.getElementById('rdv-email').value=co?(co.email||''):'';
+    document.getElementById('rdv-notes').value='';
+    document.getElementById('pc-followup').value='';
+    document.getElementById('pc-notes').value='';
+    buildFuButtons();
+    // Cacher le bouton appel, montrer la zone post-appel
+    document.getElementById('ger-call-btn').style.display='none';
+    document.getElementById('ger-src').style.display='none';
+    document.getElementById('postcall-zone').style.display='block';
+    document.getElementById('ger-divider').style.display='block';
+    // Scroller en haut du modal
+    var modal=document.querySelector('#ov-ger .modal');
+    if(modal)modal.scrollTop=0;
+    // S'assurer que le modal est ouvert
+    openM('ov-ger');
+  },1500);
+}
 
-// BACKGROUND GÉRANT SEARCH
+// openPostCall depuis historique (bouton + sur un appel En cours)
+function openPostCall(callId){
+  postCallId=callId;rdvSel=null;fuSelected=null;
+  var c=S.calls.find(function(x){return x.id===callId;});
+  var co=c&&c.companyId?S.companies.find(function(x){return x.id===c.companyId;}):null;
+  // Ouvrir le modal gérant en mode post-appel direct
+  if(co){
+    pendCoId=co.id;
+    document.getElementById('ger-title').textContent=co.name;
+    document.getElementById('ger-sub').textContent=co.addr||'';
+    document.getElementById('ger-zone').innerHTML='';
+    document.getElementById('ger-tips').style.display='none';
+    document.getElementById('ger-src').style.display='none';
+  }
+  document.getElementById('pc-name2').textContent=(c&&(c.contact||c.company))||'';
+  ['rdv-yes','rdv-no'].forEach(function(id){document.getElementById(id).classList.remove('sel');});
+  document.getElementById('rdv-fields').classList.remove('show');
+  document.getElementById('no-rdv-fields').style.display='none';
+  document.getElementById('rdv-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('rdv-time').value='10:00';
+  document.getElementById('rdv-addr').value=co?(co.addr||''):'';
+  document.getElementById('rdv-email').value=co?(co.email||''):'';
+  document.getElementById('rdv-notes').value='';
+  document.getElementById('pc-followup').value='';
+  document.getElementById('pc-notes').value='';
+  buildFuButtons();
+  document.getElementById('ger-call-btn').style.display='none';
+  document.getElementById('postcall-zone').style.display='block';
+  document.getElementById('ger-divider').style.display='block';
+  openM('ov-ger');
+}
 var bgSearch={running:false,queue:[],done:0,total:0,stopped:false};
 function startBgSearch(){var todo=S.companies.filter(function(c){return!c.gerant&&c.phone;});if(!todo.length){toast('Tous les gérants déjà trouvés ✓','ok');return;}bgSearch.queue=todo.map(function(c){return c.id;});bgSearch.done=0;bgSearch.total=todo.length;bgSearch.stopped=false;bgSearch.running=true;showBgBanner();runBgQueue();}
 function stopBgSearch(){bgSearch.stopped=true;bgSearch.running=false;hideBgBanner();toast('Recherche arrêtée — '+bgSearch.done+'/'+bgSearch.total,'info');}
@@ -1571,7 +1778,7 @@ function savePostCall(){
     var rdv={id:'rdv'+Date.now(),callId:postCallId,companyId:c.companyId,contact:c.contact,company:c.company,email:re,date:rd,time:rt,addr:ra,notes:document.getElementById('rdv-notes').value.trim(),status:'Confirmé',createdAt:new Date().toISOString()};
     S.rdvs.unshift(rdv);c.status='Effectué';c.rdvId=rdv.id;
     if(re&&c.companyId){var co2=S.companies.find(function(x){return x.id===c.companyId;});if(co2&&!co2.email)co2.email=re;}
-    save();closeM('ov-postcall');updateHdr();renderCalls();renderRdv();renderRelances();
+    save();closeGerModal();updateHdr();renderCalls();renderRdv();renderRelances();
     toast('RDV enregistré ! '+fmtDate(rd),'ok');
     if(re)setTimeout(function(){openRdvDetail(rdv.id);},400);else addToCalForRdv(rdv);
   } else {
@@ -1580,9 +1787,8 @@ function savePostCall(){
     c.reason=reason;
     c.notes=document.getElementById('pc-notes').value.trim();
     c.followup=fuSelected||document.getElementById('pc-followup').value;
-    save();closeM('ov-postcall');renderCalls();renderProspects();renderRelances();updateHdr();
+    save();closeGerModal();renderCalls();renderProspects();renderRelances();updateHdr();
     toast('Appel enregistré'+(c.followup?' · Relance '+fmtDate(c.followup):''),'ok');
-    // Mail automatique selon la raison
     var mailSubjs={'Envoyer mail de rappel':'Rappel — ','Envoyer mail dossier':'Dossier — ','Envoyer coordonnées par mail':'Nos coordonnées — '};
     var mailBodys={'Envoyer mail de rappel':'Bonjour,\n\nJe me permets de revenir vers vous suite à notre échange.\n\nRestant disponible pour tout renseignement.\n\nCordialement,\n','Envoyer mail dossier':'Bonjour,\n\nVeuillez trouver ci-joint notre dossier de présentation.\n\nJe reste à votre disposition.\n\nCordialement,\n','Envoyer coordonnées par mail':'Bonjour,\n\nVoici mes coordonnées :\n'};
     if(mailSubjs[reason]){
@@ -1593,13 +1799,20 @@ function savePostCall(){
         setTimeout(function(){window.location.href='mailto:'+coM.email+'?subject='+subj+'&body='+body;},400);
       } else { toast('Email non renseigné sur la fiche','err'); }
     }
-    // Restaurer position scroll
     setTimeout(function(){
       var m=document.querySelector('main');
       var saved=localStorage.getItem('scroll_precall_'+currentPid);
       if(m&&saved)m.scrollTop=parseInt(saved);
     },200);
   }
+}
+
+function closeGerModal(){
+  // Remettre le modal en état initial avant de fermer
+  document.getElementById('postcall-zone').style.display='none';
+  document.getElementById('ger-divider').style.display='none';
+  var src=document.getElementById('ger-src');if(src)src.style.display='';
+  closeM('ov-ger');
 }
 
 // RDV

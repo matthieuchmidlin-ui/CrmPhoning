@@ -1,30 +1,47 @@
-# Commercial Pro
+# 🚗 Commercial Pro — Infocom France
 
-CRM commercial mobile-first — iPhone / iPad / iMac.
+Application CRM commerciale mobile-first pour la vente d'espaces publicitaires sur véhicules municipaux.
 
-## Déploiement GitHub Pages
+## ✨ Fonctionnalités
+
+- **📁 Dossiers** — Gestion multi-campagnes avec onglets
+- **📄 Import PDF** — Extraction automatique des entreprises via Claude IA
+- **🔍 Recherche gérant** — Identification du dirigeant avant chaque appel (data.gouv.fr + IA)
+- **📞 Appel en 1 clic** — Lancement direct depuis l'iPhone (`tel:`)
+- **✅ Checklist d'appel** — 7 étapes tirées du book Infocom (se remet à zéro à chaque appel)
+- **🚫 Interdits** — Mots à bannir avec leur version correcte
+- **💬 Objections** — 15 réponses officielles (book Télépro Infocom)
+- **📋 Argumentaire** — Script complet Véhicule Transport de Personnes
+- **📅 Post-appel** — RDV pris ? → export `.ics` calendrier iOS + email de confirmation auto
+- **✉ Email type** — Modèle personnalisable avec variables `{NOM}`, `{DATE}`, `{HEURE}`, `{ADRESSE}`
+- **☁️ Sync GitHub Gist** — Sauvegarde cloud des données
+- **👤 Multi-profils** — Accès PIN par commercial
+- **✦ Assistant IA** — Claude intégré pour analyse et conseils
+
+## 🚀 Déploiement GitHub Pages
 
 1. Créer un repo GitHub (ex: `commercial-pro`)
-2. Uploader tous les fichiers de ce ZIP
-3. Aller dans **Settings → Pages → Branch: main → Save**
-4. L'app est accessible sur `https://votre-compte.github.io/commercial-pro`
-5. Sur iPhone : Safari → **Partager → Ajouter à l'écran d'accueil**
+2. Uploader `index.html`
+3. **Settings → Pages → Branch: main → / (root)**
+4. URL générée : `https://[username].github.io/commercial-pro`
 
-## Fonctionnalités
+## 📱 Installation sur iPhone
 
-- 📂 Import CSV de listings prospects
-- 📞 Appel 1 clic + recherche gérant automatique (IA)
-- 📅 Flow post-appel : RDV ou relance rapide (1h / 2h / jour de la semaine)
-- 🗓 Export .ics → Calendrier iOS
-- ✉ Email de confirmation automatique
-- 📁 Multi-dossiers / campagnes
-- ✦ Assistant IA (Claude Haiku)
+1. Ouvrir l'URL dans Safari
+2. Bouton partage → **"Ajouter à l'écran d'accueil"**
+3. L'app s'ouvre en plein écran comme une app native
 
-## Format CSV
+## 🔑 API Claude
 
-Séparateur `,` ou `;` — première ligne = en-tête (ignorée) :
+L'app utilise l'API Anthropic directement depuis le navigateur.  
+Aucune clé à configurer — l'authentification est gérée par le proxy Claude.ai.
+
+## 📂 Structure
 
 ```
-Entreprise,Contact,Telephone,Adresse,Email,Secteur
-Acme SARL,Jean Dupont,03 87 00 00 00,"12 rue de la Paix, 57200 Sarreguemines",contact@acme.fr,Immobilier
+index.html   ← Application complète (fichier unique, autonome)
+README.md    ← Ce fichier
 ```
+
+---
+*Infocom France — Commercial Pro v6*
