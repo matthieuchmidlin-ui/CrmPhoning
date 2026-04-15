@@ -179,6 +179,30 @@ select.fsel{background:var(--white);border:1px solid var(--border);border-radius
 .conf-dot{width:7px;height:7px;border-radius:50%;background:var(--border)}
 .conf-dot.on{background:var(--green)}
 .ger-src{font-size:10px;color:var(--ink3);margin-top:8px;text-align:right}
+/* CHECKLIST */
+.checklist-wrap{margin:14px 0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.checklist-hdr{background:var(--bg);padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.checklist-hdr .chk-progress{margin-left:auto;font-size:11px;font-weight:700;color:var(--acc)}
+.checklist-body{padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.chk-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:background .1s;-webkit-tap-highlight-color:transparent}
+.chk-item:active{background:var(--bg)}
+.chk-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:12px}
+.chk-item.done .chk-box{background:var(--green);border-color:var(--green);color:#fff}
+.chk-text{font-size:13px;color:var(--ink);line-height:1.3;flex:1}
+.chk-item.done .chk-text{color:var(--ink3);text-decoration:line-through}
+.chk-sub{font-size:11px;color:var(--ink3);margin-top:1px}
+/* OBJECTIONS */
+.obj-wrap{margin:14px 0;border:1px solid #fcd34d;border-radius:var(--r);overflow:hidden}
+.obj-hdr{background:var(--gold-l);padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.obj-body{display:flex;flex-direction:column;gap:0}
+.obj-item{border-top:1px solid #fef3c7;cursor:pointer;transition:background .1s}
+.obj-item:first-child{border-top:none}
+.obj-q{padding:10px 14px;font-size:12px;font-weight:600;color:var(--ink2);display:flex;justify-content:space-between;align-items:center}
+.obj-q .arr{font-size:10px;color:var(--ink3);transition:transform .2s}
+.obj-a{display:none;padding:0 14px 12px;font-size:12px;color:var(--ink2);line-height:1.7;background:var(--gold-l)}
+.obj-item.open .obj-a{display:block}
+.obj-item.open .arr{transform:rotate(180deg)}
+.obj-item:active{background:var(--gold-l)}
 .call-now-btn{width:100%;padding:15px;border-radius:12px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;color:#fff;font-family:'Geist',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(22,163,74,.3);-webkit-appearance:none}
 .call-now-btn:active{transform:scale(.98)}
 .ep{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:14px;font-size:13px;line-height:1.8;color:var(--ink);white-space:pre-wrap;max-height:220px;overflow-y:auto}
@@ -569,6 +593,172 @@ Cordialement,
   <div class="mb">
     <div id="ger-zone"></div>
     <div class="ger-tips" id="ger-tips" style="display:none"></div>
+
+    <!-- CHECKLIST APPEL -->
+    <div class="checklist-wrap" id="ger-checklist">
+      <div class="checklist-hdr" onclick="toggleSection('chk-body')">
+        ✅ Checklist appel
+        <span class="chk-progress" id="chk-pct">0 / 7</span>
+        <span style="font-size:10px;color:var(--ink3);margin-left:4px">▾</span>
+      </div>
+      <div class="checklist-body" id="chk-body">
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Vérifier qu'on parle au gérant / décisionnaire</div><div class="chk-sub">"Vous êtes bien le Gérant ? Ou puis-je m'entretenir avec lui ?"</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Mentionner le courrier du Maire</div><div class="chk-sub">"Suite au courrier de Mr [Maire] de [Commune]…"</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Présenter le véhicule NEUF de transport</div><div class="chk-sub">Minibus municipal · enfants, seniors, associations · films publicitaires multicolores anti-UV</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Proposer le RDV tiroir (matin ou après-midi ?)</div><div class="chk-sub">"Plutôt le matin ou l'après-midi ?" — jamais de question ouverte</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Vérifier les co-décisionnaires</div><div class="chk-sub">"Je suppose que vous n'êtes pas le seul gérant ?"</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Confirmer adresse + récupérer email</div><div class="chk-sub">Pour envoyer le récap RDV + lettre accréditive du Maire</div></div>
+        </div>
+        <div class="chk-item" onclick="toggleChk(this)">
+          <div class="chk-box"></div>
+          <div><div class="chk-text">Confirmer le RDV + souhaiter un très bon RDV</div><div class="chk-sub">📧 Mailer la lettre accréditive avec jour/heure du RDV</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERDITS -->
+    <div class="checklist-wrap" style="border-color:#fca5a5" id="ger-interdits">
+      <div class="checklist-hdr" style="background:#fef2f2" onclick="toggleSection('int-body')">
+        🚫 <span style="color:var(--red)">Interdits lors de la prise de RDV</span>
+        <span style="font-size:10px;color:var(--ink3);margin-left:auto">▾</span>
+      </div>
+      <div class="checklist-body" id="int-body" style="display:none;background:#fef2f2">
+        ${[
+          ['Il passe','Il est chargé de vous présenter'],
+          ['Vers 16h','À 16h'],
+          ['Vous ne pouvez pas ?','Vous pouvez certainement'],
+          ['Passé / conditionnel','Présent / futur'],
+          ['Peut-être','Toujours être sûr de soi'],
+          ['OK','D\'accord'],
+          ['Ouais','Oui'],
+          ['Publicité','Espace de communication'],
+          ['De la mairie','Pour la mairie (nous sommes mandatés par la mairie)'],
+          ['Je ne sais pas','Toujours être sûr de soi'],
+          ['Commercial','Collaborateur'],
+          ['Questions ouvertes','Questions alternatives'],
+        ].map(([x,y])=>`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #fee2e2;font-size:12px;align-items:baseline"><span style="color:var(--red);text-decoration:line-through;min-width:130px;flex-shrink:0">${x}</span><span style="color:var(--ink3)">→</span><span style="color:var(--green);font-weight:600">${y}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <!-- OBJECTIONS -->
+    <div class="obj-wrap" id="ger-objections">
+      <div class="obj-hdr" onclick="toggleSection('obj-body')">
+        💬 Objections &amp; Questions pièges
+        <span style="font-size:10px;color:var(--gold);margin-left:auto">▾</span>
+      </div>
+      <div class="obj-body" id="obj-body" style="display:none">
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Quel est le prix ?" <span class="arr">▾</span></div>
+          <div class="obj-a">Nous disposons de tous types de formats et de tarifs, ce que nous voulons surtout c'est que tout le monde puisse être représenté. C'est <b>JUSTEMENT</b> pour ça que je vous propose un RDV avec mon collaborateur pour voir avec lui la meilleure façon de vous y représenter, car je suis vraiment sûr qu'il va trouver quelque chose qui vous conviendra. <b>Vous préférez le matin ou l'après-midi ?</b><br><br><em style="color:var(--red);font-size:11px">⚠ Ne jamais donner les tarifs au téléphone — chute importante dans la prise de RDV.</em></div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Je n'ai pas le temps" <span class="arr">▾</span></div>
+          <div class="obj-a">Je comprends que vous soyez occupé, mais nous finalisons les réservations cette semaine, il n'y en a pas pour longtemps, il suffit de 10 mn, 1/4 d'heure, même en fin ou en début de journée si vous le souhaitez. <b>Vous préférez le matin ou l'après-midi ?</b></div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Ça ne m'intéresse pas" <span class="arr">▾</span></div>
+          <div class="obj-a">Je suis étonné, tous les gens que j'ai contactés trouvent cela très positif, d'autant que vous n'avez pas encore vu de quoi il s'agit réellement… ce serait dommage de passer à côté de cette réalisation. C'est <b>JUSTEMENT</b> pour ça que je vous propose un RDV avec mon collaborateur. <b>Vous préférez le matin ou l'après-midi ?</b></div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Il faut que je réfléchisse" <span class="arr">▾</span></div>
+          <div class="obj-a">Je pense vous avoir tout expliqué, dites-moi ce qui vous gêne pour que nous puissions en discuter maintenant, car nous finalisons les réservations…<br><br><em style="font-size:11px;color:var(--ink3)">Détecter le réel frein. Mieux vaut un non franc qu'un "oui peut-être" qui empêche d'abattre toutes vos cartes.</em></div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"C'est trop cher" <span class="arr">▾</span></div>
+          <div class="obj-a">C'est un investissement pour votre image — communication en quadrichromie sur au moins 2 ans. C'est <b>JUSTEMENT</b> pour ça que je vous propose un RDV avec mon collaborateur pour voir la meilleure façon de vous représenter. <b>Vous préférez le matin ou l'après-midi ?</b></div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Je suis déjà connu sur la commune" <span class="arr">▾</span></div>
+          <div class="obj-a">Comme beaucoup de commerces qui se sont d'ailleurs déjà représentés ! Mais il est important de toujours rappeler qu'on est là. Cette initiative ne sera pas faite tous les jours — c'est aussi une façon d'apporter votre pierre à l'édifice et de mettre en avant des prestations que les gens ne connaissent pas toujours.</div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"J'ai déjà une pub sur le support de mon village" <span class="arr">▾</span></div>
+          <div class="obj-a">C'est une bonne chose de communiquer sur votre commune. <b>JUSTEMENT</b> ce que je vous propose c'est de mieux vous faire connaître à l'extérieur pour agrandir votre zone de chalandise — que les habitants d'autres villages viennent chez vous plutôt que chez un concurrent.</div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Je l'ai déjà fait et ça ne m'a rien rapporté" <span class="arr">▾</span></div>
+          <div class="obj-a">Ah bon ? Comment avez-vous pu mesurer cela ? Les gens ne sauront pas toujours vous dire d'où ils vous connaissent. Ce qui est sûr c'est que c'est le <b>répétitif qui paye</b> — c'est à force de voir la pub Coca qu'on boit du Coca. Vous avez bien plus de chance d'avoir des retombées en y étant qu'en n'y étant pas.</div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Bouche à oreille" <span class="arr">▾</span></div>
+          <div class="obj-a"><b>JUSTEMENT</b> c'est cela qui relance le bouche à oreille : c'est en communiquant qu'on parle de vous. Cependant, le bouche à oreille ne donne pas votre numéro de téléphone…</div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Ça ne fonctionne pas" <span class="arr">▾</span></div>
+          <div class="obj-a">Ah bon ? Vous m'étonnez vraiment car tous les gens qui y figuraient l'année dernière renouvellent à nouveau car ça a très bien fonctionné. C'est pour cela que nous avons agrandi l'espace dédié aux communications.</div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"J'ai déjà trop de travail" <span class="arr">▾</span></div>
+          <div class="obj-a">Je souhaite que cela continue ainsi pour vous, toutefois on ne sait pas de quoi demain sera fait — il faut semer pour récolter. C'est en communiquant maintenant que vous aurez les retombées nécessaires plus tard.</div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Je fais déjà les Pages Jaunes" <span class="arr">▾</span></div>
+          <div class="obj-a">On y retrouve tous les artisans et commerçants — je vous propose une communication pour vous <b>mettre en avant et vous démarquer de la concurrence</b>. De plus nos tarifs sont accessibles à tout le monde, contrairement aux Pages Jaunes très onéreuses.</div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">🚧 Barrage secrétaire <span class="arr">▾</span></div>
+          <div class="obj-a">"Je suis désolé(e) mais on m'a demandé de m'entretenir avec le directeur — c'est pour un projet municipal avec Mr [Maire] de [Commune], il a dû recevoir un courrier à ce sujet. Vous comprenez l'importance — s'il n'est pas disponible, à quel moment puis-je le recontacter ?"<br><br><em style="color:var(--red);font-size:11px">Ne pas perdre de temps — rappeler plus tard.</em></div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Vous n'êtes pas de la mairie !" <span class="arr">▾</span></div>
+          <div class="obj-a">En effet, nous sommes la société <b>Infocom France</b> — nous sommes <b>mandatés par Mr [Maire]</b> pour réaliser son [véhicule/support]. Mon collaborateur Mr [prénom] est chargé de vous rencontrer pour mieux vous présenter la réalisation et voir avec vous la meilleure façon de vous y représenter. <b>+ Enchaînement RDV tiroir.</b></div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Donnez-moi les tarifs par téléphone sinon pas de RDV" <span class="arr">▾</span></div>
+          <div class="obj-a">Mr le Maire a tout prévu — il y a tous types de formats et de tarifs pour que vous puissiez saisir cette opportunité. C'est <b>JUSTEMENT</b> pour ça que je vous propose de voir mon collaborateur — il va tout vous montrer visuellement et concrètement. Je suis sûr qu'il trouvera un budget adapté.</div>
+        </div>
+        <div class="obj-item" onclick="toggleObj(this)">
+          <div class="obj-q">"Appel en numéro masqué !" <span class="arr">▾</span></div>
+          <div class="obj-a">Ah bon, je ne savais pas que c'était masqué — cela ne dépend malheureusement pas de moi, vous êtes le premier à me le dire ! L'essentiel c'est que j'ai eu de la chance car vous m'avez répondu… je vous explique [→ argumentaire].</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARGUMENTAIRE TÉLÉPHONIQUE -->
+    <div class="checklist-wrap" style="border-color:#a5b4fc" id="ger-script">
+      <div class="checklist-hdr" style="background:#eef2ff" onclick="toggleSection('script-body')">
+        📋 <span style="color:#4338ca">Argumentaire téléphonique</span>
+        <span style="font-size:10px;color:var(--ink3);margin-left:auto;font-weight:400">Véhicule Transport de Personnes ▾</span>
+      </div>
+      <div id="script-body" style="display:none;padding:14px 16px;font-size:13px;line-height:2;color:var(--ink);background:#eef2ff;border-top:1px solid #c7d2fe">
+        <div style="background:white;border-radius:8px;padding:14px 16px;font-size:12px;line-height:2">
+          <b>Bonjour,</b> Madame / Monsieur <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[ Gérant ]</span> pour la Mairie de <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[ Commune ]</span>, vous êtes bien le Gérant de l'établissement ? Ou pourrais-je m'entretenir avec lui ?<br><br>
+          <b>Parfait,</b> voilà je vous appelle suite au courrier de Mr <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[ Maire ]</span>, concernant la mise en service d'un <b>nouveau Véhicule de Transport de Personnes</b> sur la Commune.<br><br>
+          Ce nouveau Minibus Municipal permettra à la commune de bénéficier d'un <b>équipement de qualité</b> adapté, au service du transport quotidien des enfants, personnes âgées et des associations sportives, culturelles et sociales.<br><br>
+          Concrètement, il s'agit d'un véhicule <b>NEUF</b> <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[ Renault Trafic / Kangoo / Peugeot Partner… ]</span> — il sera habillé de <b>films publicitaires multicolores</b> traités anti-UV et anti-graffiti, réservés aux commerçants, sociétés et artisans de la commune qui souhaitent <b>mieux se faire connaître sur le secteur</b>.<br><br>
+          Mon collaborateur Mr <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[ Prénom ]</span> est chargé de vous présenter ce nouveau <b>Concept de Communication Dynamique</b> et de voir avec vous <b>la meilleure façon de vous y représenter.</b><br><br>
+          Il est <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[ jour ]</span> sur votre commune — <b style="color:#16a34a">pouvez-vous le recevoir plutôt le matin ou l'après-midi ?</b><br><br>
+          <b>Très bien,</b> je vais donc prendre votre nom, vous êtes Mr <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">_______</span> ?<br>
+          Je suppose que vous n'êtes pas le seul Gérant ?<br>
+          Votre adresse est bien le <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">_______</span> ?<br>
+          Je note votre email : <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">_______</span><br><br>
+          <b>Parfait,</b> je vous remercie et je vous dis à <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[ jour/heure ]</span> avec mon collaborateur Mr <span style="background:#fef9c3;padding:1px 6px;border-radius:4px">[ prénom ]</span> — et je vous souhaite un <b>très bon RDV !</b>
+        </div>
+        <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:11px;color:var(--gold)">
+          ⏱ <b>Durée moyenne : 1min30</b> · Suivre le DIVA : <b>Débit, Intonation, Volume, Articulation</b><br>
+          📧 Mailer la lettre accréditive avec le jour et l'heure du RDV pour confirmer et officialiser
+        </div>
+      </div>
+    </div>
+
+
     <button class="call-now-btn" id="ger-call-btn" onclick="doDialNow()" style="display:none"><span class="ring">📞</span><span id="ger-call-lbl">Appeler</span></button>
     <div class="ger-src" id="ger-src"></div>
   </div>
@@ -1307,7 +1497,15 @@ function loadMoreProspects(btn){
 }
 
 // GÉRANT SEARCH
-function launchCall(coId){var co=S.companies.find(function(x){return x.id===coId;});if(!co||!co.phone)return;pendCoId=coId;document.getElementById('ger-title').textContent=co.name;document.getElementById('ger-sub').textContent=(co.addr||'')+(co.sector?' · '+co.sector:'');document.getElementById('ger-zone').innerHTML='<div class="ger-searching"><div class="spin"></div>Recherche du gérant…</div>';document.getElementById('ger-tips').style.display='none';document.getElementById('ger-call-btn').style.display='none';document.getElementById('ger-call-lbl').textContent='Appeler '+co.phone;document.getElementById('ger-src').textContent='';openM('ov-ger');if(co.gerant)showGer(co.gerant,co);else searchGer(co);}
+function launchCall(coId){var co=S.companies.find(function(x){return x.id===coId;});if(!co||!co.phone)return;pendCoId=coId;document.getElementById('ger-title').textContent=co.name;document.getElementById('ger-sub').textContent=(co.addr||'')+(co.sector?' · '+co.sector:'');document.getElementById('ger-zone').innerHTML='<div class="ger-searching"><div class="spin"></div>Recherche du gérant…</div>';document.getElementById('ger-tips').style.display='none';document.getElementById('ger-call-btn').style.display='none';document.getElementById('ger-call-lbl').textContent='Appeler '+co.phone;document.getElementById('ger-src').textContent='';
+  // Reset checklist
+  resetChecklist();
+  // Show checklist & objections collapsed by default
+  var chkBody=document.getElementById('chk-body');
+  var objBody=document.getElementById('obj-body');
+  if(chkBody)chkBody.style.display='flex';
+  if(objBody)objBody.style.display='none';
+  openM('ov-ger');if(co.gerant)showGer(co.gerant,co);else searchGer(co);}
 
 async function searchGer(co){var result=await searchGerGouv(co);if(!result||!result.nom)result=await searchGerAI(co);var idx=S.companies.findIndex(function(x){return x.id===co.id;});if(idx!==-1){S.companies[idx].gerant=result||{nom:null};if(result&&result.nom&&!S.companies[idx].contact)S.companies[idx].contact=result.nom;save();}showGer(result,co);}
 
@@ -1317,6 +1515,31 @@ async function searchGerAI(co){try{var q=[co.name,co.addr,co.sector].filter(Bool
 
 function showGer(res,co){var zone=document.getElementById('ger-zone'),tips=document.getElementById('ger-tips'),btn=document.getElementById('ger-call-btn');if(res&&res.nom){var conf=res.confidence||3;var dots=[1,2,3,4,5].map(function(i){return'<div class="conf-dot'+(i<=conf?' on':'')+'"></div>';}).join('');var isGouv=res.source&&res.source.includes('gouv');var badge=isGouv?'<span style="display:inline-flex;align-items:center;gap:4px;background:#dbeafe;color:#1d4ed8;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;margin-bottom:8px">🏛 Source officielle · data.gouv.fr</span>':'';var autres=(res.tous_dirigeants&&res.tous_dirigeants.length>1)?'<div style="margin-top:8px;font-size:11px;color:var(--ink3)"><b>Autres :</b> '+res.tous_dirigeants.slice(1,4).join(', ')+'</div>':'';zone.innerHTML='<div class="ger-card-inner"><div class="ger-av">'+res.nom.trim()[0].toUpperCase()+'</div><div style="flex:1">'+badge+'<div class="ger-name">'+res.nom+'</div><div class="ger-role">'+(res.titre||'Dirigeant')+'</div>'+(res.intro_suggere?'<div class="ger-intro">💬 '+res.intro_suggere+'</div>':'')+'<div class="conf-bar"><span class="conf-lbl">Fiabilité</span><div class="conf-dots">'+dots+'</div><span class="conf-lbl">'+conf+'/5</span></div>'+autres+'</div></div>';if(res.conseil){tips.innerHTML='<b>💡</b> '+res.conseil;tips.style.display='block';}if(res.source)document.getElementById('ger-src').textContent='Source : '+res.source;}else{zone.innerHTML='<div class="ger-nf"><div style="font-size:28px;margin-bottom:8px;opacity:.3">🔍</div><div style="font-weight:700;margin-bottom:4px">Gérant introuvable</div><div style="font-size:12px">Demandez à parler au responsable.</div></div>';tips.innerHTML='<b>💡</b> "Bonjour, pourriez-vous me passer le responsable ?"';tips.style.display='block';}document.getElementById('ger-call-lbl').textContent='Appeler '+co.phone;btn.style.display='flex';}
 function resetGer(coId){var idx=S.companies.findIndex(function(x){return x.id===coId;});if(idx!==-1){delete S.companies[idx].gerant;save();}renderProspects();toast('Gérant effacé');}
+// CHECKLIST
+function toggleChk(el){
+  el.classList.toggle('done');
+  var items=document.querySelectorAll('#chk-body .chk-item');
+  var done=document.querySelectorAll('#chk-body .chk-item.done').length;
+  document.getElementById('chk-pct').textContent=done+' / '+items.length;
+  if(done===items.length){
+    document.getElementById('chk-pct').style.color='var(--green)';
+  } else {
+    document.getElementById('chk-pct').style.color='var(--acc)';
+  }
+}
+function resetChecklist(){
+  document.querySelectorAll('#chk-body .chk-item').forEach(function(el){el.classList.remove('done');});
+  var items=document.querySelectorAll('#chk-body .chk-item');
+  document.getElementById('chk-pct').textContent='0 / '+items.length;
+  document.getElementById('chk-pct').style.color='var(--acc)';
+}
+function toggleSection(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.style.display=(el.style.display==='none'||el.style.display==='')?'flex':'none';
+}
+function toggleObj(el){el.classList.toggle('open');}
+
 function doDialNow(){var co=S.companies.find(function(x){return x.id===pendCoId;});if(!co)return;var g=co.gerant;var call={id:'call'+Date.now(),companyId:co.id,contact:(g&&g.nom)?g.nom:(co.contact||co.name),company:co.name,phone:co.phone,date:new Date().toISOString(),status:'En cours',temp:co.temp,notes:'',rdvId:null};S.calls.unshift(call);save();
   // Sauvegarder position scroll avant appel
   var m=document.querySelector('main');if(m)localStorage.setItem('scroll_precall_'+currentPid,m.scrollTop);
