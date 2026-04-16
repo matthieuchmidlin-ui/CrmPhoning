@@ -290,7 +290,20 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 <body>
 <!-- PROFILE SELECTION SCREEN -->
 <div id="profile-screen">
-  <div class="ps-logo"><div class="ps-logo-dot">C</div>Commercial Pro</div>
+  <div class="ps-logo">
+    <div class="ps-logo-dot" style="background:var(--acc);display:flex;align-items:center;justify-content:center">
+      <svg width="26" height="26" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="14" width="24" height="9" rx="2" fill="white" opacity=".95"/>
+        <rect x="3" y="11" width="14" height="5" rx="1.5" fill="white" opacity=".8"/>
+        <rect x="14" y="11.5" width="5" height="4" rx="1" fill="#2563eb" opacity=".5"/>
+        <circle cx="8" cy="23.5" r="2.5" fill="#1d4ed8"/><circle cx="8" cy="23.5" r="1.2" fill="white"/>
+        <circle cx="21" cy="23.5" r="2.5" fill="#1d4ed8"/><circle cx="21" cy="23.5" r="1.2" fill="white"/>
+        <rect x="3.5" y="15.5" width="23" height="4" rx="1" fill="#fbbf24" opacity=".8"/>
+        <circle cx="25" cy="7" r="3" fill="#22c55e"/>
+      </svg>
+    </div>
+    Infocom <span style="color:var(--acc)">Pro</span>
+  </div>
   <div class="ps-sub" id="ps-sub">Sélectionnez votre profil</div>
   <div class="ps-grid" id="ps-grid"></div>
   <div id="ps-connect-zone" style="margin-top:8px;text-align:center">
@@ -347,17 +360,16 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 <div class="overlay" id="ov-profile" onclick="ovBg(event,'ov-profile')"><div class="modal" style="max-width:400px">
   <div class="mh"><div class="mt" id="pm-title">Nouveau profil</div><button class="mc" onclick="closeM('ov-profile')">✕</button></div>
   <div class="mb">
-    <div class="fg"><label>Prénom / Nom *</label><input id="pm-name" placeholder="Ex: Matthieu Martin"></div>
-    <div class="fg"><label>Code PIN (4 chiffres) *</label>
+    <div class="fg"><label>Prénom / Nom *</label><input id="pm-name" placeholder="Ex: Matthieu Chmidlin"></div>
+    <div class="fg"><label>Code PIN (optionnel)</label>
       <input id="pm-pin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="• • • •" style="letter-spacing:8px;font-size:22px;text-align:center">
-      <div style="font-size:11px;color:var(--ink3);margin-top:4px">Requis pour accéder à ce profil</div>
+      <div style="font-size:11px;color:var(--ink3);margin-top:4px">4 chiffres — laissez vide si vous ne souhaitez pas de code</div>
     </div>
-
     <div style="background:var(--gold-l);border:1px solid #fcd34d;border-radius:var(--r);padding:11px 13px;font-size:12px;color:var(--gold);line-height:1.7;margin-bottom:12px">
       <b>Sync GitHub Gist (optionnel) :</b><br>
-      Chaque profil peut avoir son propre token GitHub pour synchroniser ses données indépendamment.
+      Token GitHub pour synchroniser vos données entre appareils.
     </div>
-    <div class="fg"><label>Token GitHub (Personal Access Token)</label><input id="pm-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"></div>
+    <div class="fg"><label>Token GitHub (optionnel)</label><input id="pm-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"></div>
     <div class="mact"><button class="btn bg" onclick="closeM('ov-profile')">Annuler</button><button class="btn bp" onclick="saveProfile()">Créer le profil</button></div>
   </div>
 </div></div>
@@ -1220,18 +1232,18 @@ function trySelectProfile(pid){
 
 
 function saveProfile(){
-  var name=document.getElementById('pm-name').value.trim();if(!name){toast('Prénom requis','err');return;}
+  var name=document.getElementById('pm-name').value.trim();
+  if(!name){toast('Prénom requis','err');return;}
   var pin=document.getElementById('pm-pin').value.trim();
-  if(!pin||pin.length!==4||!/^\d{4}$/.test(pin)){toast('PIN 4 chiffres requis','err');return;}
+  // PIN is optional — only validate format if provided
+  if(pin&&(pin.length!==4||!/^\d{4}$/.test(pin))){toast('PIN : 4 chiffres ou laisser vide','err');return;}
   var token=document.getElementById('pm-token').value.trim();
   var pid='p'+Date.now();
   var profiles=getProfiles();
-  // Auto-assign color by index
   var autoColors=['#2563eb','#16a34a','#dc2626','#b45309','#7c3aed','#0891b2','#be185d','#475569'];
   var color=autoColors[profiles.length % autoColors.length];
   profiles.push({id:pid,name:name,color:color});saveProfiles(profiles);
-  // Store PIN as simple hash (not security-critical, just privacy)
-  localStorage.setItem('pin_'+pid, btoa(pin));
+  if(pin)localStorage.setItem('pin_'+pid, btoa(pin));
   if(token)setProfileToken(pid,token);
   closeM('ov-profile');selectProfile(pid);
 }
