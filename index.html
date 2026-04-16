@@ -137,7 +137,7 @@ select.fsel{background:var(--white);border:1px solid var(--border);border-radius
 .note-call{background:var(--bg);border:1px solid var(--border);color:var(--ink2)}
 .drop-zone{border:2px dashed var(--border);border-radius:var(--r2);padding:36px 20px;text-align:center;cursor:pointer;background:var(--white);transition:all .2s}
 .drop-zone.drag,.drop-zone:active{border-color:var(--acc);background:var(--acc-l)}
-.overlay{display:none;position:fixed;inset:0;z-index:3000;background:rgba(26,25,22,.45);backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;padding-bottom:var(--sab)}
+.overlay{display:none;position:fixed;inset:0;z-index:4000;background:rgba(26,25,22,.45);backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;padding-bottom:var(--sab)}
 .overlay.open{display:flex}
 .modal{background:var(--white);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-width:600px;max-height:92vh;overflow-y:scroll;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;animation:su .25s ease;padding-bottom:var(--sab)}
 .modal::before{content:'';display:block;width:36px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 4px}
@@ -1340,9 +1340,8 @@ function openAddProfile(){
   document.getElementById('pm-name').value='';
   document.getElementById('pm-pin').value='';
   document.getElementById('pm-token').value='';
-  selectedColor='#2563eb';
-  document.querySelectorAll('#pm-colors div').forEach(function(d,i){d.style.border=i===0?'3px solid #2563eb':'3px solid transparent';});
   openM('ov-profile');
+  setTimeout(function(){var n=document.getElementById('pm-name');if(n)n.focus();},300);
 }
 
 function showConnectMode(){
