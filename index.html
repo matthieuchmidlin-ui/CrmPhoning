@@ -515,7 +515,10 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 
         <!-- Barre de progression -->
         <div id="ann-progress" style="display:none;margin-top:12px">
-          <div style="font-size:12px;color:var(--ink2);margin-bottom:6px" id="ann-progress-txt">Recherche en cours…</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div style="font-size:12px;color:var(--ink2)" id="ann-progress-txt">Recherche en cours…</div>
+            <button onclick="stopProspection()" style="background:var(--red-l);border:1px solid #fca5a5;color:var(--red);border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">⏹ Stop</button>
+          </div>
           <div style="background:var(--border);border-radius:4px;height:6px"><div id="ann-progress-bar" style="height:100%;background:linear-gradient(90deg,var(--acc),var(--green));border-radius:4px;transition:width .4s;width:0%"></div></div>
         </div>
       </div>
@@ -923,6 +926,15 @@ var METIERS_ARTISANS=['aménagement caves combles','aménagement parcs jardins',
 var METIERS_COMMERCES=['agence voyages','agence immobilière','alarme sécurité','ambulance','assurance','auto-école','camping','carrosserie','centre équestre','fitness','contrôle technique','fleuriste','garage automobile','hôtel','institut beauté','constructeur maison','bricolage','marbrerie','motoculture','opticien','pépinière','pompes funèbres','restaurant','supermarché','taxi','traiteur','pneumatique'];
 var ALL_METIERS=METIERS_ARTISANS.concat(METIERS_COMMERCES);
 var selectedMetiers=new Set(ALL_METIERS);
+var prospectionStopped=false;
+
+function stopProspection(){
+  prospectionStopped=true;
+  var btn=document.getElementById('ann-btn');
+  if(btn){btn.disabled=false;btn.textContent='🔍 Lancer la prospection';}
+  document.getElementById('ann-progress').style.display='none';
+  toast('Recherche arrêtée — résultats partiels affichés','info');
+}
 
 function initMetiersGrid(){
   var grid=document.getElementById('metiers-grid');
@@ -973,28 +985,72 @@ async function lancerProspection(){
   var progBar=document.getElementById('ann-progress-bar');
   btn.disabled=true;btn.textContent='⏳ Recherche…';
   zone.innerHTML='';prog.style.display='block';
-  progTxt.textContent='Localisation de '+ville+'…';progBar.style.width='5%';
+  prospectionStopped=false;
+  progTxt.textContent='Localisation de '+ville+'…';progBar.style.width='3%';
   var cp=await resolveCP(ville);
   var metiersList=Array.from(selectedMetiers);
   var allResults=[];var seen=new Set();var total=metiersList.length;var done=0;
-  var batchSize=5;
+  var batchSize=3; // réduit car on fait plusieurs pages par métier
+
   for(var i=0;i<metiersList.length;i+=batchSize){
+    if(prospectionStopped)break;
     var batch=metiersList.slice(i,i+batchSize);
     await Promise.all(batch.map(async function(metier){
       try{
-        var url='https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(metier)+'&code_postal='+encodeURIComponent(cp)+'&per_page=25&page=1&etat_administratif=A';
-        var r=await fetch(url,{headers:{'Accept':'application/json'}});
-        if(!r.ok)return;
-        var data=await r.json();
-        (data.results||[]).forEach(function(e){if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}});
+        // Page 1 d'abord pour connaître le total
+        var baseUrl='https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(metier)
+          +'&code_postal='+encodeURIComponent(cp)
+          +'&per_page=25&etat_administratif=A';
+
+        var r1=await fetch(baseUrl+'&page=1',{headers:{'Accept':'application/json'}});
+        if(!r1.ok)return;
+        var d1=await r1.json();
+        var pageResults=d1.results||[];
+        var totalResults=d1.total_results||pageResults.length;
+        var totalPages=Math.min(Math.ceil(totalResults/25), 20); // max 20 pages = 500 résultats par métier
+
+        // Ajouter résultats page 1
+        pageResults.forEach(function(e){
+          if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}
+        });
+
+        // Récupérer les pages suivantes en parallèle
+        if(totalPages>1){
+          var pageNums=[];
+          for(var p=2;p<=totalPages;p++) pageNums.push(p);
+
+          // Traiter par sous-batches de 5 pages simultanées
+          for(var pi=0;pi<pageNums.length;pi+=5){
+            var pageBatch=pageNums.slice(pi,pi+5);
+            await Promise.all(pageBatch.map(async function(page){
+              try{
+                var rp=await fetch(baseUrl+'&page='+page,{headers:{'Accept':'application/json'}});
+                if(!rp.ok)return;
+                var dp=await rp.json();
+                (dp.results||[]).forEach(function(e){
+                  if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}
+                });
+              }catch(ep){}
+            }));
+            // Petite pause pour ne pas throttler l'API
+            await new Promise(function(res){setTimeout(res,200);});
+          }
+        }
       }catch(ex){}
       done++;
-      progBar.style.width=Math.round((done/total)*85+10)+'%';
+      var pct=Math.round((done/total)*88+5);
+      progBar.style.width=pct+'%';
       progTxt.textContent='Métier '+done+'/'+total+' — '+allResults.length+' entreprises trouvées…';
     }));
   }
-  progBar.style.width='100%';progTxt.textContent='Finalisation…';
-  setTimeout(function(){prog.style.display='none';btn.disabled=false;btn.textContent='🔍 Lancer la prospection';renderAnnuaireResults(allResults,ville,cp);},300);
+
+  progBar.style.width='100%';
+  progTxt.textContent='✓ '+allResults.length+' entreprises en activité trouvées !';
+  setTimeout(function(){
+    prog.style.display='none';
+    btn.disabled=false;btn.textContent='🔍 Lancer la prospection';
+    renderAnnuaireResults(allResults,ville,cp);
+  },400);
 }
 
 function renderAnnuaireResults(results,ville){
@@ -1077,7 +1133,9 @@ function addFromAnnuaire2(siren){
 
 function importAllAnnuaire(){
   if(!window._annuaireResults)return;
-  var folderName='Prospection '+(document.getElementById('ann-ville').value||'Zone')+' '+new Date().toLocaleDateString('fr-FR');
+  var total=Object.keys(window._annuaireResults).length;
+  var villeVal=document.getElementById('ann-ville')?document.getElementById('ann-ville').value:'Zone';
+  var folderName='📍 '+villeVal+' — '+total+' prospects · '+new Date().toLocaleDateString('fr-FR');
   var fid='f'+Date.now();S.folders.push({id:fid,name:folderName,icon:'🔎'});
   var count=0;var cap=function(s){return s?s.split(' ').map(function(w){return w?w.charAt(0).toUpperCase()+w.slice(1).toLowerCase():'';}).join(' '):s;};
   Object.values(window._annuaireResults).forEach(function(e){
