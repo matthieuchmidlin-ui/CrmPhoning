@@ -305,8 +305,23 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
     Infocom <span style="color:var(--acc)">Pro</span>
   </div>
   <div class="ps-sub" id="ps-sub">Sélectionnez votre profil</div>
+
+  <!-- Grille des profils existants -->
   <div class="ps-grid" id="ps-grid"></div>
-  <div id="ps-connect-zone" style="margin-top:8px;text-align:center">
+
+  <!-- Bouton créer profil — toujours visible -->
+  <div style="margin-top:8px;margin-bottom:20px">
+    <button onclick="openAddProfile()" style="
+      background:var(--acc);color:white;border:none;border-radius:14px;
+      padding:16px 36px;font-family:'Fraunces',serif;font-size:18px;font-weight:700;
+      cursor:pointer;display:flex;align-items:center;gap:10px;
+      box-shadow:0 4px 20px rgba(37,99,235,.35);transition:all .15s;
+    ">
+      <span style="font-size:22px">+</span> Créer mon profil
+    </button>
+  </div>
+
+  <div id="ps-connect-zone" style="text-align:center">
     <div style="font-size:11px;color:var(--ink3);margin-bottom:10px">Vous avez déjà un profil sur un autre appareil ?</div>
     <button class="btn bg" style="font-size:13px" onclick="showConnectMode()">🔗 Se connecter avec GitHub Gist</button>
   </div>
@@ -1205,7 +1220,7 @@ function save(){
 
 // Profile UI
 var selectedColor='#2563eb';
-function selectColor(el){document.querySelectorAll('#pm-colors div').forEach(function(d){d.style.border='3px solid transparent';});el.style.border='3px solid '+el.dataset.c;selectedColor=el.dataset.c;}
+function selectColor(el){selectedColor=el?el.dataset.c||'#2563eb':'#2563eb';}
 
 function renderProfileScreen(){
   var profiles=getProfiles();
