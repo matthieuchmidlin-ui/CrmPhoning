@@ -204,6 +204,10 @@ select.fsel{background:var(--white);border:1px solid var(--border);border-radius
 .int-good{color:var(--green);font-weight:600}
 /* Scroll fix - trackpad & mouse */
 main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+/* Métiers chips */
+.metier-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--ink3);transition:all .15s;font-family:'Geist',sans-serif;white-space:nowrap}
+.metier-chip.sel{background:var(--acc-l);border-color:var(--acc-m);color:var(--acc);font-weight:600}
+.metier-chip:active{transform:scale(.95)}
 /* Logo Infocom */
 .logo-infocom{display:flex;align-items:center;gap:8px}
 .logo-infocom-badge{width:30px;height:30px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
@@ -396,7 +400,7 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
     <div class="ni" data-view="relances" onclick="nav(this)"><span class="ico">🔁</span>À rappeler<span class="nbadge" id="nb-r" style="background:var(--red)">0</span></div>
     <div class="ni" data-view="calls" onclick="nav(this)"><span class="ico">📞</span>Appels<span class="nbadge" id="nb-c">0</span></div>
     <div class="ni" data-view="rdv" onclick="nav(this)"><span class="ico">📅</span>Rendez-vous</div>
-    <div class="ni" data-view="annuaire" onclick="nav(this)"><span class="ico">🔎</span>Annuaire France</div>
+    <div class="ni" data-view="annuaire" onclick="nav(this)"><span class="ico">🔎</span>Prospection zone</div>
     <div class="ni" data-view="import" onclick="nav(this)"><span class="ico">📂</span>Importer CSV</div>
     <div class="ni" onclick="navTo('prospects');setTimeout(startBgSearch,200)" style="color:#7c3aed"><span class="ico">✦</span>Chercher gérants</div>
     <div class="nsep"></div>
@@ -432,6 +436,7 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
         <div class="ph-actions">
           <button class="btn bp bsm" style="background:var(--green)" onclick="navTo('import')">📂 CSV</button>
           <button class="btn bp bsm" style="background:#7c3aed" onclick="startBgSearch()" id="btn-bg-search" title="Rechercher les gérants en arrière-plan">✦ Gérants</button>
+          <button class="btn bp bsm" style="background:#0891b2" onclick="startBgPhone()" id="btn-bg-phone" title="Rechercher les téléphones manquants">📞 Téléphones</button>
           <button class="btn bp bsm" onclick="openAddCo(null)">+ Ajouter</button>
         </div>
       </div>
@@ -439,6 +444,11 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
         <span style="font-size:20px">🔍</span>
         <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:1px">Rechercher les gérants en arrière-plan</div><div style="font-size:11px;color:var(--ink3)" id="gerant-cta-sub">L'IA cherche automatiquement les dirigeants</div></div>
         <button class="btn bp bsm" onclick="startBgSearch();document.getElementById('gerant-cta').style.display='none'">✦ Lancer</button>
+      </div>
+      <div id="phone-cta" style="display:none;background:#ecfeff;border:1px solid #a5f3fc;border-radius:var(--r);padding:12px 16px;align-items:center;gap:12px">
+        <span style="font-size:20px">📞</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:1px;color:#0e7490">Numéros de téléphone manquants</div><div style="font-size:11px;color:var(--ink3)" id="phone-cta-sub">L'IA cherche les numéros sur le web</div></div>
+        <button class="btn bsm" style="background:#0891b2;color:white" onclick="startBgPhone();document.getElementById('phone-cta').style.display='none'">📞 Lancer</button>
       </div>
       <div class="toolbar">
         <div class="srch"><span class="srch-ico">🔍</span><input id="p-srch" placeholder="Rechercher…" oninput="debouncedSearch()"></div>
@@ -468,14 +478,49 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
     </div>
     <!-- ANNUAIRE ENTREPRISES -->
     <div class="view" id="view-annuaire">
-      <div class="ph"><div><div class="ph-title">Annuaire France</div><div class="ph-sub">data.gouv.fr · Source officielle</div></div></div>
-      <div style="background:var(--acc-l);border:1px solid var(--acc-m);border-radius:var(--r);padding:11px 14px;font-size:12px;color:var(--acc);line-height:1.6;margin-bottom:2px">
-        🏛 Recherche dans le registre officiel des entreprises françaises — gérants, adresses, téléphones
+      <div class="ph"><div><div class="ph-title">Prospection par zone</div><div class="ph-sub">data.gouv.fr · Tous corps de métiers · Gérants inclus</div></div></div>
+
+      <!-- Barre de recherche principale -->
+      <div class="card" style="padding:16px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <div class="srch" style="flex:1;min-width:160px">
+            <span class="srch-ico">🏙</span>
+            <input id="ann-ville" placeholder="Ville ou code postal (ex: Sarreguemines, 57200…)" onkeydown="if(event.key==='Enter')lancerProspection()">
+          </div>
+          <select id="ann-rayon" class="fsel">
+            <option value="5">Rayon 5 km</option>
+            <option value="10" selected>Rayon 10 km</option>
+            <option value="20">Rayon 20 km</option>
+            <option value="30">Rayon 30 km</option>
+            <option value="50">Rayon 50 km</option>
+          </select>
+        </div>
+
+        <!-- Sélection des métiers -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-bottom:8px">
+          Sélectionner les métiers à prospecter :
+          <span style="margin-left:8px">
+            <button onclick="selectAllMetiers(true)" style="background:var(--acc-l);border:1px solid var(--acc-m);border-radius:5px;padding:2px 8px;font-size:10px;cursor:pointer;color:var(--acc)">Tout</button>
+            <button onclick="selectAllMetiers(false)" style="background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-size:10px;cursor:pointer;color:var(--ink3);margin-left:4px">Aucun</button>
+          </span>
+        </div>
+        <div id="metiers-grid" style="display:flex;flex-wrap:wrap;gap:6px;max-height:200px;overflow-y:auto;padding:4px 0"></div>
+
+        <div style="display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap">
+          <button class="btn bp" id="ann-btn" onclick="lancerProspection()" style="flex:1;justify-content:center;min-width:140px">
+            🔍 Lancer la prospection
+          </button>
+          <div style="font-size:11px;color:var(--ink3)" id="ann-count-info"></div>
+        </div>
+
+        <!-- Barre de progression -->
+        <div id="ann-progress" style="display:none;margin-top:12px">
+          <div style="font-size:12px;color:var(--ink2);margin-bottom:6px" id="ann-progress-txt">Recherche en cours…</div>
+          <div style="background:var(--border);border-radius:4px;height:6px"><div id="ann-progress-bar" style="height:100%;background:linear-gradient(90deg,var(--acc),var(--green));border-radius:4px;transition:width .4s;width:0%"></div></div>
+        </div>
       </div>
-      <div style="display:flex;gap:8px">
-        <div class="srch" style="flex:1"><span class="srch-ico">🔍</span><input id="ann-q" placeholder="Ex: boulangerie Metz, plombier 57000…" onkeydown="if(event.key==='Enter')searchAnnuaire()"></div>
-        <button class="btn bp" onclick="searchAnnuaire()" id="ann-btn">Chercher</button>
-      </div>
+
+      <!-- Résultats -->
       <div id="ann-results"></div>
     </div>
 
@@ -871,215 +916,187 @@ Cordialement,
 
 <script>
 // ══════════════════════════════════════
-//  ANNUAIRE ENTREPRISES
+//  PROSPECTION PAR ZONE — MULTI-MÉTIERS
 // ══════════════════════════════════════
-async function searchAnnuaire(){
-  var q=document.getElementById('ann-q').value.trim();
-  if(!q){toast('Entrez une recherche','err');return;}
-  var btn=document.getElementById('ann-btn');
-  btn.textContent='⏳';btn.disabled=true;
-  var zone=document.getElementById('ann-results');
-  zone.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:20px;color:var(--ink3)"><div class="spin"></div>Recherche en cours…</div>';
 
-  try{
-    var url='https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(q)+'&per_page=20&page=1';
-    var r=await fetch(url,{headers:{'Accept':'application/json'}});
-    if(!r.ok)throw new Error('Erreur '+r.status);
-    var data=await r.json();
-    var results=data.results||[];
+var METIERS_ARTISANS=['aménagement caves combles','aménagement parcs jardins','assainissement vidange','carrelage','clôtures barrières','construction individuelle','dépannage','énergie renouvelable','bâtiment','climatisation','couverture','électricité','fermetures','maçonnerie','menuiserie','plâtrerie','plomberie','revêtement','peinture bâtiment','terrassement','travaux publics','fenêtres','paysagiste','piscine','parquet','ravalement façade','rénovation immobilière','serrurerie métallerie','chauffage','cuisine équipée','véranda'];
+var METIERS_COMMERCES=['agence voyages','agence immobilière','alarme sécurité','ambulance','assurance','auto-école','camping','carrosserie','centre équestre','fitness','contrôle technique','fleuriste','garage automobile','hôtel','institut beauté','constructeur maison','bricolage','marbrerie','motoculture','opticien','pépinière','pompes funèbres','restaurant','supermarché','taxi','traiteur','pneumatique'];
+var ALL_METIERS=METIERS_ARTISANS.concat(METIERS_COMMERCES);
+var selectedMetiers=new Set(ALL_METIERS);
 
-    if(!results.length){
-      zone.innerHTML='<div class="empty"><div class="empty-ico">🔍</div><div>Aucun résultat pour "'+q+'"</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">Essayez avec le nom de la ville ou le code postal</div></div>';
-      btn.textContent='Chercher';btn.disabled=false;return;
-    }
-
-    // Stocker les résultats pour recherche de tel
-    window._annuaireResults = {};
-    results.forEach(function(e){ window._annuaireResults[e.siren]=e; });
-
-    zone.innerHTML='<div style="font-size:11px;color:var(--ink3);padding:4px 0 8px">'+(data.total_results||results.length)+' résultats — '+results.length+' affichés</div>'+
-    results.map(function(e){
-      var dirs=e.dirigeants||[];
-      var d=dirs[0]||null;
-      var gerantName=d?((d.prenom_usuel||d.prenom||'')+' '+(d.nom||'')).trim().split(' ').map(function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();}).join(' '):'';
-      var gerantTitre=d?(d.qualite||'Dirigeant'):'';
-      var addr=(e.siege&&e.siege.adresse)||'';
-      var cp=(e.siege&&e.siege.code_postal)||'';
-      var ville=(e.siege&&e.siege.libelle_commune)||'';
-      var fullAddr=[addr,cp,ville].filter(Boolean).join(' ');
-      var secteur=e.libelle_activite_principale||'';
-      var siren=e.siren||'';
-      var alreadyIn=S.companies.some(function(c){return c.name&&c.name.toLowerCase()===e.nom_complet.toLowerCase();});
-
-      return'<div class="card" id="ann-card-'+siren+'" style="margin-bottom:10px">'+
-        '<div class="cch" style="margin-bottom:10px">'+
-          '<div class="ccav" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6)">'+e.nom_complet.charAt(0).toUpperCase()+'</div>'+
-          '<div style="flex:1;min-width:0">'+
-            '<div class="ccn" style="font-size:13px">'+e.nom_complet+'</div>'+
-            '<div class="ccm">'+secteur+'</div>'+
-          '</div>'+
-          (alreadyIn?'<span class="badge b-done" style="font-size:10px">✓ Ajouté</span>':'')
-        +'</div>'+
-        (gerantName?'<div style="display:flex;align-items:center;gap:6px;background:var(--green-l);border:1px solid #86efac;border-radius:8px;padding:7px 10px;font-size:12px;margin-bottom:8px"><span>👤</span><span style="font-weight:700;color:var(--green)">'+gerantName+'</span><span style="color:var(--ink3)">— '+gerantTitre+'</span></div>':'')+
-        (fullAddr?'<div class="ccm" style="margin-bottom:6px">📍 '+fullAddr+'</div>':'')+
-        // Zone téléphone — avec bouton chercher
-        '<div id="ann-phone-'+siren+'" style="margin-bottom:10px">'+
-          '<div style="display:flex;align-items:center;gap:8px">'+
-            '<span style="font-size:12px;color:var(--ink3)">📞 Téléphone non disponible dans le registre</span>'+
-            '<button class="btn bg bsm" onclick="findPhoneForSiren(\''+siren+'\',\''+e.nom_complet.replace(/'/g,'')+'\',\''+fullAddr.replace(/'/g,'')+'\')">🔍 Chercher</button>'+
-          '</div>'+
-        '</div>'+
-        (siren?'<div class="ccm" style="margin-bottom:10px;font-family:\'Geist Mono\',monospace;font-size:11px">SIREN '+siren+'</div>':'')+
-        '<div style="display:flex;gap:7px;flex-wrap:wrap">'+
-          '<button class="btn bp bsm" style="flex:1;justify-content:center" id="ann-add-'+siren+'" onclick=\'addFromAnnuaire('+JSON.stringify({
-            name:e.nom_complet,
-            contact:gerantName,
-            addr:fullAddr,
-            sector:secteur,
-            siren:siren,
-            gerant:gerantName?{nom:gerantName,titre:gerantTitre,confidence:5,source:'annuaire-entreprises.data.gouv.fr · SIREN '+siren}:null
-          }).replace(/'/g,"\\'")+')\'>'+(alreadyIn?'↻ Ré-ajouter':'+ Ajouter comme prospect')+'</button>'+
-          '<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/'+siren+'" target="_blank" class="btn bg bsm" style="text-decoration:none">🔗 Fiche</a>'+
-        '</div>'+
-      '</div>';
-    }).join('');
-
-  }catch(e){
-    zone.innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div>Erreur : '+e.message+'</div></div>';
-  }
-  btn.textContent='Chercher';btn.disabled=false;
-}
-
-async function findPhoneForSiren(siren, nom, addr){
-  var zone=document.getElementById('ann-phone-'+siren);
-  if(!zone)return;
-  zone.innerHTML='<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink3)"><div class="spin" style="width:14px;height:14px;border-width:2px"></div>Recherche du numéro…</div>';
-
-  try{
-    var query=nom+(addr?' '+addr:'');
-    var r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:200,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        system:'Trouve le numéro de téléphone de cette entreprise française. Réponds UNIQUEMENT en JSON: {"phone":"0X XX XX XX XX ou null","source":"site trouvé ou null"}. Si pas trouvé: {"phone":null,"source":null}',
-        messages:[{role:'user',content:'Numéro de téléphone de "'+query+'"'}]
-      })
-    });
-    var d=await r.json();
-    var tb=d.content&&d.content.find(function(b){return b.type==='text';});
-    var result=tb?JSON.parse(tb.text.replace(/```json|```/g,'').trim()):null;
-
-    if(result&&result.phone){
-      zone.innerHTML='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
-        '<span style="font-size:14px;font-weight:700;color:var(--green)">📞 '+result.phone+'</span>'+
-        (result.source?'<span style="font-size:10px;color:var(--ink3)">via '+result.source+'</span>':'')+
-        '<button class="btn b-green bsm" onclick="setAnnuairePhone(\''+siren+'\',\''+result.phone.replace(/\s/g,'')+'\')">✓ Utiliser ce numéro</button>'+
-      '</div>';
-    } else {
-      zone.innerHTML='<div style="font-size:12px;color:var(--ink3)">📞 Numéro introuvable — à saisir manuellement</div>';
-    }
-  }catch(e){
-    zone.innerHTML='<div style="font-size:12px;color:var(--red)">Erreur recherche téléphone</div>';
-  }
-}
-
-// Stocker le téléphone trouvé pour l'ajouter lors du addFromAnnuaire
-window._annuairePhones={};
-function setAnnuairePhone(siren, phone){
-  window._annuairePhones[siren]=phone;
-  var zone=document.getElementById('ann-phone-'+siren);
-  if(zone) zone.innerHTML='<span style="font-size:14px;font-weight:700;color:var(--green)">📞 '+phone+' ✓</span>';
-  toast('Numéro enregistré pour l\'ajout','ok');
-}
-
-function addFromAnnuaire(data){
-  var pid='co'+Date.now();
-  var folderId=S.curFolder==='all'?(S.folders[1]?S.folders[1].id:'all'):S.curFolder;
-  // Récupérer le téléphone trouvé si disponible
-  var phone=(window._annuairePhones&&window._annuairePhones[data.siren])||data.phone||'';
-  S.companies.unshift({
-    id:pid, name:data.name, contact:data.contact||'',
-    phone:phone, email:'', addr:data.addr||'',
-    sector:data.sector||'', temp:'cold',
-    folderId:folderId, addedAt:new Date().toISOString(),
-    gerant:data.gerant||null,
-    siren:data.siren||''
+function initMetiersGrid(){
+  var grid=document.getElementById('metiers-grid');
+  if(!grid||grid.children.length>0)return;
+  ALL_METIERS.forEach(function(m){
+    var btn=document.createElement('button');
+    btn.className='metier-chip sel';btn.textContent=m;btn.dataset.metier=m;
+    btn.onclick=function(){
+      if(selectedMetiers.has(m)){selectedMetiers.delete(m);btn.classList.remove('sel');}
+      else{selectedMetiers.add(m);btn.classList.add('sel');}
+      updateCountInfo();
+    };
+    grid.appendChild(btn);
   });
-  save();renderFolders();updateHdr();
-  toast('✓ '+data.name+' ajouté'+(phone?' avec 📞 '+phone:''),'ok');
-  // Re-render pour montrer "Ajouté"
-  searchAnnuaire();
+  updateCountInfo();
 }
-async function searchAnnuaire(){
-  var q=document.getElementById('ann-q').value.trim();
-  if(!q){toast('Entrez une recherche','err');return;}
-  var btn=document.getElementById('ann-btn');
-  btn.textContent='⏳';btn.disabled=true;
-  var zone=document.getElementById('ann-results');
-  zone.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:20px;color:var(--ink3)"><div class="spin"></div>Recherche en cours…</div>';
 
+function selectAllMetiers(val){
+  selectedMetiers=val?new Set(ALL_METIERS):new Set();
+  document.querySelectorAll('.metier-chip').forEach(function(b){b.classList.toggle('sel',val);});
+  updateCountInfo();
+}
+
+function updateCountInfo(){
+  var el=document.getElementById('ann-count-info');
+  if(el)el.textContent=selectedMetiers.size+' métier'+(selectedMetiers.size>1?'s':'')+' sélectionné'+(selectedMetiers.size>1?'s':'');
+}
+
+async function resolveCP(ville){
+  ville=ville.trim();
+  if(/^\d{5}$/.test(ville))return ville;
   try{
-    var url='https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(q)+'&per_page=20&page=1';
-    var r=await fetch(url,{headers:{'Accept':'application/json'}});
-    if(!r.ok)throw new Error('Erreur '+r.status);
-    var data=await r.json();
-    var results=data.results||[];
-
-    if(!results.length){
-      zone.innerHTML='<div class="empty"><div class="empty-ico">🔍</div><div>Aucun résultat pour "'+q+'"</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">Essayez avec le nom de la ville ou le code postal</div></div>';
-      btn.textContent='Chercher';btn.disabled=false;return;
-    }
-
-    zone.innerHTML='<div style="font-size:11px;color:var(--ink3);padding:4px 0 8px">'+(data.total_results||results.length)+' résultats — '+results.length+' affichés</div>'+
-    results.map(function(e){
-      var dirs=e.dirigeants||[];
-      var d=dirs[0]||null;
-      var gerantName=d?((d.prenom_usuel||d.prenom||'')+' '+(d.nom||'')).trim().split(' ').map(function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();}).join(' '):'';
-      var gerantTitre=d?(d.qualite||'Dirigeant'):'';
-      var phone=''; // API ne donne pas le téléphone — on l'indique
-      var addr=(e.siege&&e.siege.adresse)||'';
-      var cp=(e.siege&&e.siege.code_postal)||'';
-      var ville=(e.siege&&e.siege.libelle_commune)||'';
-      var fullAddr=[addr,cp,ville].filter(Boolean).join(' ');
-      var secteur=e.libelle_activite_principale||'';
-      var siren=e.siren||'';
-      // Vérifier si déjà dans les prospects
-      var alreadyIn=S.companies.some(function(c){return c.name&&c.name.toLowerCase()===e.nom_complet.toLowerCase();});
-
-      return'<div class="card" style="margin-bottom:10px">'+
-        '<div class="cch" style="margin-bottom:10px">'+
-          '<div class="ccav" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6)">'+e.nom_complet.charAt(0).toUpperCase()+'</div>'+
-          '<div style="flex:1;min-width:0">'+
-            '<div class="ccn" style="font-size:13px">'+e.nom_complet+'</div>'+
-            '<div class="ccm">'+secteur+'</div>'+
-          '</div>'+
-          (alreadyIn?'<span class="badge b-done" style="font-size:10px">✓ Ajouté</span>':'')
-        +'</div>'+
-        (gerantName?'<div style="display:flex;align-items:center;gap:6px;background:var(--green-l);border:1px solid #86efac;border-radius:8px;padding:7px 10px;font-size:12px;margin-bottom:8px"><span>👤</span><span style="font-weight:700;color:var(--green)">'+gerantName+'</span><span style="color:var(--ink3)">— '+gerantTitre+'</span></div>':'')+
-        (fullAddr?'<div class="ccm" style="margin-bottom:6px">📍 '+fullAddr+'</div>':'')+
-        (siren?'<div class="ccm" style="margin-bottom:10px;font-family:\'Geist Mono\',monospace;font-size:11px">SIREN '+siren+'</div>':'')+
-        '<div style="display:flex;gap:7px;flex-wrap:wrap">'+
-          '<button class="btn bp bsm" style="flex:1;justify-content:center" onclick=\'addFromAnnuaire('+JSON.stringify({
-            name:e.nom_complet,
-            contact:gerantName,
-            addr:fullAddr,
-            sector:secteur,
-            siren:siren,
-            gerant:gerantName?{nom:gerantName,titre:gerantTitre,confidence:5,source:'annuaire-entreprises.data.gouv.fr · SIREN '+siren}:null
-          }).replace(/'/g,"\\'")+')\'>'+(alreadyIn?'↻ Ré-ajouter':'+ Ajouter comme prospect')+'</button>'+
-          '<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/'+siren+'" target="_blank" class="btn bg bsm" style="text-decoration:none">🔗 Fiche complète</a>'+
-        '</div>'+
-      '</div>';
-    }).join('');
-
-  }catch(e){
-    zone.innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div>Erreur : '+e.message+'</div></div>';
-  }
-  btn.textContent='Chercher';btn.disabled=false;
+    var r=await fetch('https://geo.api.gouv.fr/communes?nom='+encodeURIComponent(ville)+'&fields=codesPostaux,nom,population&boost=population&limit=1');
+    var d=await r.json();
+    if(d&&d[0]&&d[0].codesPostaux&&d[0].codesPostaux[0])return d[0].codesPostaux[0];
+  }catch(e){}
+  return ville;
 }
+
+async function lancerProspection(){
+  var ville=document.getElementById('ann-ville').value.trim();
+  if(!ville){toast('Entrez une ville ou un code postal','err');return;}
+  if(selectedMetiers.size===0){toast('Sélectionnez au moins un métier','err');return;}
+  var btn=document.getElementById('ann-btn');
+  var zone=document.getElementById('ann-results');
+  var prog=document.getElementById('ann-progress');
+  var progTxt=document.getElementById('ann-progress-txt');
+  var progBar=document.getElementById('ann-progress-bar');
+  btn.disabled=true;btn.textContent='⏳ Recherche…';
+  zone.innerHTML='';prog.style.display='block';
+  progTxt.textContent='Localisation de '+ville+'…';progBar.style.width='5%';
+  var cp=await resolveCP(ville);
+  var metiersList=Array.from(selectedMetiers);
+  var allResults=[];var seen=new Set();var total=metiersList.length;var done=0;
+  var batchSize=5;
+  for(var i=0;i<metiersList.length;i+=batchSize){
+    var batch=metiersList.slice(i,i+batchSize);
+    await Promise.all(batch.map(async function(metier){
+      try{
+        var url='https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(metier)+'&code_postal='+encodeURIComponent(cp)+'&per_page=25&page=1&etat_administratif=A';
+        var r=await fetch(url,{headers:{'Accept':'application/json'}});
+        if(!r.ok)return;
+        var data=await r.json();
+        (data.results||[]).forEach(function(e){if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}});
+      }catch(ex){}
+      done++;
+      progBar.style.width=Math.round((done/total)*85+10)+'%';
+      progTxt.textContent='Métier '+done+'/'+total+' — '+allResults.length+' entreprises trouvées…';
+    }));
+  }
+  progBar.style.width='100%';progTxt.textContent='Finalisation…';
+  setTimeout(function(){prog.style.display='none';btn.disabled=false;btn.textContent='🔍 Lancer la prospection';renderAnnuaireResults(allResults,ville,cp);},300);
+}
+
+function renderAnnuaireResults(results,ville){
+  var zone=document.getElementById('ann-results');
+  if(!results.length){zone.innerHTML='<div class="empty"><div class="empty-ico">🔍</div><div>Aucun résultat pour '+ville+'</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">Essayez un rayon plus grand</div></div>';return;}
+  results.sort(function(a,b){return((a.dirigeants&&a.dirigeants.length>0)?0:1)-((b.dirigeants&&b.dirigeants.length>0)?0:1);});
+  var avecGerant=results.filter(function(e){return e.dirigeants&&e.dirigeants.length>0;}).length;
+  zone.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">'
+    +'<div style="font-size:13px;font-weight:700">'+results.length+' entreprises en activité — <b>'+ville+'</b></div>'
+    +'<div style="display:flex;gap:8px">'
+    +'<span class="badge b-done">👤 '+avecGerant+' avec gérant</span>'
+    +'<button class="btn bp bsm" onclick="importAllAnnuaire()" style="background:var(--green)">↓ Tout importer ('+results.length+')</button>'
+    +'</div></div>'
+    +'<div id="ann-cards"></div>';
+  var cards=document.getElementById('ann-cards');
+  window._annuaireResults={};window._annuairePhones={};
+  results.forEach(function(e){
+    window._annuaireResults[e.siren]=e;
+    var dirs=e.dirigeants||[];var d=dirs[0]||null;
+    var cap=function(s){return s?s.split(' ').map(function(w){return w?w.charAt(0).toUpperCase()+w.slice(1).toLowerCase():'';}).join(' '):s;};
+    var gerantName=d?cap(((d.prenom_usuel||d.prenom||'')+' '+(d.nom||'')).trim()):'';
+    var gerantTitre=d?(d.qualite||'Gérant'):'';
+    var autresDirs=dirs.slice(1,3).map(function(d2){return cap(((d2.prenom_usuel||d2.prenom||'')+' '+(d2.nom||'')).trim());}).filter(Boolean);
+    var addr=(e.siege&&e.siege.adresse)||'';var cp2=(e.siege&&e.siege.code_postal)||'';var ville2=(e.siege&&e.siege.libelle_commune)||'';
+    var fullAddr=[addr,cp2,ville2].filter(Boolean).join(' ');
+    var secteur=e.libelle_activite_principale||e._metier||'';var siren=e.siren||'';
+    var alreadyIn=S.companies.some(function(c){return c.siren===siren;});
+    var div=document.createElement('div');div.className='card';div.id='ann-card-'+siren;div.style.marginBottom='10px';
+    div.innerHTML=
+      '<div class="cch" style="margin-bottom:8px">'
+        +'<div class="ccav" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6)">'+e.nom_complet.charAt(0).toUpperCase()+'</div>'
+        +'<div style="flex:1;min-width:0">'
+          +'<div class="ccn">'+e.nom_complet+'</div>'
+          +'<div class="ccm" style="display:flex;align-items:center;gap:6px">'
+            +'<span style="background:var(--gold-l);color:var(--gold);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">'+e._metier+'</span>'
+            +(secteur&&secteur!==e._metier?'<span style="font-size:11px;color:var(--ink3)">'+secteur+'</span>':'')
+          +'</div>'
+        +'</div>'
+        +(alreadyIn?'<span class="badge b-done" style="font-size:10px">✓ Déjà ajouté</span>':'')
+      +'</div>'
+      +(gerantName?'<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--green-l);border:1px solid #86efac;border-radius:8px;padding:7px 10px;font-size:12px;margin-bottom:8px">'
+          +'<span>👤</span><span style="font-weight:700;color:var(--green)">'+gerantName+'</span>'
+          +'<span style="color:var(--ink3)">— '+gerantTitre+'</span>'
+          +(autresDirs.length?'<span style="color:var(--ink3);font-size:11px"> · '+autresDirs.join(', ')+'</span>':'')
+        +'</div>'
+        :'<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--ink3);margin-bottom:8px">👤 Gérant non renseigné au registre</div>'
+      )
+      +(fullAddr?'<div class="ccm" style="margin-bottom:8px">📍 '+fullAddr+'</div>':'')
+      +'<div id="ann-phone-'+siren+'" style="margin-bottom:10px">'
+        +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+          +'<span style="font-size:12px;color:var(--ink3)">📞 Non disponible dans le registre</span>'
+          +'<button class="btn bg bsm" onclick="findPhoneForSiren(''+siren+'',''+e.nom_complet.replace(/['"]/g,'')+'',''+fullAddr.replace(/['"]/g,'')+'')">🔍 Chercher tél.</button>'
+        +'</div>'
+      +'</div>'
+      +(siren?'<div class="ccm" style="margin-bottom:10px;font-family:'Geist Mono',monospace;font-size:11px">SIREN '+siren+' · <span style="color:var(--green)">● En activité</span></div>':'')
+      +'<div style="display:flex;gap:7px;flex-wrap:wrap">'
+        +'<button class="btn bp bsm" style="flex:1;justify-content:center" id="ann-add-'+siren+'" onclick="addFromAnnuaire2(''+siren+'')">'+
+          (alreadyIn?'↻ Ré-ajouter':'+ Ajouter comme prospect')+'</button>'
+        +'<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/'+siren+'" target="_blank" class="btn bg bsm" style="text-decoration:none">🔗 Fiche</a>'
+      +'</div>';
+    cards.appendChild(div);
+  });
+}
+
+function addFromAnnuaire2(siren){
+  var e=window._annuaireResults&&window._annuaireResults[siren];if(!e)return;
+  var dirs=e.dirigeants||[];var d=dirs[0]||null;
+  var cap=function(s){return s?s.split(' ').map(function(w){return w?w.charAt(0).toUpperCase()+w.slice(1).toLowerCase():'';}).join(' '):s;};
+  var gerantName=d?cap(((d.prenom_usuel||d.prenom||'')+' '+(d.nom||'')).trim()):'';
+  var gerantTitre=d?(d.qualite||'Gérant'):'';
+  var addr=(e.siege&&e.siege.adresse)||'';var cp=(e.siege&&e.siege.code_postal)||'';var ville=(e.siege&&e.siege.libelle_commune)||'';
+  var fullAddr=[addr,cp,ville].filter(Boolean).join(' ');
+  var phone=(window._annuairePhones&&window._annuairePhones[siren])||'';
+  var folderId=S.curFolder==='all'?(S.folders[1]?S.folders[1].id:'all'):S.curFolder;
+  S.companies.unshift({id:'co'+Date.now()+Math.random().toString(36).slice(2,5),name:e.nom_complet,contact:gerantName,phone:phone,email:'',addr:fullAddr,sector:e._metier||e.libelle_activite_principale||'',temp:'cold',folderId:folderId,addedAt:new Date().toISOString(),siren:siren,gerant:gerantName?{nom:gerantName,titre:gerantTitre,confidence:5,source:'annuaire-entreprises.data.gouv.fr'}:null});
+  save();renderProspects();renderFolders();updateHdr();
+  var btn=document.getElementById('ann-add-'+siren);if(btn){btn.textContent='✓ Ajouté';btn.style.background='var(--green)';btn.disabled=true;}
+  toast(e.nom_complet+' ajouté','ok');
+}
+
+function importAllAnnuaire(){
+  if(!window._annuaireResults)return;
+  var folderName='Prospection '+(document.getElementById('ann-ville').value||'Zone')+' '+new Date().toLocaleDateString('fr-FR');
+  var fid='f'+Date.now();S.folders.push({id:fid,name:folderName,icon:'🔎'});
+  var count=0;var cap=function(s){return s?s.split(' ').map(function(w){return w?w.charAt(0).toUpperCase()+w.slice(1).toLowerCase():'';}).join(' '):s;};
+  Object.values(window._annuaireResults).forEach(function(e){
+    if(S.companies.some(function(c){return c.siren===e.siren;}))return;
+    var dirs=e.dirigeants||[];var d=dirs[0]||null;
+    var gerantName=d?cap(((d.prenom_usuel||d.prenom||'')+' '+(d.nom||'')).trim()):'';
+    var gerantTitre=d?(d.qualite||'Gérant'):'';
+    var addr=(e.siege&&e.siege.adresse)||'';var cp=(e.siege&&e.siege.code_postal)||'';var ville=(e.siege&&e.siege.libelle_commune)||'';
+    S.companies.push({id:'co'+Date.now()+Math.random().toString(36).slice(2,5),name:e.nom_complet,contact:gerantName,phone:'',email:'',addr:[addr,cp,ville].filter(Boolean).join(' '),sector:e._metier||e.libelle_activite_principale||'',temp:'cold',folderId:fid,addedAt:new Date().toISOString(),siren:e.siren||'',gerant:gerantName?{nom:gerantName,titre:gerantTitre,confidence:5,source:'annuaire-entreprises.data.gouv.fr'}:null});
+    count++;
+  });
+  save();renderProspects();renderFolders();updateHdr();
+  toast(count+' entreprises importées dans "'+folderName+'"','ok');
+  navTo('prospects');
+}
+
+function addFromAnnuaire(data){addFromAnnuaire2(data.siren);}
+function searchAnnuaire(){lancerProspection();}
+
 
 // ══════════════════════════════════════
 var PROFILES_KEY = 'cp_profiles';
@@ -1413,7 +1430,7 @@ function switchView(v){
   if(v==='rdv')renderRdv();
   if(v==='relances')renderRelances();
   if(v==='stats')renderStats();
-  if(v==='annuaire'){document.getElementById('ann-results').innerHTML='';setTimeout(function(){var i=document.getElementById('ann-q');if(i)i.focus();},200);}
+  if(v==='annuaire'){initMetiersGrid();setTimeout(function(){var i=document.getElementById('ann-ville');if(i)i.focus();},200);}
   if(v==='emails')loadTpl();
   if(v==='backup')renderBackupStats();
   updateHdr();
@@ -1452,8 +1469,28 @@ function renderProspects(){
   var f=S.folders.find(function(x){return x.id===S.curFolder;});
   document.getElementById('fold-title').textContent=f?f.name:'Prospects';
   var mc=Object.keys(matchIds).length;
-  document.getElementById('fold-sub').textContent=q?mc+' résultat'+(mc>1?'s':'')+' sur '+allList.length+' fiches':list.length+' fiche'+(list.length>1?'s':'');
+
+  // Stats dossier actif
+  var withPhone=allList.filter(function(c){return!!c.phone;}).length;
+  var withoutPhone=allList.filter(function(c){return!c.phone;}).length;
+  var withGerant=allList.filter(function(c){return c.gerant&&c.gerant.nom;}).length;
+
+  document.getElementById('fold-sub').textContent=q
+    ?mc+' résultat'+(mc>1?'s':'')+' sur '+allList.length+' fiches'
+    :list.length+' fiche'+(list.length>1?'s':'')+' · 📞 '+withPhone+' tél. · 👤 '+withGerant+' gérants';
   document.getElementById('nb-p').textContent=S.companies.length;
+
+  // CTA phone banner
+  var phoneCta=document.getElementById('phone-cta');
+  if(phoneCta&&!bgPhone.running){
+    if(withoutPhone>0&&!q){
+      document.getElementById('phone-cta-sub').textContent=withoutPhone+' prospect'+(withoutPhone>1?'s':'')+' sans numéro — l\'IA cherche sur le web (1 à 2s/prospect)';
+      phoneCta.style.display='flex';
+    } else {
+      phoneCta.style.display='none';
+    }
+  }
+
   var grid=document.getElementById('prospect-grid');
   if(!list.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-ico">🏢</div><div>Aucun prospect'+(q?' trouvé':'')+' ici</div>'+(!q?'<button class="btn bp" style="margin-top:14px;background:var(--green)" onclick="navTo(\'import\')">📂 Importer CSV</button>':'')+'</div>';return;}
   var displayList=(!q&&list.length>PAGE)?list.slice(0,PAGE):list;
@@ -1464,7 +1501,9 @@ function renderProspects(){
     var isMatch=q&&matchIds[c.id];
     var g=c.gerant;
     var gl='';
-    var pb=c.phone?'<button class="call-big" onclick="launchCall(\''+c.id+'\')"><span class="ring">📞</span> Appeler '+c.phone+'</button>':'';
+    var pb=c.phone
+      ?'<button class="call-big" onclick="launchCall(\''+c.id+'\')"><span class="ring">📞</span> Appeler '+c.phone+'</button>'+(c.phoneSource?'<div style="font-size:10px;color:var(--ink3);text-align:center;margin-top:2px">via '+c.phoneSource+'</div>':'')
+      :'<button class="call-big" style="background:var(--bg);border:1.5px dashed var(--border);color:var(--ink3)" onclick="findPhoneSingle(\''+c.id+'\')" id="phone-btn-'+c.id+'">🔍 Trouver le numéro</button>';
     var lastCall=S.calls.filter(function(cl){return cl.companyId===c.id;}).sort(function(a,b){return(b.date||'').localeCompare(a.date||'');})[0];
     var lastRdv=S.rdvs.filter(function(r){return r.companyId===c.id;}).sort(function(a,b){return(b.createdAt||'').localeCompare(a.createdAt||'');})[0];
     // Status badge
@@ -1530,7 +1569,9 @@ function loadMoreProspects(btn){
   list.slice(already).forEach(function(c){
     var div=document.createElement('div');div.className='cc';
     var g=c.gerant;var gl=g&&g.nom?'<div class="ger-strip"><span>👤</span><span class="gn">'+g.nom+'</span><span class="gr">— '+(g.titre||'Dirigeant')+'</span></div>':'';
-    var pb=c.phone?'<button class="call-big" onclick="launchCall(\''+c.id+'\')"><span class="ring">📞</span> Appeler '+c.phone+'</button>':'';
+    var pb=c.phone
+      ?'<button class="call-big" onclick="launchCall(\''+c.id+'\')"><span class="ring">📞</span> Appeler '+c.phone+'</button>'+(c.phoneSource?'<div style="font-size:10px;color:var(--ink3);text-align:center;margin-top:2px">via '+c.phoneSource+'</div>':'')
+      :'<button class="call-big" style="background:var(--bg);border:1.5px dashed var(--border);color:var(--ink3)" onclick="findPhoneSingle(\''+c.id+'\')" id="phone-btn-'+c.id+'">🔍 Trouver le numéro</button>';
     div.innerHTML='<div class="cch"><div class="ccav">'+(c.name[0]||'?').toUpperCase()+'</div><div style="flex:1;min-width:0"><div class="ccn">'+c.name+'</div><div class="ccm">'+(c.contact||'')+(c.sector?' · '+c.sector:'')+'</div></div><span class="badge '+(tb[c.temp]||'b-warm')+'">'+(tl[c.temp]||'—')+'</span></div>'+gl+(c.phone?'<div class="ccm" style="margin-bottom:8px">📱 '+c.phone+'</div>':'')+(c.addr?'<div class="ccm" style="margin-bottom:10px">📍 '+c.addr+'</div>':'')+'<div style="margin-bottom:8px">'+pb+'</div><div style="display:flex;gap:6px"><button class="btn bg bsm" onclick=\'openAddCo(JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(c))+'")))\'>✏️</button><button class="btn bd bsm" onclick="deleteCo(\''+c.id+'\')">✕</button></div>';
     grid.appendChild(div);
   });
@@ -1657,6 +1698,154 @@ async function runBgQueue(){while(bgSearch.queue.length>0&&!bgSearch.stopped){va
 function showBgBanner(){var b=document.getElementById('bg-banner');if(b){b.style.display='flex';updateBgBanner();return;}var bn=document.createElement('div');bn.id='bg-banner';bn.style.cssText='position:fixed;bottom:calc(70px + var(--sab));left:12px;right:12px;background:var(--white);border:1px solid var(--acc-m);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.12);z-index:300';bn.innerHTML='<div class="spin" style="border-top-color:var(--acc)"></div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--ink)" id="bg-label">Recherche gérants…</div><div style="background:var(--border);border-radius:3px;height:3px;margin-top:5px"><div id="bg-bar" style="height:100%;background:var(--acc);border-radius:3px;transition:width .4s;width:0%"></div></div></div><button onclick="stopBgSearch()" style="background:var(--red-l);border:1px solid #fca5a5;color:var(--red);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0">⏹ Stop</button>';document.body.appendChild(bn);}
 function updateBgBanner(){var l=document.getElementById('bg-label'),b=document.getElementById('bg-bar');if(l)l.textContent='Gérants : '+bgSearch.done+' / '+bgSearch.total+' traités';if(b)b.style.width=(bgSearch.total?Math.round(bgSearch.done/bgSearch.total*100):0)+'%';}
 function hideBgBanner(){var b=document.getElementById('bg-banner');if(b){b.style.opacity='0';b.style.transition='opacity .3s';setTimeout(function(){b.remove();},350);}}
+
+// ══════════════════════════════════════
+//  RECHERCHE TÉLÉPHONE EN MASSE
+// ══════════════════════════════════════
+var bgPhone={running:false,queue:[],done:0,found:0,total:0,stopped:false};
+
+function startBgPhone(){
+  // Cibler les prospects du dossier actif sans téléphone
+  var todo=S.companies.filter(function(c){
+    var inFolder=S.curFolder==='all'||c.folderId===S.curFolder;
+    return inFolder&&!c.phone&&c.name;
+  });
+  if(!todo.length){toast('Tous les prospects de ce dossier ont déjà un téléphone ✓','ok');return;}
+  bgPhone.queue=todo.map(function(c){return c.id;});
+  bgPhone.done=0;bgPhone.found=0;bgPhone.total=todo.length;
+  bgPhone.stopped=false;bgPhone.running=true;
+  showPhoneBanner();
+  runPhoneQueue();
+}
+
+function stopBgPhone(){
+  bgPhone.stopped=true;bgPhone.running=false;
+  hidePhoneBanner();
+  toast('Recherche arrêtée — '+bgPhone.found+' numéros trouvés sur '+bgPhone.done+'/'+bgPhone.total,'info');
+}
+
+async function runPhoneQueue(){
+  // Traiter par batch de 3 appels simultanés
+  while(bgPhone.queue.length>0&&!bgPhone.stopped){
+    var batch=bgPhone.queue.splice(0,3);
+    await Promise.all(batch.map(async function(coId){
+      var co=S.companies.find(function(x){return x.id===coId;});
+      if(!co||co.phone){bgPhone.done++;updatePhoneBanner();return;}
+      try{
+        var query=co.name+(co.addr?' — '+co.addr:'')+(co.sector?' — '+co.sector:'');
+        var r=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            model:'claude-haiku-4-5-20251001',
+            max_tokens:150,
+            tools:[{type:'web_search_20250305',name:'web_search'}],
+            system:'Trouve le numéro de téléphone de cette entreprise française. Réponds UNIQUEMENT en JSON valide: {"phone":"0X XX XX XX XX","source":"domaine"} ou {"phone":null,"source":null} si introuvable. Aucun autre texte.',
+            messages:[{role:'user',content:'Numéro de téléphone de: "'+query+'"'}]
+          })
+        });
+        var d=await r.json();
+        var tb=d.content&&d.content.find(function(b){return b.type==='text';});
+        if(tb){
+          var result=JSON.parse(tb.text.replace(/```json|```/g,'').trim());
+          if(result&&result.phone){
+            var idx=S.companies.findIndex(function(x){return x.id===coId;});
+            if(idx!==-1&&!bgPhone.stopped){
+              S.companies[idx].phone=result.phone;
+              S.companies[idx].phoneSource=result.source||'web';
+              bgPhone.found++;
+            }
+          }
+        }
+      }catch(ex){}
+      bgPhone.done++;
+      if(!bgPhone.stopped){save();updatePhoneBanner();}
+    }));
+    // Pause entre batches pour ne pas surcharger l'API
+    if(!bgPhone.stopped&&bgPhone.queue.length>0){
+      await new Promise(function(r){setTimeout(r,800);});
+    }
+  }
+  if(!bgPhone.stopped){
+    bgPhone.running=false;
+    save();
+    renderProspects();
+    hidePhoneBanner();
+    toast('✓ Terminé — '+bgPhone.found+' numéros trouvés sur '+bgPhone.done+' prospects','ok');
+  }
+}
+
+function showPhoneBanner(){
+  var existing=document.getElementById('phone-banner');
+  if(existing){existing.style.display='flex';updatePhoneBanner();return;}
+  var bn=document.createElement('div');
+  bn.id='phone-banner';
+  bn.style.cssText='position:fixed;bottom:calc(70px + var(--sab));left:12px;right:12px;background:var(--white);border:1px solid #a5f3fc;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.12);z-index:300';
+  bn.innerHTML=''
+    +'<div style="width:20px;height:20px;border:2.5px solid #a5f3fc;border-top-color:#0891b2;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0"></div>'
+    +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:12px;font-weight:700;color:#0e7490" id="phone-label">Recherche téléphones…</div>'
+      +'<div style="background:var(--border);border-radius:3px;height:3px;margin-top:5px">'
+        +'<div id="phone-bar" style="height:100%;background:linear-gradient(90deg,#0891b2,#06b6d4);border-radius:3px;transition:width .4s;width:0%"></div>'
+      +'</div>'
+      +'<div style="font-size:10px;color:var(--ink3);margin-top:3px" id="phone-detail"></div>'
+    +'</div>'
+    +'<button onclick="stopBgPhone()" style="background:var(--red-l);border:1px solid #fca5a5;color:var(--red);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0">⏹ Stop</button>';
+  document.body.appendChild(bn);
+}
+
+function updatePhoneBanner(){
+  var l=document.getElementById('phone-label');
+  var b=document.getElementById('phone-bar');
+  var d=document.getElementById('phone-detail');
+  var pct=bgPhone.total?Math.round(bgPhone.done/bgPhone.total*100):0;
+  if(l)l.textContent='📞 '+bgPhone.found+' numéros trouvés · '+bgPhone.done+'/'+bgPhone.total+' traités';
+  if(b)b.style.width=pct+'%';
+  if(d)d.textContent=pct+'% — '+Math.round((bgPhone.total-bgPhone.done)*0.8)+'s estimés restants';
+}
+
+function hidePhoneBanner(){
+  var b=document.getElementById('phone-banner');
+  if(b){b.style.opacity='0';b.style.transition='opacity .3s';setTimeout(function(){b.remove();},350);}
+}
+
+// Recherche téléphone pour une seule fiche (bouton sur la carte)
+async function findPhoneSingle(coId){
+  var co=S.companies.find(function(x){return x.id===coId;});
+  if(!co)return;
+  var btn=document.getElementById('phone-btn-'+coId);
+  if(btn){btn.textContent='⏳ Recherche…';btn.disabled=true;}
+  try{
+    var query=co.name+(co.addr?' — '+co.addr:'')+(co.sector?' — '+co.sector:'');
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:150,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        system:'Trouve le numéro de téléphone de cette entreprise française. Réponds UNIQUEMENT en JSON valide: {"phone":"0X XX XX XX XX","source":"domaine"} ou {"phone":null,"source":null} si introuvable.',
+        messages:[{role:'user',content:'Numéro de téléphone de: "'+query+'"'}]
+      })
+    });
+    var d=await r.json();
+    var tb=d.content&&d.content.find(function(b){return b.type==='text';});
+    if(tb){
+      var result=JSON.parse(tb.text.replace(/```json|```/g,'').trim());
+      if(result&&result.phone){
+        var idx=S.companies.findIndex(function(x){return x.id===coId;});
+        if(idx!==-1){S.companies[idx].phone=result.phone;S.companies[idx].phoneSource=result.source||'web';}
+        save();renderProspects();
+        toast('📞 '+result.phone+' trouvé pour '+co.name,'ok');
+        return;
+      }
+    }
+    if(btn){btn.textContent='❌ Introuvable';btn.style.color='var(--red)';}
+    setTimeout(function(){if(btn){btn.textContent='🔍 Trouver le numéro';btn.disabled=false;btn.style.color='';}},3000);
+  }catch(e){
+    if(btn){btn.textContent='🔍 Trouver le numéro';btn.disabled=false;}
+  }
+}
 
 // FOLLOW-UP
 function buildFuButtons(){var now=new Date(),days=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'],btns=[];btns.push({label:'1h',sub:fmtTime(new Date(now.getTime()+3600000)),date:toDateStr(new Date(now.getTime()+3600000))});btns.push({label:'2h',sub:fmtTime(new Date(now.getTime()+7200000)),date:toDateStr(new Date(now.getTime()+7200000))});for(var i=1;i<=5;i++){var d=new Date(now);d.setDate(d.getDate()+i);btns.push({label:days[d.getDay()],sub:d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}),date:toDateStr(d)});}var nm=new Date(now);nm.setDate(nm.getDate()+(8-(nm.getDay()||7)));btns.push({label:'Lun+1',sub:nm.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}),date:toDateStr(nm)});document.getElementById('fu-grid').innerHTML=btns.map(function(b){return'<div class="fu-btn" data-date="'+b.date+'" onclick="selectFu(this,\''+b.date+'\')">'+b.label+'<div class="fu-sub">'+b.sub+'</div></div>';}).join('');}
