@@ -384,6 +384,7 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
           ☁️ Récupérer mes données
         </button>
       </div>
+      <div id="conn-status" style="display:none;margin-top:10px;font-size:12px;text-align:center;padding:8px;border-radius:8px;background:#f8fafc;border:1px solid var(--border)"></div>
     </div>
   </div>
 
@@ -1451,68 +1452,85 @@ function hideConnectMode(){
 }
 
 async function connectFromGist(){
-  var name=document.getElementById('conn-name').value.trim();
-  var token=document.getElementById('conn-token').value.trim();
-  var pin=document.getElementById('conn-pin').value.trim();
-  if(!name){toast('Prénom requis','err');return;}
-  if(!token){toast('Token GitHub requis','err');return;}
-  // PIN optionnel — juste valider le format si renseigné
-  if(pin&&(pin.length!==4||!/^\d{4}$/.test(pin))){toast('PIN : 4 chiffres ou laisser vide','err');return;}
-
+  var nameEl=document.getElementById('conn-name');
+  var tokenEl=document.getElementById('conn-token');
   var btn=document.getElementById('conn-submit-btn');
-  if(btn){btn.textContent='⏳ Récupération…';btn.disabled=true;}
+  var statusEl=document.getElementById('conn-status');
+
+  var name=(nameEl?nameEl.value.trim():'');
+  var token=(tokenEl?tokenEl.value.trim():'');
+
+  // Validation inline
+  function showErr(msg){
+    if(statusEl){statusEl.textContent=msg;statusEl.style.color='#dc2626';statusEl.style.display='block';}
+    else{alert(msg);}
+    if(btn){btn.textContent='☁️ Récupérer mes données';btn.disabled=false;}
+  }
+
+  if(!name){showErr('⚠ Prénom / Nom requis');if(nameEl)nameEl.focus();return;}
+  if(!token){showErr('⚠ Token GitHub requis');if(tokenEl)tokenEl.focus();return;}
+  if(!token.startsWith('ghp_')&&!token.startsWith('github_pat_')&&token.length<20){
+    showErr('⚠ Token invalide — doit commencer par ghp_...');return;
+  }
+
+  if(btn){btn.textContent='⏳ Connexion…';btn.disabled=true;}
+  if(statusEl){statusEl.textContent='Connexion à GitHub…';statusEl.style.color='#2563eb';statusEl.style.display='block';}
 
   try{
-    var headers={'Authorization':'token '+token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};
-    var listR=await fetch('https://api.github.com/gists?per_page=30',{headers:headers});
-    if(!listR.ok){
-      if(listR.status===401)throw new Error('Token invalide — vérifiez votre Personal Access Token');
-      throw new Error('Erreur GitHub '+listR.status);
-    }
+    var headers={
+      'Authorization':'token '+token,
+      'Content-Type':'application/json',
+      'Accept':'application/vnd.github.v3+json'
+    };
+
+    if(statusEl)statusEl.textContent='Recherche de vos données…';
+    var listR=await fetch('https://api.github.com/gists?per_page=100',{headers:headers});
+
+    if(listR.status===401){showErr('⚠ Token invalide ou expiré — vérifiez dans github.com → Settings → Developer settings');return;}
+    if(listR.status===403){showErr('⚠ Accès refusé — le token doit avoir la permission "gist"');return;}
+    if(!listR.ok){showErr('⚠ Erreur GitHub '+listR.status);return;}
+
     var gists=await listR.json();
     var found=gists.find(function(g){return g.files&&g.files['commercial-pro.json'];});
+
+    var pid='p'+Date.now();
+    var profiles=getProfiles();
+    var colors=['#2563eb','#16a34a','#dc2626','#b45309','#7c3aed','#0891b2','#be185d','#475569'];
+    var color=colors[profiles.length%colors.length];
+
     if(!found){
-      var pid='p'+Date.now();
-      var profiles=getProfiles();
-      var autoColors=['#2563eb','#16a34a','#dc2626','#b45309','#7c3aed','#0891b2','#be185d','#475569'];
-      var color=autoColors[profiles.length%autoColors.length];
+      // Pas de données existantes — créer nouveau profil avec ce token
       profiles.push({id:pid,name:name,color:color});
       saveProfiles(profiles);
-      if(pin)localStorage.setItem('pin_'+pid,btoa(pin));
       setProfileToken(pid,token);
-      if(btn){btn.textContent='☁️ Récupérer';btn.disabled=false;}
-      toast('Aucune donnée trouvée — nouveau profil créé avec ce token','ok');
-      selectProfile(pid);
+      if(statusEl){statusEl.textContent='✓ Nouveau profil créé !';statusEl.style.color='#16a34a';}
+      setTimeout(function(){selectProfile(pid);},800);
       return;
     }
 
+    // Charger les données
+    if(statusEl)statusEl.textContent='Chargement de vos données…';
     var gistR=await fetch('https://api.github.com/gists/'+found.id,{headers:headers});
     var gistData=await gistR.json();
-    var raw=gistData.files['commercial-pro.json'].content;
-    var parsed=JSON.parse(raw);
+    var fileContent=gistData.files['commercial-pro.json'];
+    if(!fileContent||!fileContent.content){showErr('⚠ Fichier de données vide ou corrompu');return;}
+
+    var parsed=JSON.parse(fileContent.content);
     var data=parsed.data||parsed;
 
-    var pid2='p'+Date.now();
-    var profiles2=getProfiles();
-    var autoColors2=['#2563eb','#16a34a','#dc2626','#b45309','#7c3aed','#0891b2','#be185d','#475569'];
-    var color2=autoColors2[profiles2.length%autoColors2.length];
-    profiles2.push({id:pid2,name:name,color:color2});
-    saveProfiles(profiles2);
-    if(pin)localStorage.setItem('pin_'+pid2,btoa(pin));
-    setProfileToken(pid2,token);
-    setProfileGistId(pid2,found.id);
-    setProfileLastSync(pid2,parsed.syncedAt||new Date().toISOString());
-    localStorage.setItem('cp5_'+pid2,JSON.stringify(data));
+    profiles.push({id:pid,name:name,color:color});
+    saveProfiles(profiles);
+    setProfileToken(pid,token);
+    setProfileGistId(pid,found.id);
+    setProfileLastSync(pid,parsed.syncedAt||new Date().toISOString());
+    localStorage.setItem(profileKey(pid),JSON.stringify(data));
 
-    if(btn){btn.textContent='☁️ Récupérer';btn.disabled=false;}
-    var cnt=data.companies?data.companies.length:0;
-    toast('✓ '+cnt+' prospects récupérés depuis GitHub !','ok');
-    hideConnectMode();
-    selectProfile(pid2);
+    var cnt=(data.companies?data.companies.length:0);
+    if(statusEl){statusEl.textContent='✓ '+cnt+' prospects récupérés !';statusEl.style.color='#16a34a';}
+    setTimeout(function(){selectProfile(pid);},1000);
 
   }catch(e){
-    if(btn){btn.textContent='☁️ Récupérer';btn.disabled=false;}
-    toast('Erreur : '+e.message,'err');
+    showErr('⚠ Erreur : '+e.message);
   }
 }
 
