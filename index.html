@@ -1001,8 +1001,173 @@ Cordialement,
 
 <script>
 // ══════════════════════════════════════
-//  PROSPECTION PAR ZONE — MULTI-MÉTIERS
+//  MAPPING MÉTIERS → CODES NAF INSEE
 // ══════════════════════════════════════
+var METIERS_NAF = {
+  'plomberie':           ['4322A','4322B'],
+  'électricité':         ['4321A','4321B'],
+  'maçonnerie':          ['4312A','4312B','4391A'],
+  'menuiserie':          ['4332A','4332B','4332C'],
+  'peinture bâtiment':   ['4334Z'],
+  'couverture':          ['4391B'],
+  'carrelage':           ['4333Z'],
+  'plâtrerie':           ['4331Z'],
+  'chauffage':           ['4322A','4322B','4329A','4329B'],
+  'fenêtres':            ['4332A','4332C'],
+  'serrurerie métallerie':['2511Z','4332B'],
+  'ravalement façade':   ['4391A','4334Z'],
+  'rénovation immobilière':['4120A','4120B','4110A'],
+  'bâtiment':            ['4120A','4120B'],
+  'terrassement':        ['4312A','4313Z'],
+  'travaux publics':     ['4211Z','4212Z','4213A','4213B','4221Z','4222Z','4291Z','4299Z'],
+  'énergie renouvelable':['4321A','3511Z','3512Z','4322A'],
+  'paysagiste':          ['8130Z','0161Z'],
+  'piscine':             ['4329A','9200Z'],
+  'véranda':             ['4332A','4332C'],
+  'cuisine équipée':     ['4332A','4759B'],
+  'parquet':             ['4333Z'],
+  'climatisation':       ['4322A','4322B'],
+  'fermetures':          ['4332A','4332B'],
+  'assainissement vidange':['3700Z','3811Z','4322B'],
+  'aménagement parcs jardins':['8130Z','0161Z'],
+  'aménagement caves combles':['4120A','4332A'],
+  'clôtures barrières':  ['4332B','2512Z'],
+  'dépannage':           ['3314Z','9521Z','9522Z'],
+  'construction individuelle':['4110A','4120A'],
+  'revêtement':          ['4333Z','4334Z'],
+  'garage automobile':   ['4520A','4520B','4511Z'],
+  'carrosserie':         ['4520A'],
+  'contrôle technique':  ['7120A','7120B'],
+  'pneumatique':         ['4520A','4532Z'],
+  'agence immobilière':  ['6831Z','6832A','6832B'],
+  'assurance':           ['6511Z','6512Z','6622Z'],
+  'restaurant':          ['5610A','5610B','5610C','5621Z','5629A','5629B'],
+  'hôtel':               ['5510Z','5520Z','5530Z'],
+  'fleuriste':           ['4776Z'],
+  'opticien':            ['4778A'],
+  'pharmacie':           ['4773Z'],
+  'institut beauté':     ['9602B','9602A'],
+  'auto-école':          ['8553Z'],
+  'ambulance':           ['8621Z','8622Z'],
+  'taxi':                ['4932Z','4939A'],
+  'traiteur':            ['5621Z','1085Z'],
+  'bricolage':           ['4752A','4752B'],
+  'constructeur maison': ['4110A','4120A'],
+  'pompes funèbres':     ['9603Z'],
+  'supermarché':         ['4711B','4711C','4711D','4711E','4711F'],
+  'alarme sécurité':     ['8020Z','4321A'],
+  'camping':             ['5530Z'],
+  'centre équestre':     ['9319Z','0149Z'],
+  'fitness':             ['9311Z','9312Z'],
+  'motoculture':         ['4775Z','3316Z'],
+  'marbrerie':           ['2370Z','9603Z'],
+  'pépinière':           ['0130Z','4776Z'],
+  'agence voyages':      ['7911Z','7912Z'],
+};
+
+// Codes NAF par défaut pour les métiers non mappés (recherche textuelle)
+var METIERS_TEXTE = ALL_METIERS.filter(function(m){ return !METIERS_NAF[m]; });
+
+async function lancerProspection(){
+  var ville=document.getElementById('ann-ville').value.trim();
+  if(!ville){toast('Entrez une ville ou un code postal','err');return;}
+  if(selectedMetiers.size===0){toast('Sélectionnez au moins un métier','err');return;}
+
+  var btn=document.getElementById('ann-btn');
+  var zone=document.getElementById('ann-results');
+  var prog=document.getElementById('ann-progress');
+  var progTxt=document.getElementById('ann-progress-txt');
+  var progBar=document.getElementById('ann-progress-bar');
+
+  btn.disabled=true;btn.textContent='⏳ Recherche…';
+  zone.innerHTML='';prog.style.display='block';
+  prospectionStopped=false;
+  progTxt.textContent='Localisation de '+ville+'…';progBar.style.width='3%';
+
+  // Résoudre CP + département
+  var cp=await resolveCP(ville);
+  var dept=cp.slice(0,2);
+
+  var metiersList=Array.from(selectedMetiers);
+  var allResults=[];var seen=new Set();
+  var total=metiersList.length;var done=0;
+
+  // Séparer métiers NAF et métiers texte
+  var metiersNAF=metiersList.filter(function(m){return METIERS_NAF[m];});
+  var metiersTexte=metiersList.filter(function(m){return !METIERS_NAF[m];});
+
+  // 1. Recherche par codes NAF (plus précise, couvre tout le département)
+  var nafBatch=3;
+  for(var i=0;i<metiersNAF.length&&!prospectionStopped;i+=nafBatch){
+    var batch=metiersNAF.slice(i,i+nafBatch);
+    await Promise.all(batch.map(async function(metier){
+      if(prospectionStopped)return;
+      var codes=METIERS_NAF[metier]||[];
+      try{
+        // Recherche par code NAF + département
+        for(var ci=0;ci<codes.length&&!prospectionStopped;ci++){
+          var code=codes[ci];
+          var page=1;
+          while(!prospectionStopped){
+            var url='https://recherche-entreprises.api.gouv.fr/search'
+              +'?activite_principale='+encodeURIComponent(code)
+              +'&departement='+dept
+              +'&etat_administratif=A'
+              +'&per_page=25&page='+page;
+            var r=await fetch(url,{headers:{'Accept':'application/json'}});
+            if(!r.ok)break;
+            var data=await r.json();
+            var res=data.results||[];
+            res.forEach(function(e){
+              if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}
+            });
+            // S'arrêter si moins de 25 résultats (dernière page) ou max 10 pages
+            if(res.length<25||page>=10)break;
+            page++;
+            await new Promise(function(r){setTimeout(r,150);});
+          }
+        }
+      }catch(ex){}
+      done++;
+      progBar.style.width=Math.round((done/total)*80+5)+'%';
+      progTxt.textContent=done+'/'+total+' métiers · '+allResults.length+' entreprises…';
+    }));
+  }
+
+  // 2. Recherche textuelle pour les métiers sans code NAF
+  var txtBatch=3;
+  for(var j=0;j<metiersTexte.length&&!prospectionStopped;j+=txtBatch){
+    var tbatch=metiersTexte.slice(j,j+txtBatch);
+    await Promise.all(tbatch.map(async function(metier){
+      if(prospectionStopped)return;
+      try{
+        var url2='https://recherche-entreprises.api.gouv.fr/search'
+          +'?q='+encodeURIComponent(metier)
+          +'&departement='+dept
+          +'&etat_administratif=A'
+          +'&per_page=25&page=1';
+        var r2=await fetch(url2,{headers:{'Accept':'application/json'}});
+        if(r2.ok){
+          var d2=await r2.json();
+          (d2.results||[]).forEach(function(e){
+            if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}
+          });
+        }
+      }catch(ex){}
+      done++;
+      progBar.style.width=Math.round((done/total)*80+5)+'%';
+      progTxt.textContent=done+'/'+total+' métiers · '+allResults.length+' entreprises…';
+    }));
+  }
+
+  progBar.style.width='100%';
+  progTxt.textContent='✓ '+allResults.length+' entreprises en activité — '+ville+' (dept. '+dept+')';
+  setTimeout(function(){
+    prog.style.display='none';
+    btn.disabled=false;btn.textContent='🔍 Lancer la prospection';
+    renderAnnuaireResults(allResults,ville);
+  },400);
+}
 
 var METIERS_ARTISANS=['aménagement caves combles','aménagement parcs jardins','assainissement vidange','carrelage','clôtures barrières','construction individuelle','dépannage','énergie renouvelable','bâtiment','climatisation','couverture','électricité','fermetures','maçonnerie','menuiserie','plâtrerie','plomberie','revêtement','peinture bâtiment','terrassement','travaux publics','fenêtres','paysagiste','piscine','parquet','ravalement façade','rénovation immobilière','serrurerie métallerie','chauffage','cuisine équipée','véranda'];
 var METIERS_COMMERCES=['agence voyages','agence immobilière','alarme sécurité','ambulance','assurance','auto-école','camping','carrosserie','centre équestre','fitness','contrôle technique','fleuriste','garage automobile','hôtel','institut beauté','constructeur maison','bricolage','marbrerie','motoculture','opticien','pépinière','pompes funèbres','restaurant','supermarché','taxi','traiteur','pneumatique'];
@@ -1056,84 +1221,6 @@ async function resolveCP(ville){
   return ville;
 }
 
-async function lancerProspection(){
-  var ville=document.getElementById('ann-ville').value.trim();
-  if(!ville){toast('Entrez une ville ou un code postal','err');return;}
-  if(selectedMetiers.size===0){toast('Sélectionnez au moins un métier','err');return;}
-  var btn=document.getElementById('ann-btn');
-  var zone=document.getElementById('ann-results');
-  var prog=document.getElementById('ann-progress');
-  var progTxt=document.getElementById('ann-progress-txt');
-  var progBar=document.getElementById('ann-progress-bar');
-  btn.disabled=true;btn.textContent='⏳ Recherche…';
-  zone.innerHTML='';prog.style.display='block';
-  prospectionStopped=false;
-  progTxt.textContent='Localisation de '+ville+'…';progBar.style.width='3%';
-  var cp=await resolveCP(ville);
-  var metiersList=Array.from(selectedMetiers);
-  var allResults=[];var seen=new Set();var total=metiersList.length;var done=0;
-  var batchSize=3; // réduit car on fait plusieurs pages par métier
-
-  for(var i=0;i<metiersList.length;i+=batchSize){
-    if(prospectionStopped)break;
-    var batch=metiersList.slice(i,i+batchSize);
-    await Promise.all(batch.map(async function(metier){
-      try{
-        // Page 1 d'abord pour connaître le total
-        var baseUrl='https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(metier)
-          +'&code_postal='+encodeURIComponent(cp)
-          +'&per_page=25&etat_administratif=A';
-
-        var r1=await fetch(baseUrl+'&page=1',{headers:{'Accept':'application/json'}});
-        if(!r1.ok)return;
-        var d1=await r1.json();
-        var pageResults=d1.results||[];
-        var totalResults=d1.total_results||pageResults.length;
-        var totalPages=Math.min(Math.ceil(totalResults/25), 20); // max 20 pages = 500 résultats par métier
-
-        // Ajouter résultats page 1
-        pageResults.forEach(function(e){
-          if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}
-        });
-
-        // Récupérer les pages suivantes en parallèle
-        if(totalPages>1){
-          var pageNums=[];
-          for(var p=2;p<=totalPages;p++) pageNums.push(p);
-
-          // Traiter par sous-batches de 5 pages simultanées
-          for(var pi=0;pi<pageNums.length;pi+=5){
-            var pageBatch=pageNums.slice(pi,pi+5);
-            await Promise.all(pageBatch.map(async function(page){
-              try{
-                var rp=await fetch(baseUrl+'&page='+page,{headers:{'Accept':'application/json'}});
-                if(!rp.ok)return;
-                var dp=await rp.json();
-                (dp.results||[]).forEach(function(e){
-                  if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}
-                });
-              }catch(ep){}
-            }));
-            // Petite pause pour ne pas throttler l'API
-            await new Promise(function(res){setTimeout(res,200);});
-          }
-        }
-      }catch(ex){}
-      done++;
-      var pct=Math.round((done/total)*88+5);
-      progBar.style.width=pct+'%';
-      progTxt.textContent='Métier '+done+'/'+total+' — '+allResults.length+' entreprises trouvées…';
-    }));
-  }
-
-  progBar.style.width='100%';
-  progTxt.textContent='✓ '+allResults.length+' entreprises en activité trouvées !';
-  setTimeout(function(){
-    prog.style.display='none';
-    btn.disabled=false;btn.textContent='🔍 Lancer la prospection';
-    renderAnnuaireResults(allResults,ville,cp);
-  },400);
-}
 
 function renderAnnuaireResults(results,ville){
   var zone=document.getElementById('ann-results');
