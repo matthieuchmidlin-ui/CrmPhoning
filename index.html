@@ -1066,7 +1066,6 @@ var METIERS_NAF = {
 };
 
 // Codes NAF par défaut pour les métiers non mappés (recherche textuelle)
-var METIERS_TEXTE = ALL_METIERS.filter(function(m){ return !METIERS_NAF[m]; });
 
 async function lancerProspection(){
   var ville=document.getElementById('ann-ville').value.trim();
@@ -1173,6 +1172,7 @@ var METIERS_ARTISANS=['aménagement caves combles','aménagement parcs jardins',
 var METIERS_COMMERCES=['agence voyages','agence immobilière','alarme sécurité','ambulance','assurance','auto-école','camping','carrosserie','centre équestre','fitness','contrôle technique','fleuriste','garage automobile','hôtel','institut beauté','constructeur maison','bricolage','marbrerie','motoculture','opticien','pépinière','pompes funèbres','restaurant','supermarché','taxi','traiteur','pneumatique'];
 var ALL_METIERS=METIERS_ARTISANS.concat(METIERS_COMMERCES);
 var selectedMetiers=new Set(ALL_METIERS);
+var METIERS_TEXTE=ALL_METIERS.filter(function(m){return !METIERS_NAF[m];});
 var prospectionStopped=false;
 
 function stopProspection(){
