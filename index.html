@@ -611,7 +611,10 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 
     <!-- IMPORT CSV -->
     <div class="view" id="view-import">
-      <div class="ph"><div><div class="ph-title">Importer CSV</div><div class="ph-sub">Fichier ou texte collé</div></div></div>
+      <div class="ph">
+        <div><div class="ph-title">Importer CSV</div><div class="ph-sub">Fichier ou texte collé</div></div>
+        <button class="btn bg bsm" onclick="navTo('prospects')">← Retour</button>
+      </div>
       <div style="background:var(--acc-l);border:1px solid var(--acc-m);border-radius:var(--r);padding:13px 14px;font-size:12px;color:var(--acc);line-height:1.7">
         <b>Format :</b> <code style="background:var(--acc-m);padding:1px 5px;border-radius:4px">Entreprise,Contact,Téléphone,Adresse,Email,Secteur</code><br>Séparateurs <code>,</code> ou <code>;</code> acceptés.
       </div>
@@ -729,14 +732,24 @@ Cordialement,
 </div>
 
 <!-- TAB BAR -->
-<div class="tab-bar"><div class="tab-bar-inner">
-  <button class="tab-item active" data-view="prospects" onclick="tabNav(this)"><span class="tab-ico">🏢</span><span class="tab-lbl">Prospects</span></button>
-  <button class="tab-item" data-view="relances" onclick="tabNav(this)"><span class="tab-ico">🔁</span><span class="tab-lbl">Relances</span></button>
-  <button class="tab-item" data-view="annuaire" onclick="tabNav(this)"><span class="tab-ico">🔎</span><span class="tab-lbl">Annuaire</span></button>
-  <button class="tab-item" data-view="calls" onclick="tabNav(this)"><span class="tab-ico">📞</span><span class="tab-lbl">Appels</span></button>
-  <button class="tab-item" data-view="rdv" onclick="tabNav(this)"><span class="tab-ico">📅</span><span class="tab-lbl">RDV</span></button>
-  <button class="tab-item" data-view="backup" onclick="tabNav(this)"><span class="tab-ico">💾</span><span class="tab-lbl">Backup</span></button>
-</div></div>
+<div class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-item active" data-view="prospects" onclick="tabNav(this)"><span class="tab-ico">🏢</span><span class="tab-lbl">Prospects</span></button>
+    <button class="tab-item" data-view="relances" onclick="tabNav(this)"><span class="tab-ico">🔁</span><span class="tab-lbl">Relances</span></button>
+    <button class="tab-item" data-view="calls" onclick="tabNav(this)"><span class="tab-ico">📞</span><span class="tab-lbl">Appels</span></button>
+    <button class="tab-item" data-view="rdv" onclick="tabNav(this)"><span class="tab-ico">📅</span><span class="tab-lbl">RDV</span></button>
+    <button class="tab-item" data-view="annuaire" onclick="tabNav(this)"><span class="tab-ico">🔎</span><span class="tab-lbl">Prospecter</span></button>
+    <button class="tab-item" onclick="toggleMoreMenu()"><span class="tab-ico">⋯</span><span class="tab-lbl">Plus</span></button>
+  </div>
+  <!-- Menu "Plus" -->
+  <div id="more-menu" style="display:none;position:absolute;bottom:calc(100% + 4px);right:4px;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:6px;box-shadow:0 -4px 20px rgba(0,0,0,.12);min-width:160px;z-index:201">
+    <button onclick="navTo('stats');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">📊 Statistiques</button>
+    <button onclick="navTo('ai');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">✦ Assistant IA</button>
+    <button onclick="navTo('emails');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">✉ Modèles mail</button>
+    <button onclick="navTo('import');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">📂 Importer CSV</button>
+    <button onclick="navTo('backup');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">💾 Sauvegarde</button>
+  </div>
+</div>
 
 <!-- MODALS -->
 <div class="overlay" id="ov-co" onclick="ovBg(event,'ov-co')"><div class="modal">
@@ -1083,9 +1096,27 @@ async function lancerProspection(){
   prospectionStopped=false;
   progTxt.textContent='Localisation de '+ville+'…';progBar.style.width='3%';
 
-  // Résoudre CP + département
+  // Résoudre CP + coordonnées GPS de la ville
   var cp=await resolveCP(ville);
-  var dept=cp.slice(0,2);
+  var coords=await resolveCoords(ville, cp);
+  var codesPostaux=[cp];
+
+  // Récupérer les communes dans le rayon demandé
+  if(coords){
+    var rayonKm=parseInt(document.getElementById('ann-rayon').value)||10;
+    var communesProches=await getCommunesProches(coords.lat, coords.lon, rayonKm);
+    if(communesProches.length>0){
+      // Extraire tous les codes postaux uniques
+      var cpSet=new Set([cp]);
+      communesProches.forEach(function(c){
+        (c.codesPostaux||[]).forEach(function(p){cpSet.add(p);});
+      });
+      codesPostaux=Array.from(cpSet);
+    }
+  }
+
+  progTxt.textContent=codesPostaux.length+' communes dans le rayon · recherche en cours…';
+  progBar.style.width='8%';
 
   var metiersList=Array.from(selectedMetiers);
   var allResults=[];var seen=new Set();
@@ -1095,7 +1126,7 @@ async function lancerProspection(){
   var metiersNAF=metiersList.filter(function(m){return METIERS_NAF[m];});
   var metiersTexte=metiersList.filter(function(m){return !METIERS_NAF[m];});
 
-  // 1. Recherche par codes NAF (plus précise, couvre tout le département)
+  // 1. Recherche par codes NAF × codes postaux
   var nafBatch=3;
   for(var i=0;i<metiersNAF.length&&!prospectionStopped;i+=nafBatch){
     var batch=metiersNAF.slice(i,i+nafBatch);
@@ -1103,32 +1134,29 @@ async function lancerProspection(){
       if(prospectionStopped)return;
       var codes=METIERS_NAF[metier]||[];
       try{
-        // Recherche par code NAF + département
         for(var ci=0;ci<codes.length&&!prospectionStopped;ci++){
           var code=codes[ci];
-          var page=1;
-          while(!prospectionStopped){
+          var codeFormatted=code.slice(0,2)+'.'+code.slice(2);
+          // Rechercher sur tous les codes postaux de la zone
+          for(var pi2=0;pi2<codesPostaux.length&&!prospectionStopped;pi2+=5){
+            var cpBatch=codesPostaux.slice(pi2,pi2+5).join(',');
             var url='https://recherche-entreprises.api.gouv.fr/search'
-              +'?activite_principale='+encodeURIComponent(code)
-              +'&departement='+dept
+              +'?code_naf='+encodeURIComponent(codeFormatted)
+              +'&code_postal='+encodeURIComponent(cpBatch)
               +'&etat_administratif=A'
-              +'&per_page=25&page='+page;
+              +'&per_page=25&page=1';
             var r=await fetch(url,{headers:{'Accept':'application/json'}});
-            if(!r.ok)break;
+            if(!r.ok)continue;
             var data=await r.json();
-            var res=data.results||[];
-            res.forEach(function(e){
+            (data.results||[]).forEach(function(e){
               if(!seen.has(e.siren)){seen.add(e.siren);e._metier=metier;allResults.push(e);}
             });
-            // S'arrêter si moins de 25 résultats (dernière page) ou max 10 pages
-            if(res.length<25||page>=10)break;
-            page++;
-            await new Promise(function(r){setTimeout(r,150);});
+            await new Promise(function(r){setTimeout(r,80);});
           }
         }
       }catch(ex){}
       done++;
-      progBar.style.width=Math.round((done/total)*80+5)+'%';
+      progBar.style.width=Math.round((done/total)*80+10)+'%';
       progTxt.textContent=done+'/'+total+' métiers · '+allResults.length+' entreprises…';
     }));
   }
@@ -1140,9 +1168,10 @@ async function lancerProspection(){
     await Promise.all(tbatch.map(async function(metier){
       if(prospectionStopped)return;
       try{
+        var cpStr=codesPostaux.slice(0,5).join(',');
         var url2='https://recherche-entreprises.api.gouv.fr/search'
           +'?q='+encodeURIComponent(metier)
-          +'&departement='+dept
+          +'&code_postal='+encodeURIComponent(cpStr)
           +'&etat_administratif=A'
           +'&per_page=25&page=1';
         var r2=await fetch(url2,{headers:{'Accept':'application/json'}});
@@ -1154,7 +1183,7 @@ async function lancerProspection(){
         }
       }catch(ex){}
       done++;
-      progBar.style.width=Math.round((done/total)*80+5)+'%';
+      progBar.style.width=Math.round((done/total)*80+10)+'%';
       progTxt.textContent=done+'/'+total+' métiers · '+allResults.length+' entreprises…';
     }));
   }
@@ -1219,6 +1248,33 @@ async function resolveCP(ville){
     if(d&&d[0]&&d[0].codesPostaux&&d[0].codesPostaux[0])return d[0].codesPostaux[0];
   }catch(e){}
   return ville;
+}
+
+async function resolveCoords(ville, cp){
+  try{
+    // Chercher par nom de ville d'abord
+    var r=await fetch('https://geo.api.gouv.fr/communes?nom='+encodeURIComponent(ville)+'&fields=centre,codesPostaux,nom&boost=population&limit=1');
+    var d=await r.json();
+    if(d&&d[0]&&d[0].centre){
+      return{lat:d[0].centre.coordinates[1],lon:d[0].centre.coordinates[0]};
+    }
+    // Fallback: par code postal
+    var r2=await fetch('https://geo.api.gouv.fr/communes?codePostal='+cp+'&fields=centre&limit=1');
+    var d2=await r2.json();
+    if(d2&&d2[0]&&d2[0].centre){
+      return{lat:d2[0].centre.coordinates[1],lon:d2[0].centre.coordinates[0]};
+    }
+  }catch(e){}
+  return null;
+}
+
+async function getCommunesProches(lat, lon, rayonKm){
+  try{
+    // L'API geo.api.gouv.fr supporte la recherche par coordonnées + distance
+    var r=await fetch('https://geo.api.gouv.fr/communes?lat='+lat+'&lon='+lon+'&distance='+(rayonKm*1000)+'&fields=codesPostaux,nom,code&limit=100');
+    var d=await r.json();
+    return d||[];
+  }catch(e){return [];}
 }
 
 
@@ -1691,6 +1747,9 @@ function updateHdr(){
 // NAV
 function nav(el){document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});el.classList.add('active');switchView(el.dataset.view);}
 function tabNav(el){document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.querySelectorAll('.ni').forEach(function(n){n.classList.toggle('active',n.dataset.view===el.dataset.view);});switchView(el.dataset.view);}
+function toggleMoreMenu(){var m=document.getElementById('more-menu');if(m){m.style.display=m.style.display==='none'?'block':'none';}}
+// Close more menu when clicking outside
+document.addEventListener('click',function(e){var m=document.getElementById('more-menu');if(m&&m.style.display==='block'&&!m.contains(e.target)&&!e.target.closest||!e.target.textContent.includes('⋯')){if(m&&!m.contains(e.target))m.style.display='none';}});
 function navTo(v){document.querySelectorAll('.ni').forEach(function(n){n.classList.toggle('active',n.dataset.view===v);});document.querySelectorAll('.tab-item').forEach(function(t){t.classList.toggle('active',t.dataset.view===v);});switchView(v);}
 function switchView(v){
   // Sauvegarder position scroll avant de quitter
