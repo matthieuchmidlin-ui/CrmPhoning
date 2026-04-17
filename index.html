@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Crect x='3' y='15' width='26' height='10' rx='2' fill='white'/%3E%3Crect x='3' y='12' width='15' height='5' rx='1' fill='white' opacity='.8'/%3E%3Crect x='4' y='17' width='24' height='4' rx='1' fill='%23fbbf24'/%3E%3Ccircle cx='8' cy='25' r='3' fill='%231d4ed8'/%3E%3Ccircle cx='22' cy='25' r='3' fill='%231d4ed8'/%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Commercial Pro">
@@ -1183,12 +1184,12 @@ function renderAnnuaireResults(results,ville){
       +'<div id="ann-phone-'+siren+'" style="margin-bottom:10px">'
         +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
           +'<span style="font-size:12px;color:var(--ink3)">📞 Non disponible dans le registre</span>'
-          +'<button class="btn bg bsm" onclick="findPhoneForSiren(''+siren+'',''+e.nom_complet.replace(/['"]/g,'')+'',''+fullAddr.replace(/['"]/g,'')+'')">🔍 Chercher tél.</button>'
+          +'<button class="btn bg bsm" data-siren="'+siren+'" data-nom="'+e.nom_complet.replace(/["\']/g,'')+'" data-addr="'+fullAddr.replace(/["\']/g,'')+'" onclick="findPhoneBtn(this)">🔍 Chercher tél.</button>'
         +'</div>'
       +'</div>'
       +(siren?'<div class="ccm" style="margin-bottom:10px;font-family:monospace;font-size:11px">SIREN '+siren+' · <span style="color:var(--green)">● En activité</span></div>':'')
       +'<div style="display:flex;gap:7px;flex-wrap:wrap">'
-        +'<button class="btn bp bsm" style="flex:1;justify-content:center" id="ann-add-'+siren+'" onclick="addFromAnnuaire2(''+siren+'')">'+
+        +'<button class="btn bp bsm" style="flex:1;justify-content:center" id="ann-add-'+siren+'" data-siren="'+siren+'" onclick="addFromAnnuaire2(this.dataset.siren)">'+
           (alreadyIn?'↻ Ré-ajouter':'+ Ajouter comme prospect')+'</button>'
         +'<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/'+siren+'" target="_blank" class="btn bg bsm" style="text-decoration:none">🔗 Fiche</a>'
       +'</div>';
@@ -1196,8 +1197,14 @@ function renderAnnuaireResults(results,ville){
   });
 }
 
+function findPhoneBtn(el){
+  var siren=el.dataset.siren||'';
+  var nom=el.dataset.nom||'';
+  var addr=el.dataset.addr||'';
+  findPhoneForSiren(siren,nom,addr);
+}
+
 function addFromAnnuaire2(siren){
-  var e=window._annuaireResults&&window._annuaireResults[siren];if(!e)return;
   var dirs=e.dirigeants||[];var d=dirs[0]||null;
   var cap=function(s){return s?s.split(' ').map(function(w){return w?w.charAt(0).toUpperCase()+w.slice(1).toLowerCase():'';}).join(' '):s;};
   var gerantName=d?cap(((d.prenom_usuel||d.prenom||'')+' '+(d.nom||'')).trim()):'';
