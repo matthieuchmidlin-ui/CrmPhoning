@@ -343,22 +343,50 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
     </div>
   </div>
 
-  <div id="ps-connect-zone" style="text-align:center">
-    <div style="font-size:11px;color:var(--ink3);margin-bottom:10px">Vous avez déjà un profil sur un autre appareil ?</div>
-    <button class="btn bg" style="font-size:13px" onclick="showConnectMode()">🔗 Se connecter avec GitHub Gist</button>
+  <div id="ps-connect-zone" style="text-align:center;margin-top:4px">
+    <button
+      style="background:none;border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Geist',sans-serif;font-size:13px;color:var(--ink3);cursor:pointer;display:inline-flex;align-items:center;gap:8px;"
+      onclick="
+        this.style.display='none';
+        document.getElementById('ps-gist-form').style.display='block';
+        document.getElementById('conn-name').focus();
+      ">
+      🔗 Se connecter avec GitHub Gist
+    </button>
   </div>
-  <div id="ps-connect-form" style="display:none;width:100%;max-width:360px;margin-top:8px">
-    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:20px">
-      <div style="font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:4px">Se connecter</div>
-      <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">Récupérer vos données depuis GitHub Gist</div>
-      <div class="fg"><label>Prénom / Nom</label><input id="conn-name" placeholder="Ex: Matthieu Chmidlin"></div>
-      <div class="fg"><label>Token GitHub (Personal Access Token)</label><input id="conn-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"></div>
-      <div class="fg"><label>Code PIN (optionnel)</label><input id="conn-pin" type="password" inputmode="numeric" maxlength="4" placeholder="• • • •" style="letter-spacing:8px;font-size:22px;text-align:center"></div>
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button class="btn bg" style="flex:1;justify-content:center" onclick="hideConnectMode()">Annuler</button>
-        <button class="btn bp" id="conn-submit-btn" style="flex:1;justify-content:center" onclick="connectFromGist()">☁️ Récupérer</button>
+
+  <div id="ps-gist-form" style="display:none;width:100%;max-width:340px;margin-top:8px">
+    <div style="background:white;border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.08)">
+      <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:700;margin-bottom:3px;color:var(--ink)">Se connecter</div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:14px">Récupérer vos données depuis GitHub Gist</div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px">Prénom / Nom *</label>
+        <input id="conn-name" type="text" placeholder="Ex: Matthieu Chmidlin"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-family:'Geist',sans-serif;font-size:14px;padding:10px 12px;outline:none;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px">Token GitHub *</label>
+        <input id="conn-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-family:'Geist Mono',monospace;font-size:13px;padding:10px 12px;outline:none;box-sizing:border-box">
+        <div style="font-size:10px;color:var(--ink3);margin-top:4px">github.com → Settings → Developer settings → Personal access tokens → Gist</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button
+          onclick="document.getElementById('ps-gist-form').style.display='none';document.querySelector('#ps-connect-zone button').style.display='inline-flex';"
+          style="flex:1;padding:11px;border-radius:9px;background:var(--bg);border:1px solid var(--border);font-family:'Geist',sans-serif;font-size:13px;cursor:pointer;color:var(--ink2)">
+          Annuler
+        </button>
+        <button id="conn-submit-btn" onclick="connectFromGist()"
+          style="flex:2;padding:11px;border-radius:9px;background:var(--acc);border:none;font-family:'Geist',sans-serif;font-size:13px;font-weight:700;cursor:pointer;color:white">
+          ☁️ Récupérer mes données
+        </button>
       </div>
     </div>
+  </div>
+
+  <!-- Garder l'ancien form caché pour compatibilité JS -->
+  <div id="ps-connect-form" style="display:none">
+    <input id="conn-pin" type="hidden" value="">
   </div>
 </div>
 
@@ -1406,13 +1434,17 @@ function createProfileInline(){
 }
 
 function showConnectMode(){
-  document.getElementById('ps-connect-zone').style.display='none';
-  document.getElementById('ps-connect-form').style.display='block';
-  document.getElementById('conn-name').focus();
+  var cz=document.getElementById('ps-connect-zone');
+  var gf=document.getElementById('ps-gist-form');
+  if(cz)cz.style.display='none';
+  if(gf){gf.style.display='block';}
+  setTimeout(function(){var n=document.getElementById('conn-name');if(n)n.focus();},100);
 }
 function hideConnectMode(){
-  document.getElementById('ps-connect-zone').style.display='block';
-  document.getElementById('ps-connect-form').style.display='none';
+  var cz=document.getElementById('ps-connect-zone');
+  var gf=document.getElementById('ps-gist-form');
+  if(cz)cz.style.display='block';
+  if(gf)gf.style.display='none';
 }
 
 async function connectFromGist(){
