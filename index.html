@@ -309,16 +309,38 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
   <!-- Grille des profils existants -->
   <div class="ps-grid" id="ps-grid"></div>
 
-  <!-- Bouton créer profil — toujours visible -->
-  <div style="margin-top:8px;margin-bottom:20px">
-    <button onclick="openAddProfile()" style="
-      background:var(--acc);color:white;border:none;border-radius:14px;
-      padding:16px 36px;font-family:'Fraunces',serif;font-size:18px;font-weight:700;
-      cursor:pointer;display:flex;align-items:center;gap:10px;
-      box-shadow:0 4px 20px rgba(37,99,235,.35);transition:all .15s;
-    ">
-      <span style="font-size:22px">+</span> Créer mon profil
-    </button>
+  <!-- Formulaire inline — pas besoin de modal -->
+  <div id="ps-form-zone" style="margin-top:12px;margin-bottom:16px;width:100%;max-width:340px">
+    <div id="ps-form-closed" style="text-align:center">
+      <button onclick="document.getElementById('ps-form-closed').style.display='none';document.getElementById('ps-form-open').style.display='block';document.getElementById('ps-name-inp').focus();" style="
+        background:var(--acc);color:white;border:none;border-radius:14px;
+        padding:16px 36px;font-family:'Fraunces',serif;font-size:18px;font-weight:700;
+        cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+        box-shadow:0 4px 20px rgba(37,99,235,.35);
+      ">
+        <span style="font-size:22px">+</span> Créer mon profil
+      </button>
+    </div>
+    <div id="ps-form-open" style="display:none;background:white;border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.1)">
+      <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:700;margin-bottom:4px;color:var(--ink)">Nouveau profil</div>
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">Entrez votre prénom pour commencer</div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:5px">Prénom / Nom *</label>
+        <input id="ps-name-inp" type="text" placeholder="Ex: Matthieu Chmidlin"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:'Geist',sans-serif;font-size:15px;padding:12px 14px;outline:none;box-sizing:border-box"
+          onkeydown="if(event.key==='Enter')createProfileInline()">
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="document.getElementById('ps-form-closed').style.display='block';document.getElementById('ps-form-open').style.display='none';"
+          style="flex:1;padding:11px;border-radius:9px;background:var(--bg);border:1px solid var(--border);font-family:'Geist',sans-serif;font-size:14px;cursor:pointer;color:var(--ink2)">
+          Annuler
+        </button>
+        <button onclick="createProfileInline()"
+          style="flex:2;padding:11px;border-radius:9px;background:var(--acc);border:none;font-family:'Geist',sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:white">
+          ✓ Créer et démarrer
+        </button>
+      </div>
+    </div>
   </div>
 
   <div id="ps-connect-zone" style="text-align:center">
@@ -1225,6 +1247,13 @@ function selectColor(el){selectedColor=el?el.dataset.c||'#2563eb':'#2563eb';}
 function renderProfileScreen(){
   var profiles=getProfiles();
   var grid=document.getElementById('ps-grid');if(!grid)return;
+  // Reset inline form
+  var fc=document.getElementById('ps-form-closed');
+  var fo=document.getElementById('ps-form-open');
+  var ni=document.getElementById('ps-name-inp');
+  if(fc)fc.style.display='block';
+  if(fo)fo.style.display='none';
+  if(ni)ni.value='';
   grid.innerHTML=profiles.map(function(p){
     var data=loadState(p.id);
     var calls=data.calls?data.calls.length:0,rdvs=data.rdvs?data.rdvs.length:0;
@@ -1352,11 +1381,28 @@ document.addEventListener('keydown', function(e){
 });
 
 function openAddProfile(){
-  document.getElementById('pm-name').value='';
-  document.getElementById('pm-pin').value='';
-  document.getElementById('pm-token').value='';
-  openM('ov-profile');
-  setTimeout(function(){var n=document.getElementById('pm-name');if(n)n.focus();},300);
+  // Show inline form directly on profile screen
+  var fc = document.getElementById('ps-form-closed');
+  var fo = document.getElementById('ps-form-open');
+  if(fc) fc.style.display='none';
+  if(fo) fo.style.display='block';
+  setTimeout(function(){var n=document.getElementById('ps-name-inp');if(n)n.focus();},100);
+}
+
+function createProfileInline(){
+  var nameEl=document.getElementById('ps-name-inp');
+  var name=nameEl?nameEl.value.trim():'';
+  if(!name){
+    if(nameEl){nameEl.style.borderColor='var(--red)';nameEl.placeholder='Requis !';}
+    return;
+  }
+  var pid='p'+Date.now();
+  var profiles=getProfiles();
+  var autoColors=['#2563eb','#16a34a','#dc2626','#b45309','#7c3aed','#0891b2','#be185d','#475569'];
+  var color=autoColors[profiles.length % autoColors.length];
+  profiles.push({id:pid,name:name,color:color});
+  saveProfiles(profiles);
+  selectProfile(pid);
 }
 
 function showConnectMode(){
