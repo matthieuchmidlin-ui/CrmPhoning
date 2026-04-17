@@ -1186,7 +1186,7 @@ function renderAnnuaireResults(results,ville){
           +'<button class="btn bg bsm" onclick="findPhoneForSiren(''+siren+'',''+e.nom_complet.replace(/['"]/g,'')+'',''+fullAddr.replace(/['"]/g,'')+'')">🔍 Chercher tél.</button>'
         +'</div>'
       +'</div>'
-      +(siren?'<div class="ccm" style="margin-bottom:10px;font-family:'Geist Mono',monospace;font-size:11px">SIREN '+siren+' · <span style="color:var(--green)">● En activité</span></div>':'')
+      +(siren?'<div class="ccm" style="margin-bottom:10px;font-family:monospace;font-size:11px">SIREN '+siren+' · <span style="color:var(--green)">● En activité</span></div>':'')
       +'<div style="display:flex;gap:7px;flex-wrap:wrap">'
         +'<button class="btn bp bsm" style="flex:1;justify-content:center" id="ann-add-'+siren+'" onclick="addFromAnnuaire2(''+siren+'')">'+
           (alreadyIn?'↻ Ré-ajouter':'+ Ajouter comme prospect')+'</button>'
