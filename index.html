@@ -1967,13 +1967,18 @@ function toggleObj(el){el.classList.toggle('open');}
 
 function doDialNow(){
   var co=S.companies.find(function(x){return x.id===pendCoId;});
-  if(!co)return;
+  if(!co||!co.phone)return;
   var g=co.gerant;
   var call={id:'call'+Date.now(),companyId:co.id,contact:(g&&g.nom)?g.nom:(co.contact||co.name),company:co.name,phone:co.phone,date:new Date().toISOString(),status:'En cours',temp:co.temp,notes:'',rdvId:null};
   S.calls.unshift(call);save();
   var m=document.querySelector('main');if(m)localStorage.setItem('scroll_precall_'+currentPid,m.scrollTop);
-  // Lance l'appel téléphonique
-  window.location.href='tel:'+co.phone.replace(/\s/g,'');
+  // Nettoyer le numéro : garder chiffres + + initial
+  var raw=co.phone.toString().trim();
+  var cleaned=raw.replace(/\s|\-|\.|\(|\)/g,'');
+  // Convertir 0033 → +33
+  if(cleaned.startsWith('0033'))cleaned='+33'+cleaned.slice(4);
+  // Convertir 06... → laisser tel quel (iPhone gère)
+  window.location.href='tel:'+cleaned;
   // Après raccroché : montrer la zone post-appel DANS le même modal
   setTimeout(function(){
     postCallId=call.id;
