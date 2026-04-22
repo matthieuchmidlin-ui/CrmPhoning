@@ -1596,7 +1596,41 @@ function launchCall(coId){
 
 async function searchGer(co){var result=await searchGerGouv(co);if(!result||!result.nom)result=await searchGerAI(co);var idx=S.companies.findIndex(function(x){return x.id===co.id;});if(idx!==-1){S.companies[idx].gerant=result||{nom:null};if(result&&result.nom&&!S.companies[idx].contact)S.companies[idx].contact=result.nom;save();}showGer(result,co);}
 
-async function searchGerGouv(co){try{var cpM=(co.addr||'').match(/\b(5[0-9]{4})\b/);var cp=cpM?cpM[1]:'57200';var nom=co.name.replace(/\b(SARL|SAS|SA|SASU|EURL|SCI|GIE|SNC|EIRL)\b/gi,'').trim();var r=await fetch('https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(nom)+'&code_postal='+cp+'&per_page=3',{headers:{'Accept':'application/json'}});if(!r.ok)return null;var data=await r.json();var results=data.results||[];for(var i=0;i<results.length;i++){var ent=results[i];var dirs=ent.dirigeants||[];if(dirs.length>0){var d=dirs[0];var prenom=d.prenom_usuel||d.prenom||'';var nomD=d.nom||'';var full=(prenom+' '+nomD).trim();if(!full)continue;full=full.split(' ').map(function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();}).join(' ');var titre=(d.qualite||d.titre||'Gérant');titre=titre.charAt(0).toUpperCase()+titre.slice(1).toLowerCase();return{nom:full,titre:titre,confidence:5,source:'annuaire-entreprises.data.gouv.fr'+(ent.siren?' · SIREN '+ent.siren:''),intro_suggere:'Bonjour, puis-je parler à '+full.split(' ')[0]+' ?',conseil:'Contact officiel enregistré au registre des entreprises.',tous_dirigeants:dirs.map(function(d2){return((d2.prenom_usuel||d2.prenom||'')+' '+(d2.nom||'')).trim()+(d2.qualite?' ('+d2.qualite+')':'');})};}}return null;}catch(e){return null;}}
+async function searchGerGouv(co){
+  try{
+    var cpM=(co.addr||'').match(/\b(\d{5})\b/);
+    var cp=cpM?cpM[1]:'';
+    var nom=co.name.replace(/\b(SARL|SAS|SA|SASU|EURL|SCI|GIE|SNC|EIRL)\b/gi,'').trim();
+    var url='https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(nom)+'&per_page=5';
+    if(cp)url+='&code_postal='+cp;
+    var r=await fetch(url,{headers:{'Accept':'application/json'}});
+    if(!r.ok)return null;
+    var data=await r.json();
+    var results=data.results||[];
+    for(var i=0;i<results.length;i++){
+      var ent=results[i];
+      var dirs=ent.dirigeants||[];
+      if(dirs.length>0){
+        var d=dirs[0];
+        var prenom=d.prenom_usuel||d.prenom||'';
+        var nomD=d.nom||'';
+        var full=(prenom+' '+nomD).trim();
+        if(!full)continue;
+        full=full.split(' ').map(function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();}).join(' ');
+        var titre=(d.qualite||d.titre||'Gérant');
+        titre=titre.charAt(0).toUpperCase()+titre.slice(1).toLowerCase();
+        return{
+          nom:full,titre:titre,confidence:5,
+          source:'annuaire-entreprises.data.gouv.fr'+(ent.siren?' · SIREN '+ent.siren:''),
+          intro_suggere:'Bonjour, puis-je parler a '+full.split(' ')[0]+' ?',
+          conseil:'Contact officiel enregistre au registre des entreprises.',
+          tous_dirigeants:dirs.map(function(d2){return((d2.prenom_usuel||d2.prenom||'')+' '+(d2.nom||'')).trim()+(d2.qualite?' ('+d2.qualite+')':'');})
+        };
+      }
+    }
+    return null;
+  }catch(e){return null;}
+}
 
 async function searchGerAI(co){try{var q=[co.name,co.addr,co.sector].filter(Boolean).join(', ');var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,tools:[{type:'web_search_20250305',name:'web_search'}],system:'Cherche le gérant. Réponds UNIQUEMENT en JSON: {"nom":"Prénom Nom ou null","titre":"Gérant/PDG ou null","confidence":3,"source":"site ou null","conseil":"1 phrase","intro_suggere":"phrase naturelle"}',messages:[{role:'user',content:'Gérant de "'+q+'" ?'}]})});var d=await r.json();var tb=d.content&&d.content.find(function(b){return b.type==='text';});if(!tb)return null;return JSON.parse(tb.text.replace(/```json|```/g,'').trim());}catch(e){return null;}}
 
