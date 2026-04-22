@@ -15,19 +15,18 @@
 :root{--bg:#f6f4f0;--white:#fff;--border:#e4dfd8;--ink:#1a1916;--ink2:#58534d;--ink3:#a09890;--acc:#2563eb;--acc-l:#eff6ff;--acc-m:#bfdbfe;--green:#16a34a;--green-l:#dcfce7;--red:#dc2626;--red-l:#fee2e2;--gold:#b45309;--gold-l:#fef3c7;--r:12px;--r2:16px;--sab:env(safe-area-inset-bottom,0px);--sat:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:'Geist',sans-serif;display:flex;flex-direction:column;overflow:hidden;padding-top:var(--sat)}
+body{background:var(--bg);color:var(--ink);font-family:sans-serif;display:flex;flex-direction:column;overflow:hidden;padding-top:var(--sat)}
 /* PROFILE SCREEN */
 #profile-screen{position:fixed;inset:0;background:var(--bg);z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:0;overflow-y:auto}
-#profile-screen ~ .tab-bar{display:none !important}
-#profile-screen.hidden ~ .tab-bar{display:block}
+/* tab-bar visibility handled by media queries below */
 #profile-screen.hidden{display:none}
-.ps-logo{font-family:'Fraunces',serif;font-size:32px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.ps-logo{font-family:Georgia,serif;font-size:32px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:10px}
 .ps-logo-dot{width:40px;height:40px;background:var(--acc);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700}
 .ps-sub{font-size:14px;color:var(--ink3);margin-bottom:32px;text-align:center}
 .ps-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:500px;margin-bottom:24px}
 .ps-card{width:130px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:all .15s;position:relative}
 .ps-card:hover,.ps-card:active{border-color:var(--acc);background:var(--acc-l);transform:translateY(-2px)}
-.ps-av{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:24px;color:#fff;font-weight:700}
+.ps-av{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:24px;color:#fff;font-weight:700}
 .ps-name{font-weight:700;font-size:14px;text-align:center;line-height:1.2}
 .ps-stats{font-size:11px;color:var(--ink3);text-align:center}
 .ps-del{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:6px;background:var(--red-l);color:var(--red);border:none;font-size:11px;cursor:pointer;display:none;align-items:center;justify-content:center}
@@ -39,17 +38,17 @@ body{background:var(--bg);color:var(--ink);font-family:'Geist',sans-serif;displa
 /* PIN SCREEN */
 #pin-screen{position:fixed;inset:0;background:var(--bg);z-index:1999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:32px 20px}
 #pin-screen.show{display:flex}
-.pin-av{width:72px;height:72px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:32px;color:#fff;font-weight:700;margin-bottom:14px}
-.pin-name{font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.pin-av{width:72px;height:72px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:32px;color:#fff;font-weight:700;margin-bottom:14px}
+.pin-name{font-family:Georgia,serif;font-size:22px;font-weight:700;margin-bottom:4px}
 .pin-hint{font-size:13px;color:var(--ink3);margin-bottom:28px}
 .pin-dots{display:flex;gap:14px;margin-bottom:28px}
 .pin-dot{width:16px;height:16px;border-radius:50%;background:var(--border);transition:background .15s}
 .pin-dot.filled{background:var(--acc)}
 .pin-dot.error{background:var(--red)}
 .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:240px}
-.pin-btn{height:64px;border-radius:14px;background:var(--white);border:1px solid var(--border);font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:all .1s;-webkit-appearance:none}
+.pin-btn{height:64px;border-radius:14px;background:var(--white);border:1px solid var(--border);font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:all .1s;-webkit-appearance:none}
 .pin-btn:active{background:var(--acc-l);border-color:var(--acc);color:var(--acc);transform:scale(.95)}
-.pin-btn-sub{font-family:'Geist',sans-serif;font-size:8px;letter-spacing:1px;color:var(--ink3);font-weight:600}
+.pin-btn-sub{font-family:sans-serif;font-size:8px;letter-spacing:1px;color:var(--ink3);font-weight:600}
 .pin-del{background:var(--bg);border-color:var(--border);font-size:18px}
 .pin-back{margin-top:18px;font-size:13px;color:var(--ink3);cursor:pointer;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--white)}
 /* PROFILE BADGE IN TOPBAR */
@@ -58,10 +57,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Geist',sans-serif;displa
 .profile-badge-av{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
 .profile-badge-name{font-size:12px;font-weight:600;color:var(--ink2)}
 .topbar{background:var(--white);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.logo{font-family:'Fraunces',serif;font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px}
+.logo{font-family:Georgia,serif;font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px}
 .logo-dot{width:26px;height:26px;background:var(--acc);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
 .tpills{display:flex;gap:6px;margin-left:auto}
-.tpill{font-size:11px;font-family:'Geist Mono',monospace;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ink2)}
+.tpill{font-size:11px;font-family:monospace;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ink2)}
 .tpill b{color:var(--acc)}
 .folder-bar{background:var(--white);border-bottom:1px solid var(--border);height:40px;display:flex;align-items:center;gap:4px;padding:0 12px;overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch}
 .folder-bar::-webkit-scrollbar{display:none}
@@ -76,25 +75,25 @@ body{background:var(--bg);color:var(--ink);font-family:'Geist',sans-serif;displa
 .ni:hover{background:var(--bg)}
 .ni.active{background:var(--acc-l);color:var(--acc);border-color:var(--acc-m)}
 .ni .ico{width:18px;text-align:center}
-.nbadge{margin-left:auto;background:var(--acc);color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;font-family:'Geist Mono',monospace}
+.nbadge{margin-left:auto;background:var(--acc);color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;font-family:monospace}
 .nsep{height:1px;background:var(--border);margin:8px 0}
 .nsec{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink3);padding:6px 11px;font-weight:600}
-.sidebar-btn{margin-top:auto;width:100%;padding:10px;border-radius:9px;background:var(--acc);color:#fff;border:none;font-family:'Geist',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.sidebar-btn{margin-top:auto;width:100%;padding:10px;border-radius:9px;background:var(--acc);color:#fff;border:none;font-family:sans-serif;font-size:13px;font-weight:600;cursor:pointer}
 main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 16px calc(18px + var(--sab));display:flex;flex-direction:column;gap:14px}
 .view{display:none;flex-direction:column;gap:14px;animation:up .2s ease}
 .view.active{display:flex}
 @keyframes up{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.ph-title{font-family:'Fraunces',serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:2px}
-.ph-sub{font-size:12px;color:var(--ink3)}
+.ph-title{font-family:Georgia,serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:2px}
+.ph-sub{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .ph-actions{display:flex;gap:6px;flex-shrink:0}
 .kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .kpi{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;position:relative;overflow:hidden}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c,var(--acc));border-radius:var(--r2) var(--r2) 0 0}
 .kpi-lbl{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);font-weight:600;margin-bottom:5px}
-.kpi-val{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1;margin-bottom:2px}
+.kpi-val{font-family:Georgia,serif;font-size:28px;font-weight:700;line-height:1;margin-bottom:2px}
 .kpi-note{font-size:10px;color:var(--ink3)}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;font-family:'Geist',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;-webkit-appearance:none;transition:all .15s}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;font-family:sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;-webkit-appearance:none;transition:all .15s}
 .bp{background:var(--acc);color:#fff;box-shadow:0 2px 6px rgba(37,99,235,.25)}
 .bp:active{background:#1d4ed8}
 .bg{background:var(--white);color:var(--ink2);border:1px solid var(--border)}
@@ -119,18 +118,18 @@ td{padding:11px 14px;font-size:13px;vertical-align:middle}
 .b-done{background:var(--green-l);color:var(--green)}.b-pend{background:var(--gold-l);color:var(--gold)}.b-miss{background:var(--red-l);color:var(--red)}.b-sched{background:var(--acc-l);color:var(--acc)}.b-clot{background:#f1f5f9;color:#64748b}.b-hot{background:var(--red-l);color:var(--red)}.b-warm{background:var(--gold-l);color:var(--gold)}.b-cold{background:#f1f5f9;color:#64748b}.b-rdv{background:var(--green-l);color:var(--green)}
 .toolbar{display:flex;gap:8px}
 .srch{flex:1;position:relative}
-.srch input{width:100%;background:var(--white);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:'Geist',sans-serif;font-size:14px;padding:9px 12px 9px 36px;outline:none;-webkit-appearance:none}
+.srch input{width:100%;background:var(--white);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:sans-serif;font-size:14px;padding:9px 12px 9px 36px;outline:none;-webkit-appearance:none}
 .srch input:focus{border-color:var(--acc)}
 .srch-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:15px;pointer-events:none}
-select.fsel{background:var(--white);border:1px solid var(--border);border-radius:9px;color:var(--ink2);font-family:'Geist',sans-serif;font-size:13px;padding:9px 10px;outline:none;-webkit-appearance:none;cursor:pointer}
+select.fsel{background:var(--white);border:1px solid var(--border);border-radius:9px;color:var(--ink2);font-family:sans-serif;font-size:13px;padding:9px 10px;outline:none;-webkit-appearance:none;cursor:pointer}
 .cg{display:grid;grid-template-columns:1fr;gap:10px}
 .cc{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:16px;transition:opacity .2s,border .15s}
 .cch{display:flex;align-items:flex-start;gap:11px;margin-bottom:10px}
-.ccav{width:40px;height:40px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--acc),#60a5fa);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:17px;color:#fff;font-weight:700}
+.ccav{width:40px;height:40px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--acc),#60a5fa);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:17px;color:#fff;font-weight:700}
 .ccn{font-weight:700;font-size:14px;margin-bottom:2px}.ccm{font-size:12px;color:var(--ink3)}
 .ger-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--green-l);border:1px solid #86efac;border-radius:8px;padding:7px 10px;font-size:12px;margin-bottom:8px}
 .ger-strip .gn{font-weight:700;color:var(--green)}.ger-strip .gr{color:var(--ink3)}.ger-strip .rfbtn{margin-left:auto;background:none;border:none;color:var(--ink3);cursor:pointer;font-size:13px}
-.call-big{width:100%;padding:12px 16px;border-radius:10px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:1.5px solid #86efac;color:var(--green);font-family:'Geist',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;-webkit-appearance:none}
+.call-big{width:100%;padding:12px 16px;border-radius:10px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:1.5px solid #86efac;color:var(--green);font-family:sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;-webkit-appearance:none}
 .call-big:active{transform:scale(.98)}
 .ring{display:inline-block;animation:ring .8s ease infinite alternate}
 @keyframes ring{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
@@ -145,32 +144,32 @@ select.fsel{background:var(--white);border:1px solid var(--border);border-radius
 .modal{background:var(--white);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-width:600px;max-height:92vh;overflow-y:scroll;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;animation:su .25s ease;padding-bottom:var(--sab)}
 .modal::before{content:'';display:block;width:36px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 4px}
 .mh{padding:8px 20px 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.mt{font-family:'Fraunces',serif;font-size:20px;font-weight:700}
+.mt{font-family:Georgia,serif;font-size:20px;font-weight:700}
 .mc{background:var(--bg);border:1px solid var(--border);color:var(--ink3);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
 .mb{padding:0 20px 20px}
 @keyframes su{from{transform:translateY(100%)}to{transform:none}}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .fg label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);font-weight:600}
-.fg input,.fg textarea,.fg select{background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:'Geist',sans-serif;font-size:15px;padding:11px 13px;outline:none;width:100%;-webkit-appearance:none}
+.fg input,.fg textarea,.fg select{background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:sans-serif;font-size:15px;padding:11px 13px;outline:none;width:100%;-webkit-appearance:none}
 .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--acc);background:var(--white)}
 .fg textarea{resize:vertical;min-height:72px}
 .fgrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mact{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 .rtrow{display:flex;gap:8px;margin-bottom:14px}
-.rtbtn{flex:1;padding:13px 8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--ink2);cursor:pointer;font-family:'Geist',sans-serif;font-size:13px;font-weight:700;text-align:center;transition:all .15s}
+.rtbtn{flex:1;padding:13px 8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--ink2);cursor:pointer;font-family:sans-serif;font-size:13px;font-weight:700;text-align:center;transition:all .15s}
 .rtbtn.yes.sel{background:var(--green-l);border-color:#86efac;color:var(--green)}
 .rtbtn.no.sel{background:var(--red-l);border-color:#fca5a5;color:var(--red)}
 .rdv-fields{display:none;flex-direction:column;gap:12px}
 .rdv-fields.show{display:flex}
 .infobox{background:var(--green-l);border:1px solid #86efac;border-radius:9px;padding:11px 13px;font-size:12px;color:var(--green);line-height:1.7;font-weight:500}
 .fu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
-.fu-btn{padding:10px 4px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg);color:var(--ink2);cursor:pointer;font-family:'Geist',sans-serif;font-size:12px;font-weight:700;text-align:center;-webkit-appearance:none;transition:all .15s}
+.fu-btn{padding:10px 4px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg);color:var(--ink2);cursor:pointer;font-family:sans-serif;font-size:12px;font-weight:700;text-align:center;-webkit-appearance:none;transition:all .15s}
 .fu-btn.sel{border-color:var(--acc);background:var(--acc-l);color:var(--acc)}
 .fu-sub{font-size:10px;font-weight:400;color:var(--ink3);margin-top:2px}
 .fu-btn.sel .fu-sub{color:var(--acc)}
 .ger-card-inner{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;display:flex;gap:12px;align-items:flex-start}
-.ger-av{width:48px;height:48px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,var(--green),#34d399);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:21px;color:#fff;font-weight:700}
-.ger-name{font-size:16px;font-weight:700;margin-bottom:2px;font-family:'Fraunces',serif}
+.ger-av{width:48px;height:48px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,var(--green),#34d399);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:21px;color:#fff;font-weight:700}
+.ger-name{font-size:16px;font-weight:700;margin-bottom:2px;font-family:Georgia,serif}
 .ger-role{font-size:12px;color:var(--green);font-weight:600;margin-bottom:6px}
 .ger-intro{font-size:12px;color:var(--ink2);font-style:italic;line-height:1.6;margin-bottom:8px}
 .ger-searching{display:flex;align-items:center;gap:12px;padding:18px;color:var(--ink3);font-size:13px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px}
@@ -208,14 +207,14 @@ select.fsel{background:var(--white);border:1px solid var(--border);border-radius
 /* Scroll fix - trackpad & mouse */
 main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 /* Métiers chips */
-.metier-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--ink3);transition:all .15s;font-family:'Geist',sans-serif;white-space:nowrap}
+.metier-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--ink3);transition:all .15s;font-family:sans-serif;white-space:nowrap}
 .metier-chip.sel{background:var(--acc-l);border-color:var(--acc-m);color:var(--acc);font-weight:600}
 .metier-chip:active{transform:scale(.95)}
 /* Logo Infocom */
 .logo-infocom{display:flex;align-items:center;gap:8px}
 .logo-infocom-badge{width:30px;height:30px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
 .logo-infocom-text{display:flex;flex-direction:column;line-height:1}
-.logo-infocom-main{font-family:'Fraunces',serif;font-size:13px;font-weight:700;color:var(--ink)}
+.logo-infocom-main{font-family:Georgia,serif;font-size:13px;font-weight:700;color:var(--ink)}
 .logo-infocom-sub{font-size:9px;color:var(--ink3);letter-spacing:.3px;text-transform:uppercase}
 .obj-item{border-top:1px solid #fef3c7;cursor:pointer;transition:background .1s}
 .obj-item:first-child{border-top:none}
@@ -225,7 +224,7 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .obj-item.open .obj-a{display:block}
 .obj-item.open .arr{transform:rotate(180deg)}
 .obj-item:active{background:var(--gold-l)}
-.call-now-btn{width:100%;padding:15px;border-radius:12px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;color:#fff;font-family:'Geist',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(22,163,74,.3);-webkit-appearance:none}
+.call-now-btn{width:100%;padding:15px;border-radius:12px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;color:#fff;font-family:sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(22,163,74,.3);-webkit-appearance:none}
 .call-now-btn:active{transform:scale(.98)}
 .ep{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:14px;font-size:13px;line-height:1.8;color:var(--ink);white-space:pre-wrap;max-height:220px;overflow-y:auto}
 .rdv-conf{background:var(--green-l);border:1px solid #86efac;border-radius:9px;padding:10px 13px;font-size:12px;color:var(--green);display:flex;align-items:center;gap:7px;margin-bottom:14px;font-weight:500}
@@ -247,13 +246,13 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .chip{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;padding:5px 11px;font-size:11px;color:var(--ink2);cursor:pointer;font-weight:500}
 .chip:active{border-color:var(--acc);color:var(--acc);background:var(--acc-l)}
 .cinput-area{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--bg);border-radius:0 0 var(--r2) var(--r2)}
-.cinput{flex:1;background:var(--white);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:'Geist',sans-serif;font-size:15px;padding:9px 12px;outline:none;resize:none;height:40px}
+.cinput{flex:1;background:var(--white);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:sans-serif;font-size:15px;padding:9px 12px;outline:none;resize:none;height:40px}
 .cinput:focus{border-color:var(--acc)}
 .csend{background:var(--acc);border:none;border-radius:9px;color:#fff;width:40px;height:40px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-appearance:none}
 .csend:disabled{opacity:.4}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;color:var(--ink3);gap:8px;text-align:center}
 .empty-ico{font-size:36px;opacity:.3}
-.tab-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);padding:4px 0 calc(4px + var(--sab));z-index:200}
+.tab-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);padding:4px 0 calc(4px + var(--sab));z-index:2001;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .tab-bar-inner{display:flex;justify-content:space-around;width:100%;overflow:hidden}
 .tab-item{display:flex;flex-direction:column;align-items:center;gap:1px;padding:2px 0;cursor:pointer;color:var(--ink3);border:none;background:none;-webkit-appearance:none;transition:color .15s;flex:1;min-width:0;overflow:hidden}
 .tab-item.active{color:var(--acc)}
@@ -264,9 +263,60 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .toast.ok{border-color:#86efac;background:var(--green-l);color:var(--green)}
 .toast.err{border-color:#fca5a5;background:var(--red-l);color:var(--red)}
 @keyframes tin{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
-@media(max-width:767px){.sidebar{display:none}.tab-bar{display:block}main{padding-bottom:calc(72px + var(--sab))}.toast-wrap{bottom:calc(76px + var(--sab))}.kpi-row{grid-template-columns:1fr 1fr}.fgrid2{grid-template-columns:1fr}}
+/* ── iPhone & petits écrans (< 768px) ── */
+@media(max-width:767px){
+  .sidebar{display:none !important}
+  .tab-bar{display:block !important}
+  main{padding:12px 10px calc(76px + var(--sab)) 10px}
+  .toast-wrap{bottom:calc(80px + var(--sab))}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .fgrid2{grid-template-columns:1fr}
+  .cg{grid-template-columns:1fr}
+  .topbar{padding:0 10px}
+  .folder-bar{padding:0 8px}
+  .ph{padding:10px 10px 6px}
+  .card{padding:12px}
+  .modal{border-radius:var(--r2) var(--r2) 0 0;max-height:93vh}
+  .tab-item .tab-lbl{font-size:9px}
+  .call-big{font-size:13px;padding:10px 12px}
+  h2,.ph-title{font-size:17px}
+  .btn-lbl-full{display:none}
+}
+/* Cacher tab-bar UNIQUEMENT quand l'écran de profil est visible */
 @media(max-width:767px){#profile-screen:not(.hidden) ~ .tab-bar{display:none !important}}
-@media(min-width:768px){.cg{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}.kpi-row{grid-template-columns:repeat(4,1fr)}.overlay{align-items:center;padding-bottom:0}.modal{border-radius:var(--r2);max-height:88vh}.modal::before{display:none}}
+/* Forcer tab-bar visible quand profil masqué sur mobile */
+@media(max-width:767px){#profile-screen.hidden ~ .tab-bar,body:not(:has(#profile-screen)) .tab-bar{display:block !important}}
+/* ── iPad (768px – 1023px) ── */
+@media(min-width:768px) and (max-width:1023px){
+  .sidebar{display:none !important}
+  .tab-bar{display:block !important}
+  main{padding:16px 20px calc(80px + var(--sab)) 20px}
+  .toast-wrap{bottom:calc(84px + var(--sab))}
+  .kpi-row{grid-template-columns:repeat(4,1fr)}
+  .fgrid2{grid-template-columns:1fr 1fr}
+  .cg{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .modal{border-radius:var(--r2);max-height:88vh}
+  .modal::before{display:none}
+  .overlay{align-items:center;padding-bottom:0}
+  .tab-item .tab-lbl{font-size:10px}
+  .topbar{padding:0 18px}
+}
+@media(min-width:768px) and (max-width:1023px){#profile-screen:not(.hidden) ~ .tab-bar{display:none !important}}
+/* ── iMac / Desktop (≥ 1024px) ── */
+@media(min-width:1024px){
+  .sidebar{display:flex !important;width:220px}
+  .tab-bar{display:none !important}
+  main{padding:20px 28px}
+  .cg{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .kpi-row{grid-template-columns:repeat(4,1fr)}
+  .overlay{align-items:center;padding-bottom:0}
+  .modal{border-radius:var(--r2);max-height:85vh;max-width:600px}
+  .modal::before{display:none}
+  .topbar{padding:0 20px}
+  .folder-bar{padding:0 16px}
+  .ph{padding:14px 20px 10px}
+  .cc:hover{border-color:var(--acc-m);background:var(--acc-l)}
+}
 /* STATUS BADGE ON PROSPECT CARD */
 .co-status{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;flex-shrink:0}
 .cs-new{background:var(--bg);color:var(--ink3);border:1px solid var(--border)}
@@ -288,7 +338,7 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .stat-bar-lbl{width:110px;color:var(--ink2);font-weight:500;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stat-bar-track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
 .stat-bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
-.stat-bar-val{width:36px;text-align:right;color:var(--ink3);font-size:11px;font-family:'Geist Mono',monospace}
+.stat-bar-val{width:36px;text-align:right;color:var(--ink3);font-size:11px;font-family:monospace}
 </style>
 </head>
 <body>
@@ -318,7 +368,7 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
     <div id="ps-form-closed" style="text-align:center">
       <button onclick="document.getElementById('ps-form-closed').style.display='none';document.getElementById('ps-form-open').style.display='block';document.getElementById('ps-name-inp').focus();" style="
         background:var(--acc);color:white;border:none;border-radius:14px;
-        padding:16px 36px;font-family:'Fraunces',serif;font-size:18px;font-weight:700;
+        padding:16px 36px;font-family:Georgia,serif;font-size:18px;font-weight:700;
         cursor:pointer;display:inline-flex;align-items:center;gap:10px;
         box-shadow:0 4px 20px rgba(37,99,235,.35);
       ">
@@ -326,21 +376,21 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
       </button>
     </div>
     <div id="ps-form-open" style="display:none;background:white;border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.1)">
-      <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:700;margin-bottom:4px;color:var(--ink)">Nouveau profil</div>
+      <div style="font-family:Georgia,serif;font-size:18px;font-weight:700;margin-bottom:4px;color:var(--ink)">Nouveau profil</div>
       <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">Entrez votre prénom pour commencer</div>
       <div style="margin-bottom:12px">
         <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:5px">Prénom / Nom *</label>
         <input id="ps-name-inp" type="text" placeholder="Ex: Matthieu Chmidlin"
-          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:'Geist',sans-serif;font-size:15px;padding:12px 14px;outline:none;box-sizing:border-box"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:sans-serif;font-size:15px;padding:12px 14px;outline:none;box-sizing:border-box"
           onkeydown="if(event.key==='Enter')createProfileInline()">
       </div>
       <div style="display:flex;gap:8px">
         <button onclick="document.getElementById('ps-form-closed').style.display='block';document.getElementById('ps-form-open').style.display='none';"
-          style="flex:1;padding:11px;border-radius:9px;background:var(--bg);border:1px solid var(--border);font-family:'Geist',sans-serif;font-size:14px;cursor:pointer;color:var(--ink2)">
+          style="flex:1;padding:11px;border-radius:9px;background:var(--bg);border:1px solid var(--border);font-family:sans-serif;font-size:14px;cursor:pointer;color:var(--ink2)">
           Annuler
         </button>
         <button onclick="createProfileInline()"
-          style="flex:2;padding:11px;border-radius:9px;background:var(--acc);border:none;font-family:'Geist',sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:white">
+          style="flex:2;padding:11px;border-radius:9px;background:var(--acc);border:none;font-family:sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:white">
           ✓ Créer et démarrer
         </button>
       </div>
@@ -348,51 +398,33 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
   </div>
 
   <div id="ps-connect-zone" style="text-align:center;margin-top:4px">
-    <button
-      style="background:none;border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Geist',sans-serif;font-size:13px;color:var(--ink3);cursor:pointer;display:inline-flex;align-items:center;gap:8px;"
-      onclick="
-        this.style.display='none';
-        document.getElementById('ps-gist-form').style.display='block';
-        document.getElementById('conn-name').focus();
-      ">
+    <button id="btn-show-gist" style="background:none;border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:sans-serif;font-size:13px;color:var(--ink3);cursor:pointer;display:inline-flex;align-items:center;gap:8px;" onclick="document.getElementById('btn-show-gist').style.display='none';document.getElementById('ps-gist-form').style.display='block';">
       🔗 Se connecter avec GitHub Gist
     </button>
   </div>
 
   <div id="ps-gist-form" style="display:none;width:100%;max-width:340px;margin-top:8px">
     <div style="background:white;border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.08)">
-      <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:700;margin-bottom:3px;color:var(--ink)">Se connecter</div>
+      <div style="font-family:Georgia,serif;font-size:16px;font-weight:700;margin-bottom:3px;color:var(--ink)">Se connecter</div>
       <div style="font-size:11px;color:var(--ink3);margin-bottom:14px">Récupérer vos données depuis GitHub Gist</div>
       <div style="margin-bottom:10px">
         <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px">Prénom / Nom *</label>
-        <input id="conn-name" type="text" placeholder="Ex: Matthieu Chmidlin"
-          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-family:'Geist',sans-serif;font-size:14px;padding:10px 12px;outline:none;box-sizing:border-box">
+        <input id="conn-name" type="text" placeholder="Ex: Matthieu Chmidlin" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-family:sans-serif;font-size:14px;padding:10px 12px;outline:none;box-sizing:border-box">
       </div>
       <div style="margin-bottom:14px">
         <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px">Token GitHub *</label>
-        <input id="conn-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-family:'Geist Mono',monospace;font-size:13px;padding:10px 12px;outline:none;box-sizing:border-box">
+        <input id="conn-token" type="text" autocomplete="off" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-family:monospace;font-size:13px;padding:10px 12px;outline:none;box-sizing:border-box">
         <div style="font-size:10px;color:var(--ink3);margin-top:4px">github.com → Settings → Developer settings → Personal access tokens → Gist</div>
       </div>
       <div style="display:flex;gap:8px">
-        <button
-          onclick="document.getElementById('ps-gist-form').style.display='none';document.querySelector('#ps-connect-zone button').style.display='inline-flex';"
-          style="flex:1;padding:11px;border-radius:9px;background:var(--bg);border:1px solid var(--border);font-family:'Geist',sans-serif;font-size:13px;cursor:pointer;color:var(--ink2)">
-          Annuler
-        </button>
-        <button id="conn-submit-btn" onclick="connectFromGist()"
-          style="flex:2;padding:11px;border-radius:9px;background:var(--acc);border:none;font-family:'Geist',sans-serif;font-size:13px;font-weight:700;cursor:pointer;color:white">
-          ☁️ Récupérer mes données
-        </button>
+        <button onclick="document.getElementById('btn-show-gist').style.display='inline-flex';document.getElementById('ps-gist-form').style.display='none';" style="flex:1;padding:11px;border-radius:9px;background:var(--bg);border:1px solid var(--border);font-family:sans-serif;font-size:13px;cursor:pointer;color:var(--ink2)">Annuler</button>
+        <button id="conn-submit-btn" onclick="connectFromGist()" style="flex:2;padding:11px;border-radius:9px;background:var(--acc);border:none;font-family:sans-serif;font-size:13px;font-weight:700;cursor:pointer;color:white">☁️ Récupérer mes données</button>
       </div>
       <div id="conn-status" style="display:none;margin-top:10px;font-size:12px;text-align:center;padding:8px;border-radius:8px;background:#f8fafc;border:1px solid var(--border)"></div>
     </div>
   </div>
 
-  <!-- Garder l'ancien form caché pour compatibilité JS -->
-  <div id="ps-connect-form" style="display:none">
-    <input id="conn-pin" type="hidden" value="">
-  </div>
+  <div id="ps-connect-form" style="display:none"><input id="conn-pin" type="hidden" value=""></div>
 </div>
 
 <!-- PIN SCREEN -->
@@ -482,9 +514,7 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
     <div class="ni" data-view="relances" onclick="nav(this)"><span class="ico">🔁</span>À rappeler<span class="nbadge" id="nb-r" style="background:var(--red)">0</span></div>
     <div class="ni" data-view="calls" onclick="nav(this)"><span class="ico">📞</span>Appels<span class="nbadge" id="nb-c">0</span></div>
     <div class="ni" data-view="rdv" onclick="nav(this)"><span class="ico">📅</span>Rendez-vous</div>
-    <div class="ni" data-view="annuaire" onclick="nav(this)"><span class="ico">🔎</span>Prospection zone</div>
     <div class="ni" data-view="import" onclick="nav(this)"><span class="ico">📂</span>Importer CSV</div>
-    <div class="ni" onclick="navTo('prospects');setTimeout(startBgSearch,200)" style="color:#7c3aed"><span class="ico">✦</span>Chercher gérants</div>
     <div class="nsep"></div>
     <div class="nsec">Outils</div>
     <div class="ni" data-view="stats" onclick="nav(this)"><span class="ico">📊</span>Statistiques</div>
@@ -514,12 +544,12 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
     <!-- PROSPECTS -->
     <div class="view active" id="view-prospects">
       <div class="ph">
-        <div><div class="ph-title" id="fold-title">Prospects</div><div class="ph-sub" id="fold-sub">—</div></div>
-        <div class="ph-actions">
-          <button class="btn bp bsm" style="background:var(--green)" onclick="navTo('import')">📂 CSV</button>
-          <button class="btn bp bsm" style="background:#7c3aed" onclick="startBgSearch()" id="btn-bg-search" title="Rechercher les gérants en arrière-plan">✦ Gérants</button>
-          <button class="btn bp bsm" style="background:#0891b2" onclick="startBgPhone()" id="btn-bg-phone" title="Rechercher les téléphones manquants">📞 Téléphones</button>
-          <button class="btn bp bsm" onclick="openAddCo(null)">+ Ajouter</button>
+        <div style="flex:1;min-width:0"><div class="ph-title" id="fold-title">Prospects</div><div class="ph-sub" id="fold-sub">—</div></div>
+        <div class="ph-actions" style="flex-shrink:0;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn bp bsm" style="background:var(--green)" onclick="navTo('import')" title="Importer CSV">📂 <span class="btn-lbl-full">CSV</span></button>
+          <button class="btn bp bsm" style="background:#7c3aed" onclick="startBgSearch()" id="btn-bg-search" title="Gérants">✦ <span class="btn-lbl-full">Gérants</span></button>
+          <button class="btn bp bsm" style="background:#0891b2" onclick="startBgPhone()" id="btn-bg-phone" title="Téléphones">📞 <span class="btn-lbl-full">Tél.</span></button>
+          <button class="btn bp bsm" onclick="openAddCo(null)" title="Ajouter">+ <span class="btn-lbl-full">Ajouter</span></button>
         </div>
       </div>
       <div id="gerant-cta" style="display:none;background:var(--acc-l);border:1px solid var(--acc-m);border-radius:var(--r);padding:12px 16px;align-items:center;gap:12px">
@@ -559,54 +589,6 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
       <div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Contact</th><th>Date</th><th>Heure</th><th>Adresse</th><th>Statut</th><th></th></tr></thead><tbody id="rdv-tbody"></tbody></table></div></div>
     </div>
     <!-- ANNUAIRE ENTREPRISES -->
-    <div class="view" id="view-annuaire">
-      <div class="ph"><div><div class="ph-title">Prospection par zone</div><div class="ph-sub">OpenStreetMap + data.gouv.fr · Téléphone · Gérant · Adresse</div></div></div>
-
-      <div class="card" style="padding:16px">
-        <!-- Ville + rayon -->
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-          <div class="srch" style="flex:1;min-width:180px">
-            <span class="srch-ico">🏙</span>
-            <input id="ann-ville" placeholder="Ville (ex: Sarreguemines)" onkeydown="if(event.key==='Enter')lancerProspection()">
-          </div>
-          <select id="ann-rayon" class="fsel">
-            <option value="1000">Ville seule</option>
-            <option value="3000">+ 3 km</option>
-            <option value="5000" selected>+ 5 km</option>
-            <option value="10000">+ 10 km</option>
-            <option value="20000">+ 20 km</option>
-          </select>
-        </div>
-
-        <!-- Catégories OSM -->
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-bottom:8px">
-          Catégories à rechercher :
-          <span style="margin-left:8px">
-            <button onclick="selectAllMetiers(true)" style="background:var(--acc-l);border:1px solid var(--acc-m);border-radius:5px;padding:2px 8px;font-size:10px;cursor:pointer;color:var(--acc)">Tout</button>
-            <button onclick="selectAllMetiers(false)" style="background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-size:10px;cursor:pointer;color:var(--ink3);margin-left:4px">Aucun</button>
-          </span>
-        </div>
-        <div id="metiers-grid" style="display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;padding:4px 0"></div>
-
-        <div style="display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap">
-          <button class="btn bp" id="ann-btn" onclick="lancerProspection()" style="flex:1;justify-content:center;min-width:140px">
-            🔍 Lancer la prospection
-          </button>
-          <div style="font-size:11px;color:var(--ink3)" id="ann-count-info"></div>
-        </div>
-
-        <div id="ann-progress" style="display:none;margin-top:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <div style="font-size:12px;color:var(--ink2)" id="ann-progress-txt">Recherche en cours…</div>
-            <button onclick="stopProspection()" style="background:var(--red-l);border:1px solid #fca5a5;color:var(--red);border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">⏹ Stop</button>
-          </div>
-          <div style="background:var(--border);border-radius:4px;height:6px"><div id="ann-progress-bar" style="height:100%;background:linear-gradient(90deg,var(--acc),var(--green));border-radius:4px;transition:width .4s;width:0%"></div></div>
-        </div>
-      </div>
-
-      <div id="ann-results"></div>
-    </div>
-
     <!-- IMPORT CSV -->
     <div class="view" id="view-import">
       <div class="ph">
@@ -628,18 +610,20 @@ main{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
       </div>
       <div class="card">
         <div class="card-title">✂️ Ou coller le texte CSV</div>
-        <textarea id="csv-paste" style="width:100%;min-height:90px;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:'Geist Mono',monospace;font-size:12px;padding:12px;outline:none;resize:vertical" placeholder="Collez ici le contenu CSV…"></textarea>
+        <textarea id="csv-paste" style="width:100%;min-height:90px;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:monospace;font-size:12px;padding:12px;outline:none;resize:vertical" placeholder="Collez ici le contenu CSV…"></textarea>
         <button class="btn bp" style="margin-top:10px;width:100%;justify-content:center" onclick="parseCSVText(document.getElementById('csv-paste').value)">Analyser ce texte</button>
       </div>
       <div id="imp-preview-zone" style="display:none">
         <div class="card">
           <div class="card-title">👁 Aperçu — <span id="imp-count">0</span> entreprises</div>
-          <div style="overflow-x:auto;max-height:200px"><table style="min-width:380px"><thead><tr><th>Entreprise</th><th>Téléphone</th><th>Adresse</th></tr></thead><tbody id="imp-tbody"></tbody></table></div>
+          <div style="overflow-x:auto;max-height:200px"><table style="min-width:380px"><thead><tr><th>Entreprise</th><th>Téléphone</th><th>Secteur</th></tr></thead><tbody id="imp-tbody"></tbody></table></div>
           <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
-            <input id="imp-folder" placeholder="Nom du dossier" style="background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:'Geist',sans-serif;font-size:14px;padding:10px 13px;outline:none;flex:1;min-width:140px">
+            <input id="imp-folder" placeholder="Nom du dossier" style="background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--ink);font-family:sans-serif;font-size:14px;padding:10px 13px;outline:none;flex:1;min-width:140px">
             <button class="btn bp" onclick="confirmImport()">✓ Importer</button>
+            <button class="btn bp bsm" style="background:#7c3aed" onclick="enrichSectors()" title="Met à jour les secteurs des fiches existantes sans créer de doublons">🔄 Enrichir secteurs</button>
             <button class="btn bg" onclick="cancelImport()">Annuler</button>
           </div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:8px">💡 <b>Enrichir secteurs</b> = met à jour les fiches existantes par nom sans créer de doublons</div>
         </div>
       </div>
     </div>
@@ -739,16 +723,15 @@ Cordialement,
     <button class="tab-item" data-view="relances" onclick="tabNav(this)"><span class="tab-ico">🔁</span><span class="tab-lbl">Relances</span></button>
     <button class="tab-item" data-view="calls" onclick="tabNav(this)"><span class="tab-ico">📞</span><span class="tab-lbl">Appels</span></button>
     <button class="tab-item" data-view="rdv" onclick="tabNav(this)"><span class="tab-ico">📅</span><span class="tab-lbl">RDV</span></button>
-    <button class="tab-item" data-view="annuaire" onclick="tabNav(this)"><span class="tab-ico">🔎</span><span class="tab-lbl">Prospecter</span></button>
     <button class="tab-item" onclick="toggleMoreMenu()"><span class="tab-ico">⋯</span><span class="tab-lbl">Plus</span></button>
   </div>
   <!-- Menu "Plus" -->
   <div id="more-menu" style="display:none;position:absolute;bottom:calc(100% + 4px);right:4px;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:6px;box-shadow:0 -4px 20px rgba(0,0,0,.12);min-width:160px;z-index:201">
-    <button onclick="navTo('stats');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">📊 Statistiques</button>
-    <button onclick="navTo('ai');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">✦ Assistant IA</button>
-    <button onclick="navTo('emails');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">✉ Modèles mail</button>
-    <button onclick="navTo('import');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">📂 Importer CSV</button>
-    <button onclick="navTo('backup');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">💾 Sauvegarde</button>
+    <button onclick="navTo('stats');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">📊 Statistiques</button>
+    <button onclick="navTo('ai');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">✦ Assistant IA</button>
+    <button onclick="navTo('emails');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">✉ Modèles mail</button>
+    <button onclick="navTo('import');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">📂 Importer CSV</button>
+    <button onclick="navTo('backup');toggleMoreMenu()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;font-family:sans-serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:9px;text-align:left" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">💾 Sauvegarde</button>
   </div>
 </div>
 
@@ -1014,479 +997,18 @@ Cordialement,
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
-// ══════════════════════════════════════
-//  MAPPING MÉTIERS → CODES NAF INSEE
-// ══════════════════════════════════════
-var METIERS_NAF = {
-  'plomberie':           ['4322A','4322B'],
-  'électricité':         ['4321A','4321B'],
-  'maçonnerie':          ['4312A','4312B','4391A'],
-  'menuiserie':          ['4332A','4332B','4332C'],
-  'peinture bâtiment':   ['4334Z'],
-  'couverture':          ['4391B'],
-  'carrelage':           ['4333Z'],
-  'plâtrerie':           ['4331Z'],
-  'chauffage':           ['4322A','4322B','4329A','4329B'],
-  'fenêtres':            ['4332A','4332C'],
-  'serrurerie métallerie':['2511Z','4332B'],
-  'ravalement façade':   ['4391A','4334Z'],
-  'rénovation immobilière':['4120A','4120B','4110A'],
-  'bâtiment':            ['4120A','4120B'],
-  'terrassement':        ['4312A','4313Z'],
-  'travaux publics':     ['4211Z','4212Z','4213A','4213B','4221Z','4222Z','4291Z','4299Z'],
-  'énergie renouvelable':['4321A','3511Z','3512Z','4322A'],
-  'paysagiste':          ['8130Z','0161Z'],
-  'piscine':             ['4329A','9200Z'],
-  'véranda':             ['4332A','4332C'],
-  'cuisine équipée':     ['4332A','4759B'],
-  'parquet':             ['4333Z'],
-  'climatisation':       ['4322A','4322B'],
-  'fermetures':          ['4332A','4332B'],
-  'assainissement vidange':['3700Z','3811Z','4322B'],
-  'aménagement parcs jardins':['8130Z','0161Z'],
-  'aménagement caves combles':['4120A','4332A'],
-  'clôtures barrières':  ['4332B','2512Z'],
-  'dépannage':           ['3314Z','9521Z','9522Z'],
-  'construction individuelle':['4110A','4120A'],
-  'revêtement':          ['4333Z','4334Z'],
-  'garage automobile':   ['4520A','4520B','4511Z'],
-  'carrosserie':         ['4520A'],
-  'contrôle technique':  ['7120A','7120B'],
-  'pneumatique':         ['4520A','4532Z'],
-  'agence immobilière':  ['6831Z','6832A','6832B'],
-  'assurance':           ['6511Z','6512Z','6622Z'],
-  'restaurant':          ['5610A','5610B','5610C','5621Z','5629A','5629B'],
-  'hôtel':               ['5510Z','5520Z','5530Z'],
-  'fleuriste':           ['4776Z'],
-  'opticien':            ['4778A'],
-  'pharmacie':           ['4773Z'],
-  'institut beauté':     ['9602B','9602A'],
-  'auto-école':          ['8553Z'],
-  'ambulance':           ['8621Z','8622Z'],
-  'taxi':                ['4932Z','4939A'],
-  'traiteur':            ['5621Z','1085Z'],
-  'bricolage':           ['4752A','4752B'],
-  'constructeur maison': ['4110A','4120A'],
-  'pompes funèbres':     ['9603Z'],
-  'supermarché':         ['4711B','4711C','4711D','4711E','4711F'],
-  'alarme sécurité':     ['8020Z','4321A'],
-  'camping':             ['5530Z'],
-  'centre équestre':     ['9319Z','0149Z'],
-  'fitness':             ['9311Z','9312Z'],
-  'motoculture':         ['4775Z','3316Z'],
-  'marbrerie':           ['2370Z','9603Z'],
-  'pépinière':           ['0130Z','4776Z'],
-  'agence voyages':      ['7911Z','7912Z'],
-};
-
-// Codes NAF par défaut pour les métiers non mappés (recherche textuelle)
-
-// ══════════════════════════════════════
-//  MAPPING MÉTIERS → TAGS OSM
-// ══════════════════════════════════════
-var OSM_TAGS = {
-  'restaurant':        [['amenity','restaurant'],['amenity','fast_food'],['amenity','food_court']],
-  'hôtel':             [['tourism','hotel'],['tourism','motel'],['tourism','guest_house']],
-  'café bar':          [['amenity','cafe'],['amenity','bar'],['amenity','pub']],
-  'boulangerie':       [['shop','bakery']],
-  'boucherie':         [['shop','butcher']],
-  'supermarché':       [['shop','supermarket'],['shop','convenience'],['shop','grocery']],
-  'pharmacie':         [['amenity','pharmacy']],
-  'médecin':           [['amenity','doctors'],['healthcare','doctor']],
-  'dentiste':          [['amenity','dentist']],
-  'opticien':          [['shop','optician']],
-  'coiffeur':          [['shop','hairdresser']],
-  'institut beauté':   [['shop','beauty'],['shop','cosmetics']],
-  'fleuriste':         [['shop','florist']],
-  'garage automobile': [['shop','car_repair'],['shop','car'],['amenity','fuel']],
-  'pneumatique':       [['shop','tyres']],
-  'contrôle technique':[['amenity','vehicle_inspection']],
-  'carrosserie':       [['shop','car_repair']],
-  'auto-école':        [['amenity','driving_school']],
-  'taxi':              [['amenity','taxi']],
-  'agence immobilière':[['shop','estate_agent']],
-  'assurance':         [['office','insurance']],
-  'banque':            [['amenity','bank']],
-  'notaire':           [['office','notary'],['office','lawyer']],
-  'comptable':         [['office','accountant']],
-  'plomberie':         [['craft','plumber']],
-  'électricité':       [['craft','electrician']],
-  'maçonnerie':        [['craft','mason'],['craft','builder']],
-  'menuiserie':        [['craft','carpenter'],['craft','joiner']],
-  'peinture bâtiment': [['craft','painter']],
-  'couverture':        [['craft','roofer']],
-  'chauffage':         [['craft','hvac']],
-  'serrurerie métallerie':[['craft','locksmith'],['craft','metal_construction']],
-  'carrelage':         [['craft','tiler'],['craft','floor_layer']],
-  'paysagiste':        [['craft','gardener'],['shop','garden_centre']],
-  'pompes funèbres':   [['shop','funeral_directors']],
-  'pressing':          [['shop','dry_cleaning'],['shop','laundry']],
-  'vétérinaire':       [['amenity','veterinary']],
-  'fitness':           [['leisure','fitness_centre'],['leisure','sports_centre']],
-  'camping':           [['tourism','camp_site']],
-  'centre équestre':   [['leisure','horse_riding']],
-  'ambulance':         [['emergency','ambulance_station']],
-  'alarme sécurité':   [['shop','security']],
-  'bricolage':         [['shop','doityourself'],['shop','hardware']],
-  'motoculture':       [['shop','agrarian'],['shop','garden_machinery']],
-  'marbrerie':         [['craft','stonemason']],
-  'pépinière':         [['shop','garden_centre'],['landuse','plant_nursery']],
-  'agence voyages':    [['shop','travel_agency']],
-  'traiteur':          [['shop','deli'],['amenity','catering']],
-  'pizza':             [['amenity','fast_food'],['cuisine','pizza']],
-  'bois menuiserie':   [['shop','timber']],
-  'imprimerie':        [['craft','printer'],['shop','copyshop']],
-  'informatique':      [['shop','computer'],['shop','electronics']],
-  'photographe':       [['shop','photo']],
-  'bijouterie':        [['shop','jewelry']],
-  'librairie':         [['shop','books']],
-  'sport':             [['shop','sports']],
-  'chaussures':        [['shop','shoes']],
-  'vêtements':         [['shop','clothes']],
-};
-
-var ALL_METIERS = Object.keys(OSM_TAGS);
-var selectedMetiers = new Set(ALL_METIERS);
-var prospectionStopped = false;
-
-async function lancerProspection(){
-  var ville=document.getElementById('ann-ville').value.trim();
-  if(!ville){toast('Entrez une ville','err');return;}
-  if(selectedMetiers.size===0){toast('Sélectionnez au moins une catégorie','err');return;}
-
-  var btn=document.getElementById('ann-btn');
-  var zone=document.getElementById('ann-results');
-  var prog=document.getElementById('ann-progress');
-  var progTxt=document.getElementById('ann-progress-txt');
-  var progBar=document.getElementById('ann-progress-bar');
-
-  btn.disabled=true;btn.textContent='⏳ Recherche…';
-  zone.innerHTML='';prog.style.display='block';
-  prospectionStopped=false;
-  progTxt.textContent='Géolocalisation de '+ville+'…';progBar.style.width='3%';
-
-  // 1. Géolocaliser la ville → coordonnées GPS
-  var coords=null;
-  try{
-    var geoR=await fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(ville)+',France&format=json&limit=1',{headers:{'Accept':'application/json','User-Agent':'InforcomProCRM/1.0'}});
-    var geoD=await geoR.json();
-    if(geoD&&geoD[0]){coords={lat:parseFloat(geoD[0].lat),lon:parseFloat(geoD[0].lon),display:geoD[0].display_name};}
-  }catch(e){}
-
-  if(!coords){
-    // Fallback: geo.api.gouv.fr
-    try{
-      var cp=await resolveCP(ville);
-      var g2=await fetch('https://geo.api.gouv.fr/communes?codePostal='+cp+'&fields=centre&limit=1');
-      var d2=await g2.json();
-      if(d2&&d2[0]&&d2[0].centre){coords={lat:d2[0].centre.coordinates[1],lon:d2[0].centre.coordinates[0],display:ville};}
-    }catch(e){}
-  }
-
-  if(!coords){
-    prog.style.display='none';btn.disabled=false;btn.textContent='🔍 Lancer la prospection';
-    toast('Ville introuvable — vérifiez l'orthographe','err');return;
-  }
-
-  var rayonM=parseInt(document.getElementById('ann-rayon').value)||5000;
-  progTxt.textContent='Recherche OSM autour de '+ville+' (rayon '+Math.round(rayonM/1000)+'km)…';
-  progBar.style.width='10%';
-
-  // 2. Requête Overpass — tous les POI avec téléphone ou nom dans le rayon
-  var catList=Array.from(selectedMetiers);
-  var allResults=[];var seen=new Set();
-  var total=catList.length;var done=0;
-
-  var batchSize=6;
-  for(var i=0;i<catList.length&&!prospectionStopped;i+=batchSize){
-    var batch=catList.slice(i,i+batchSize);
-    await Promise.all(batch.map(async function(cat){
-      if(prospectionStopped)return;
-      var tags=OSM_TAGS[cat]||[];
-      try{
-        // Construire la requête Overpass pour tous les tags de cette catégorie
-        var tagQueries=tags.map(function(t){
-          var key=t[0],val=t[1];
-          return '  node["'+key+'"="'+val+'"](around:'+rayonM+','+coords.lat+','+coords.lon+');
-'
-               + '  way["'+key+'"="'+val+'"](around:'+rayonM+','+coords.lat+','+coords.lon+');
-';
-        }).join('');
-        var query='[out:json][timeout:25];
-(
-'+tagQueries+');
-out center tags;';
-        var r=await fetch('https://overpass-api.de/api/interpreter',{
-          method:'POST',
-          headers:{'Content-Type':'application/x-www-form-urlencoded'},
-          body:'data='+encodeURIComponent(query)
-        });
-        if(!r.ok)return;
-        var d=await r.json();
-        (d.elements||[]).forEach(function(el){
-          var uid=(el.tags&&el.tags.name?el.tags.name:'osm'+el.id);
-          if(seen.has(uid))return;seen.add(uid);
-          var lat=el.lat||(el.center&&el.center.lat)||null;
-          var lon=el.lon||(el.center&&el.center.lon)||null;
-          var t=el.tags||{};
-          if(!t.name)return; // Ignorer sans nom
-          allResults.push({
-            _source:'osm',_cat:cat,
-            name:t.name,
-            phone:t.phone||t['contact:phone']||t['contact:mobile']||null,
-            addr:[t['addr:housenumber'],t['addr:street'],t['addr:postcode'],t['addr:city']].filter(Boolean).join(' '),
-            website:t.website||t['contact:website']||null,
-            email:t.email||t['contact:email']||null,
-            lat:lat,lon:lon,
-            osmId:el.id
-          });
-        });
-      }catch(ex){}
-      done++;
-      progBar.style.width=Math.round((done/total)*70+15)+'%';
-      progTxt.textContent=done+'/'+total+' catégories · '+allResults.length+' entreprises OSM…';
-    }));
-    await new Promise(function(r){setTimeout(r,300);});// Rate limit Overpass
-  }
-
-  if(prospectionStopped){prog.style.display='none';btn.disabled=false;btn.textContent='🔍 Lancer la prospection';renderAnnuaireResults(allResults,ville);return;}
-
-  // 3. Enrichir avec gérants depuis data.gouv.fr (batch sur les noms)
-  progTxt.textContent='Enrichissement gérants ('+allResults.length+' entreprises)…';
-  progBar.style.width='88%';
-
-  // Chercher le gérant pour les 50 premiers résultats (priorité téléphone manquant)
-  var toEnrich=allResults.filter(function(e){return !e.gerant;}).slice(0,80);
-  var enrichBatch=5;
-  for(var j=0;j<toEnrich.length&&!prospectionStopped;j+=enrichBatch){
-    var eb=toEnrich.slice(j,j+enrichBatch);
-    await Promise.all(eb.map(async function(e){
-      if(prospectionStopped)return;
-      try{
-        var q=encodeURIComponent(e.name);
-        var cpM=e.addr.match(/(\d{5})/);
-        var cpParam=cpM?'&code_postal='+cpM[1]:'';
-        var r=await fetch('https://recherche-entreprises.api.gouv.fr/search?q='+q+cpParam+'&etat_administratif=A&per_page=3',{headers:{'Accept':'application/json'}});
-        if(!r.ok)return;
-        var d=await r.json();
-        var res=d.results||[];
-        for(var k=0;k<res.length;k++){
-          var ent=res[k];
-          // Vérifier correspondance nom
-          if(ent.nom_complet&&ent.nom_complet.toLowerCase().includes(e.name.toLowerCase().slice(0,6))){
-            var dirs=ent.dirigeants||[];
-            if(dirs.length>0){
-              var d0=dirs[0];
-              var prenom=d0.prenom_usuel||d0.prenom||'';
-              var nom=d0.nom||'';
-              e.gerant=((prenom+' '+nom).trim());
-              e.gerantTitre=d0.qualite||'Gérant';
-              e.siren=ent.siren;
-            }
-            if(!e.phone&&ent.siege&&ent.siege.siret)e._siret=ent.siege.siret;
-            break;
-          }
-        }
-      }catch(ex){}
-    }));
-  }
-
-  progBar.style.width='100%';
-  progTxt.textContent='✓ '+allResults.length+' entreprises trouvées — '+ville;
-  setTimeout(function(){
-    prog.style.display='none';
-    btn.disabled=false;btn.textContent='🔍 Lancer la prospection';
-    renderAnnuaireResults(allResults,ville);
-  },300);
-}
-
-var METIERS_ARTISANS=['aménagement caves combles','aménagement parcs jardins','assainissement vidange','carrelage','clôtures barrières','construction individuelle','dépannage','énergie renouvelable','bâtiment','climatisation','couverture','électricité','fermetures','maçonnerie','menuiserie','plâtrerie','plomberie','revêtement','peinture bâtiment','terrassement','travaux publics','fenêtres','paysagiste','piscine','parquet','ravalement façade','rénovation immobilière','serrurerie métallerie','chauffage','cuisine équipée','véranda'];
-var METIERS_COMMERCES=['agence voyages','agence immobilière','alarme sécurité','ambulance','assurance','auto-école','camping','carrosserie','centre équestre','fitness','contrôle technique','fleuriste','garage automobile','hôtel','institut beauté','constructeur maison','bricolage','marbrerie','motoculture','opticien','pépinière','pompes funèbres','restaurant','supermarché','taxi','traiteur','pneumatique'];
-var ALL_METIERS=METIERS_ARTISANS.concat(METIERS_COMMERCES);
-var selectedMetiers=new Set(ALL_METIERS);
-var METIERS_TEXTE=ALL_METIERS.filter(function(m){return !METIERS_NAF[m];});
-var prospectionStopped=false;
-
-function stopProspection(){
-  prospectionStopped=true;
-  var btn=document.getElementById('ann-btn');
-  if(btn){btn.disabled=false;btn.textContent='🔍 Lancer la prospection';}
-  document.getElementById('ann-progress').style.display='none';
-  toast('Recherche arrêtée — résultats partiels affichés','info');
-}
-
-function initMetiersGrid(){
-  var grid=document.getElementById('metiers-grid');
-  if(!grid||grid.children.length>0)return;
-  ALL_METIERS.forEach(function(m){
-    var btn=document.createElement('button');
-    btn.className='metier-chip sel';btn.textContent=m;btn.dataset.metier=m;
-    btn.onclick=function(){
-      if(selectedMetiers.has(m)){selectedMetiers.delete(m);btn.classList.remove('sel');}
-      else{selectedMetiers.add(m);btn.classList.add('sel');}
-      updateCountInfo();
-    };
-    grid.appendChild(btn);
-  });
-  updateCountInfo();
-}
-
-function selectAllMetiers(val){
-  selectedMetiers=val?new Set(ALL_METIERS):new Set();
-  document.querySelectorAll('.metier-chip').forEach(function(b){b.classList.toggle('sel',val);});
-  updateCountInfo();
-}
-
-function updateCountInfo(){
-  var el=document.getElementById('ann-count-info');
-  if(el)el.textContent=selectedMetiers.size+' métier'+(selectedMetiers.size>1?'s':'')+' sélectionné'+(selectedMetiers.size>1?'s':'');
-}
-
 async function resolveCP(ville){
-  var list=await resolveCPList(ville);
-  return list[0]||ville;
-}
-
-async function resolveCPList(ville){
   ville=ville.trim();
-  // Code postal direct
-  if(/^\d{5}$/.test(ville))return[ville];
+  if(/^\d{5}$/.test(ville))return ville;
   try{
-    var r=await fetch('https://geo.api.gouv.fr/communes?nom='+encodeURIComponent(ville)
-      +'&fields=codesPostaux,nom,population&boost=population&limit=5');
+    var r=await fetch('https://geo.api.gouv.fr/communes?nom='+encodeURIComponent(ville)+'&fields=codesPostaux,nom,population&boost=population&limit=1');
     var d=await r.json();
-    if(d&&d.length){
-      // Prendre la commune la plus peuplée avec ce nom exact d'abord
-      var exact=d.filter(function(c){return c.nom.toLowerCase()===ville.toLowerCase();});
-      var best=exact.length?exact[0]:d[0];
-      return best.codesPostaux&&best.codesPostaux.length?best.codesPostaux:[ville];
-    }
+    if(d&&d[0]&&d[0].codesPostaux&&d[0].codesPostaux[0])return d[0].codesPostaux[0];
   }catch(e){}
-  return[ville];
-}
-
-async function resolveCoords(ville, cp){
-  try{
-    // Chercher par nom de ville d'abord
-    var r=await fetch('https://geo.api.gouv.fr/communes?nom='+encodeURIComponent(ville)+'&fields=centre,codesPostaux,nom&boost=population&limit=1');
-    var d=await r.json();
-    if(d&&d[0]&&d[0].centre){
-      return{lat:d[0].centre.coordinates[1],lon:d[0].centre.coordinates[0]};
-    }
-    // Fallback: par code postal
-    var r2=await fetch('https://geo.api.gouv.fr/communes?codePostal='+cp+'&fields=centre&limit=1');
-    var d2=await r2.json();
-    if(d2&&d2[0]&&d2[0].centre){
-      return{lat:d2[0].centre.coordinates[1],lon:d2[0].centre.coordinates[0]};
-    }
-  }catch(e){}
-  return null;
-}
-
-async function getCommunesProches(lat, lon, rayonKm){
-  try{
-    // L'API geo.api.gouv.fr supporte la recherche par coordonnées + distance
-    var r=await fetch('https://geo.api.gouv.fr/communes?lat='+lat+'&lon='+lon+'&distance='+(rayonKm*1000)+'&fields=codesPostaux,nom,code&limit=100');
-    var d=await r.json();
-    return d||[];
-  }catch(e){return [];}
+  return ville;
 }
 
 
-function renderAnnuaireResults(results,ville){
-  var zone=document.getElementById('ann-results');
-  if(!results.length){
-    zone.innerHTML='<div class="empty"><div class="empty-ico">🔍</div><div>Aucun résultat pour '+ville+'</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">Essayez un rayon plus grand ou d'autres catégories</div></div>';
-    return;
-  }
-  // Trier : avec téléphone en premier, puis avec gérant
-  results.sort(function(a,b){
-    var scoreA=(a.phone?2:0)+(a.gerant?1:0);
-    var scoreB=(b.phone?2:0)+(b.gerant?1:0);
-    return scoreB-scoreA;
-  });
-  var avecTel=results.filter(function(e){return!!e.phone;}).length;
-  var avecGerant=results.filter(function(e){return!!e.gerant;}).length;
-
-  zone.innerHTML=
-    '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">'
-    +'<div>'
-      +'<div style="font-size:13px;font-weight:700">'+results.length+' établissements — <b>'+ville+'</b></div>'
-      +'<div style="font-size:11px;color:var(--ink3);margin-top:3px">📞 '+avecTel+' avec tél. · 👤 '+avecGerant+' avec gérant</div>'
-    +'</div>'
-    +'<button class="btn bp bsm" onclick="importAllAnnuaire()" style="background:var(--green)">↓ Tout importer ('+results.length+')</button>'
-    +'</div>'
-    +'<div id="ann-cards"></div>';
-
-  var cards=document.getElementById('ann-cards');
-  window._annuaireResults={};
-  results.forEach(function(e,idx){
-    var uid='osm_'+idx;
-    window._annuaireResults[uid]=e;
-    var alreadyIn=S.companies.some(function(c){return c.name===e.name&&(c.addr||'').slice(0,10)===(e.addr||'').slice(0,10);});
-    var div=document.createElement('div');div.className='card';div.style.marginBottom='10px';
-    div.innerHTML=
-      // Header
-      '<div class="cch" style="margin-bottom:8px">'
-        +'<div class="ccav" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6)">'+e.name.charAt(0).toUpperCase()+'</div>'
-        +'<div style="flex:1;min-width:0">'
-          +'<div class="ccn">'+e.name+'</div>'
-          +'<span style="background:var(--gold-l);color:var(--gold);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">'+e._cat+'</span>'
-        +'</div>'
-        +(alreadyIn?'<span class="badge b-done" style="font-size:10px">✓ Ajouté</span>':'')
-      +'</div>'
-      // Gérant
-      +(e.gerant
-        ?'<div style="display:flex;align-items:center;gap:6px;background:var(--green-l);border:1px solid #86efac;border-radius:8px;padding:7px 10px;font-size:12px;margin-bottom:8px">'
-          +'<span>👤</span><span style="font-weight:700;color:var(--green)">'+e.gerant+'</span>'
-          +(e.gerantTitre?'<span style="color:var(--ink3)">— '+e.gerantTitre+'</span>':'')
-        +'</div>'
-        :'<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--ink3);margin-bottom:8px">👤 Gérant non trouvé</div>'
-      )
-      // Téléphone
-      +(e.phone
-        ?'<div style="margin-bottom:8px"><a href="tel:'+e.phone.replace(/\s/g,'')+'" style="display:inline-flex;align-items:center;gap:6px;background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;color:#166534;text-decoration:none">📞 '+e.phone+'</a></div>'
-        :'<div style="margin-bottom:8px;font-size:11px;color:var(--ink3)">📞 Téléphone non renseigné sur OpenStreetMap</div>'
-      )
-      // Adresse
-      +(e.addr?'<div class="ccm" style="margin-bottom:8px">📍 '+e.addr+'</div>':'')
-      // Website
-      +(e.website?'<div class="ccm" style="margin-bottom:8px"><a href="'+e.website+'" target="_blank" style="color:var(--acc);font-size:11px">🌐 '+e.website+'</a></div>':'')
-      // Actions
-      +'<div style="display:flex;gap:7px;flex-wrap:wrap">'
-        +'<button class="btn bp bsm" style="flex:1;justify-content:center" data-idx="'+idx+'" onclick="addFromAnnuaire2(parseInt(this.dataset.idx))">'
-          +(alreadyIn?'↻ Ré-ajouter':'+ Ajouter comme prospect')
-        +'</button>'
-        +(e.lat&&e.lon?'<a href="https://maps.apple.com/?ll='+e.lat+','+e.lon+'" target="_blank" class="btn bg bsm" style="text-decoration:none">📍 Maps</a>':'')
-      +'</div>';
-    cards.appendChild(div);
-  });
-}
-
-function addFromAnnuaire2(idx){
-  var e=Object.values(window._annuaireResults)[idx];
-  if(!e)return;
-  var folderId=S.curFolder==='all'?(S.folders[1]?S.folders[1].id:'all'):S.curFolder;
-  S.companies.unshift({
-    id:'co'+Date.now()+Math.random().toString(36).slice(2,5),
-    name:e.name,
-    contact:e.gerant||'',
-    phone:e.phone||'',
-    email:e.email||'',
-    addr:e.addr||'',
-    sector:e._cat||'',
-    temp:'cold',
-    folderId:folderId,
-    addedAt:new Date().toISOString(),
-    gerant:e.gerant?{nom:e.gerant,titre:e.gerantTitre||'Gérant',confidence:4,source:'data.gouv.fr'}:null,
-    website:e.website||'',
-    siren:e.siren||''
-  });
-  save();renderProspects();renderFolders();updateHdr();
-  var btn=document.querySelector('[data-idx="'+idx+'"]');
-  if(btn){btn.textContent='✓ Ajouté';btn.style.background='var(--green)';}
-  toast(e.name+' ajouté','ok');
-}
 
 
 function findPhoneBtn(el){
@@ -1496,56 +1018,8 @@ function findPhoneBtn(el){
   findPhoneForSiren(siren,nom,addr);
 }
 
-function addFromAnnuaire2(siren){
-  var dirs=e.dirigeants||[];var d=dirs[0]||null;
-  var cap=function(s){return s?s.split(' ').map(function(w){return w?w.charAt(0).toUpperCase()+w.slice(1).toLowerCase():'';}).join(' '):s;};
-  var gerantName=d?cap(((d.prenom_usuel||d.prenom||'')+' '+(d.nom||'')).trim()):'';
-  var gerantTitre=d?(d.qualite||'Gérant'):'';
-  var addr=(e.siege&&e.siege.adresse)||'';var cp=(e.siege&&e.siege.code_postal)||'';var ville=(e.siege&&e.siege.libelle_commune)||'';
-  var fullAddr=[addr,cp,ville].filter(Boolean).join(' ');
-  var phone=(window._annuairePhones&&window._annuairePhones[siren])||'';
-  var folderId=S.curFolder==='all'?(S.folders[1]?S.folders[1].id:'all'):S.curFolder;
-  S.companies.unshift({id:'co'+Date.now()+Math.random().toString(36).slice(2,5),name:e.nom_complet,contact:gerantName,phone:phone,email:'',addr:fullAddr,sector:e._metier||e.libelle_activite_principale||'',temp:'cold',folderId:folderId,addedAt:new Date().toISOString(),siren:siren,gerant:gerantName?{nom:gerantName,titre:gerantTitre,confidence:5,source:'annuaire-entreprises.data.gouv.fr'}:null});
-  save();renderProspects();renderFolders();updateHdr();
-  var btn=document.getElementById('ann-add-'+siren);if(btn){btn.textContent='✓ Ajouté';btn.style.background='var(--green)';btn.disabled=true;}
-  toast(e.nom_complet+' ajouté','ok');
-}
 
-function importAllAnnuaire(){
-  if(!window._annuaireResults)return;
-  var entries=Object.values(window._annuaireResults);
-  var villeVal=document.getElementById('ann-ville')?document.getElementById('ann-ville').value:'Zone';
-  var folderName='📍 '+villeVal+' — '+entries.length+' prospects · '+new Date().toLocaleDateString('fr-FR');
-  var fid='f'+Date.now();S.folders.push({id:fid,name:folderName,icon:'🔎'});
-  var count=0;
-  entries.forEach(function(e){
-    // Éviter les doublons par nom+adresse
-    if(S.companies.some(function(c){return c.name===e.name&&(c.addr||'').slice(0,10)===(e.addr||'').slice(0,10);}))return;
-    S.companies.push({
-      id:'co'+Date.now()+Math.random().toString(36).slice(2,5),
-      name:e.name,
-      contact:e.gerant||'',
-      phone:e.phone||'',
-      email:e.email||'',
-      addr:e.addr||'',
-      sector:e._cat||'',
-      temp:'cold',
-      folderId:fid,
-      addedAt:new Date().toISOString(),
-      siren:e.siren||'',
-      website:e.website||'',
-      gerant:e.gerant?{nom:e.gerant,titre:e.gerantTitre||'Gérant',confidence:4,source:'data.gouv.fr'}:null
-    });
-    count++;
-  });
-  S.curFolder=fid;
-  save();renderProspects();renderFolders();updateHdr();
-  toast(count+' entreprises importées dans "'+villeVal+'"','ok');
-  navTo('prospects');
-}
 
-function addFromAnnuaire(data){addFromAnnuaire2(data.siren);}
-function searchAnnuaire(){lancerProspection();}
 
 
 // ══════════════════════════════════════
@@ -1749,17 +1223,19 @@ function createProfileInline(){
 }
 
 function showConnectMode(){
-  var cz=document.getElementById('ps-connect-zone');
+  var btn=document.getElementById('btn-show-gist');
   var gf=document.getElementById('ps-gist-form');
-  if(cz)cz.style.display='none';
-  if(gf){gf.style.display='block';}
+  if(btn)btn.style.display='none';
+  if(gf)gf.style.display='block';
   setTimeout(function(){var n=document.getElementById('conn-name');if(n)n.focus();},100);
 }
 function hideConnectMode(){
-  var cz=document.getElementById('ps-connect-zone');
+  var btn=document.getElementById('btn-show-gist');
   var gf=document.getElementById('ps-gist-form');
-  if(cz)cz.style.display='block';
+  if(btn)btn.style.display='inline-flex';
   if(gf)gf.style.display='none';
+  var st=document.getElementById('conn-status');
+  if(st)st.style.display='none';
 }
 
 async function connectFromGist(){
@@ -1856,6 +1332,9 @@ function deleteProfile(pid){
 function selectProfile(pid){
   setCurrentPid(pid);currentPid=pid;S=loadState(pid);
   document.getElementById('profile-screen').classList.add('hidden');
+  // Afficher tab-bar sur mobile
+  var tb=document.querySelector('.tab-bar');
+  if(tb&&window.innerWidth<1024)tb.style.display='block';
   renderProfileBadge();renderFolders();renderProspects();updateHdr();renderRelances();
   var lv=localStorage.getItem('last_view_'+pid);
   if(lv&&document.getElementById('view-'+lv))navTo(lv);else navTo('prospects');
@@ -1869,7 +1348,14 @@ function renderProfileBadge(){
   wrap.innerHTML='<div class="profile-badge" onclick="showProfileSwitch()" title="Changer de profil"><div class="profile-badge-av" style="background:'+p.color+'">'+p.name.charAt(0).toUpperCase()+'</div><span class="profile-badge-name">'+p.name+'</span><span style="font-size:9px;color:var(--ink3)">▼</span></div>';
 }
 
-function showProfileSwitch(){save();renderProfileScreen();document.getElementById('profile-screen').classList.remove('hidden');}
+function showProfileSwitch(){
+  save();
+  renderProfileScreen();
+  document.getElementById('profile-screen').classList.remove('hidden');
+  // Cacher tab-bar quand on revient à l ecran profil
+  var tb=document.querySelector('.tab-bar');
+  if(tb)tb.style.display='none';
+}
 
 function initApp(){
   var profiles=getProfiles();
@@ -1884,11 +1370,11 @@ function initApp(){
       var ot=localStorage.getItem('gist_token'),og=localStorage.getItem('gist_id');
       if(ot)setProfileToken(pid,ot);if(og)setProfileGistId(pid,og);
     }
-    // Qu'il y ait eu migration ou non, afficher l'écran profil
+    // Qu'il y ait eu migration ou non, afficher l ecran profil
     renderProfileScreen();
     return;
   }
-  // Toujours afficher l'écran de sélection de profil au démarrage
+  // Toujours afficher l ecran de sélection de profil au démarrage
   renderProfileScreen();
 }
 
@@ -1923,7 +1409,6 @@ function switchView(v){
   if(v==='rdv')renderRdv();
   if(v==='relances')renderRelances();
   if(v==='stats')renderStats();
-  if(v==='annuaire'){initMetiersGrid();setTimeout(function(){var i=document.getElementById('ann-ville');if(i)i.focus();},200);}
   if(v==='emails')loadTpl();
   if(v==='backup')renderBackupStats();
   updateHdr();
@@ -2045,7 +1530,7 @@ function renderProspects(){
     else if(lastCall&&lastCall.status==='Clôturé')note='<div class="note-card note-clot"><span>🚫</span><span><b>Pas intéressé</b>'+(lastCall.notes?' — '+lastCall.notes:'')+'</span></div>';
     else if(lastCall&&lastCall.notes){var cd=lastCall.date?new Date(lastCall.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}):'';note='<div class="note-card note-call"><span>📞</span><span style="flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+(cd?'<span style="color:var(--ink3);margin-right:4px">'+cd+'</span>':'')+lastCall.notes+'</span></div>';}
     var cs=isMatch?'border:2px solid var(--acc);box-shadow:0 0 0 4px rgba(37,99,235,.1);':'';
-      // Ne pas afficher le contact s'il est identique au gérant (évite doublon)
+      // Ne pas afficher le contact s il est identique au gérant (évite doublon)
     var showContact = c.contact && (!g || !g.nom || c.contact !== g.nom);
     // Gérant strip — "Non trouvé" si recherche faite mais rien
     var glHtml = '';
@@ -2090,7 +1575,16 @@ function loadMoreProspects(btn){
 }
 
 // GÉRANT SEARCH
-function launchCall(coId){var co=S.companies.find(function(x){return x.id===coId;});if(!co||!co.phone)return;pendCoId=coId;document.getElementById('ger-title').textContent=co.name;document.getElementById('ger-sub').textContent=(co.addr||'')+(co.sector?' · '+co.sector:'');document.getElementById('ger-zone').innerHTML='<div class="ger-searching"><div class="spin"></div>Recherche du gérant…</div>';document.getElementById('ger-tips').style.display='none';document.getElementById('ger-call-btn').style.display='none';document.getElementById('ger-call-lbl').textContent='Appeler '+co.phone;document.getElementById('ger-src').textContent='';
+function launchCall(coId){
+  var co=S.companies.find(function(x){return x.id===coId;});
+  if(!co||!co.phone)return;
+  // Vérifier que le numéro n est pas un SIRET/SIREN
+  var digitsOnly=(co.phone+'').replace(/[^\d]/g,'');
+  if(digitsOnly.length>=9&&digitsOnly.length<=14&&digitsOnly.length!==10&&!co.phone.startsWith('+')){
+    toast('⚠ Numéro suspect ('+co.phone+') — verifiez la fiche','err');
+    return;
+  }
+  pendCoId=coId;document.getElementById('ger-title').textContent=co.name;document.getElementById('ger-sub').textContent=(co.addr||'')+(co.sector?' · '+co.sector:'');document.getElementById('ger-zone').innerHTML='<div class="ger-searching"><div class="spin"></div>Recherche du gérant…</div>';document.getElementById('ger-tips').style.display='none';document.getElementById('ger-call-btn').style.display='none';document.getElementById('ger-call-lbl').textContent='Appeler '+co.phone;document.getElementById('ger-src').textContent='';
   // Reset checklist
   resetChecklist();
   // Show checklist & objections collapsed by default
@@ -2140,12 +1634,18 @@ function doDialNow(){
   var call={id:'call'+Date.now(),companyId:co.id,contact:(g&&g.nom)?g.nom:(co.contact||co.name),company:co.name,phone:co.phone,date:new Date().toISOString(),status:'En cours',temp:co.temp,notes:'',rdvId:null};
   S.calls.unshift(call);save();
   var m=document.querySelector('main');if(m)localStorage.setItem('scroll_precall_'+currentPid,m.scrollTop);
-  // Nettoyer le numéro : garder chiffres + + initial
+  // Nettoyer le numéro
   var raw=co.phone.toString().trim();
-  var cleaned=raw.replace(/\s|\-|\.|\(|\)/g,'');
+  var cleaned=raw.replace(/[\s\-\.\(\)]/g,'');
   // Convertir 0033 → +33
   if(cleaned.startsWith('0033'))cleaned='+33'+cleaned.slice(4);
-  // Convertir 06... → laisser tel quel (iPhone gère)
+  // Valider : un numéro de téléphone valide a max 15 chiffres (norme ITU)
+  // Un SIRET a 14 chiffres, un SIREN 9 — on rejette si trop long ou pas un numéro
+  var digitsOnly=cleaned.replace(/[^\d]/g,'');
+  if(digitsOnly.length>15||digitsOnly.length<7){
+    toast('Numéro invalide : '+raw,'err');
+    return;
+  }
   window.location.href='tel:'+cleaned;
   // Après raccroché : montrer la zone post-appel DANS le même modal
   setTimeout(function(){
@@ -2210,7 +1710,7 @@ function openPostCall(callId){
 }
 var bgSearch={running:false,queue:[],done:0,total:0,stopped:false};
 function startBgSearch(){var todo=S.companies.filter(function(c){return!c.gerant&&c.phone;});if(!todo.length){toast('Tous les gérants déjà trouvés ✓','ok');return;}bgSearch.queue=todo.map(function(c){return c.id;});bgSearch.done=0;bgSearch.total=todo.length;bgSearch.stopped=false;bgSearch.running=true;showBgBanner();runBgQueue();}
-function stopBgSearch(){bgSearch.stopped=true;bgSearch.running=false;hideBgBanner();toast('Recherche arrêtée — '+bgSearch.done+'/'+bgSearch.total,'info');}
+function stopBgSearch(){bgSearch.stopped=true;bgSearch.running=false;hideBgBanner();toast('Recherche arretee — '+bgSearch.done+'/'+bgSearch.total,'info');}
 async function runBgQueue(){while(bgSearch.queue.length>0&&!bgSearch.stopped){var coId=bgSearch.queue.shift();var co=S.companies.find(function(x){return x.id===coId;});if(!co||co.gerant||!co.phone){updateBgBanner();continue;}try{var result=await searchGerGouv(co);if(!result||!result.nom){var q2=[co.name,co.addr,co.sector].filter(Boolean).join(', ');var r2=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,tools:[{type:'web_search_20250305',name:'web_search'}],system:'Gérant. JSON: {"nom":"Prénom Nom ou null","titre":"Gérant ou null","confidence":1}',messages:[{role:'user',content:'Gérant de "'+q2+'" ?'}]})});var d2=await r2.json();var tb2=d2.content&&d2.content.find(function(b){return b.type==='text';});if(tb2)result=JSON.parse(tb2.text.replace(/```json|```/g,'').trim());}if(!bgSearch.stopped&&result){var idx=S.companies.findIndex(function(x){return x.id===coId;});if(idx!==-1){S.companies[idx].gerant=result;if(result.nom&&!S.companies[idx].contact)S.companies[idx].contact=result.nom;save();}}}catch(e){}bgSearch.done++;if(!bgSearch.stopped){updateBgBanner();await new Promise(function(r){setTimeout(r,600);});}}if(!bgSearch.stopped){bgSearch.running=false;save();renderProspects();hideBgBanner();toast('✓ Terminé — '+bgSearch.done+' traités','ok');}}
 function showBgBanner(){var b=document.getElementById('bg-banner');if(b){b.style.display='flex';updateBgBanner();return;}var bn=document.createElement('div');bn.id='bg-banner';bn.style.cssText='position:fixed;bottom:calc(70px + var(--sab));left:12px;right:12px;background:var(--white);border:1px solid var(--acc-m);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.12);z-index:300';bn.innerHTML='<div class="spin" style="border-top-color:var(--acc)"></div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--ink)" id="bg-label">Recherche gérants…</div><div style="background:var(--border);border-radius:3px;height:3px;margin-top:5px"><div id="bg-bar" style="height:100%;background:var(--acc);border-radius:3px;transition:width .4s;width:0%"></div></div></div><button onclick="stopBgSearch()" style="background:var(--red-l);border:1px solid #fca5a5;color:var(--red);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0">⏹ Stop</button>';document.body.appendChild(bn);}
 function updateBgBanner(){var l=document.getElementById('bg-label'),b=document.getElementById('bg-bar');if(l)l.textContent='Gérants : '+bgSearch.done+' / '+bgSearch.total+' traités';if(b)b.style.width=(bgSearch.total?Math.round(bgSearch.done/bgSearch.total*100):0)+'%';}
@@ -2238,7 +1738,7 @@ function startBgPhone(){
 function stopBgPhone(){
   bgPhone.stopped=true;bgPhone.running=false;
   hidePhoneBanner();
-  toast('Recherche arrêtée — '+bgPhone.found+' numéros trouvés sur '+bgPhone.done+'/'+bgPhone.total,'info');
+  toast('Recherche arretee — '+bgPhone.found+' numéros trouvés sur '+bgPhone.done+'/'+bgPhone.total,'info');
 }
 
 async function runPhoneQueue(){
@@ -2499,8 +1999,91 @@ function doDrag(e,on){e.preventDefault();document.getElementById('drop-zone').cl
 function onDropCSV(e){e.preventDefault();doDrag(e,false);var f=Array.from(e.dataTransfer.files).find(function(f){return f.name.toLowerCase().endsWith('.csv');});if(f)readCSVFile(f);}
 function handleCSVFile(e){var f=e.target.files[0];if(f)readCSVFile(f);e.target.value='';}
 function readCSVFile(file){var reader=new FileReader();reader.onload=function(e){parseCSVText(e.target.result);};reader.readAsText(file,'UTF-8');}
-function parseCSVText(text){if(!text.trim()){toast('Texte vide','err');return;}var lines=text.split(/\r?\n/).filter(function(l){return l.trim();});var sep=text.includes(';')?';':',';var hasHeader=/[a-zA-Z]/.test(lines[0]&&lines[0].split(sep)[0])||false;var data=hasHeader?lines.slice(1):lines;impBuffer=data.map(function(l){var p=l.split(sep).map(function(v){return v.trim().replace(/^"|"$/g,'').replace(/""/g,'"');});return{name:p[0]||'',contact:p[1]||'',phone:p[2]||'',addr:p[3]||'',email:p[4]||'',sector:p[5]||''};}).filter(function(c){return c.name&&c.name.length>1;});if(!impBuffer.length){toast('Aucune entreprise trouvée','err');return;}document.getElementById('imp-count').textContent=impBuffer.length;document.getElementById('imp-tbody').innerHTML=impBuffer.slice(0,8).map(function(c){return'<tr><td>'+c.name+'</td><td>'+c.phone+'</td><td>'+c.addr+'</td></tr>';}).join('')+(impBuffer.length>8?'<tr><td colspan="3" style="color:var(--ink3);font-size:12px">… et '+(impBuffer.length-8)+' autres</td></tr>':'');document.getElementById('imp-preview-zone').style.display='block';document.getElementById('imp-folder').value='Import '+new Date().toLocaleDateString('fr-FR');toast(impBuffer.length+' entreprises détectées','ok');}
-function cancelImport(){impBuffer=[];document.getElementById('imp-preview-zone').style.display='none';}
+function parseCSVText(text){
+  if(!text.trim()){toast('Texte vide','err');return;}
+
+  // Parser CSV robuste qui gère les guillemets
+  function parseCSVLine(line, sep){
+    var result=[], cur='', inQ=false;
+    for(var i=0;i<line.length;i++){
+      var c=line[i];
+      if(c==='"'){
+        if(inQ&&line[i+1]==='"'){cur+='"';i++;}
+        else inQ=!inQ;
+      } else if(c===sep&&!inQ){
+        result.push(cur.trim());cur='';
+      } else {
+        cur+=c;
+      }
+    }
+    result.push(cur.trim());
+    return result;
+  }
+
+  function cleanPhone(v){
+    if(!v)return'';
+    var digits=v.replace(/[^\d]/g,'');
+    if(digits.length===14||digits.length===9)return'';
+    if(digits.length>=7&&digits.length<=15)return v.trim();
+    return'';
+  }
+
+  var lines=text.split(/\r?\n/).filter(function(l){return l.trim();});
+  var sep=text.includes(';')?';':',';
+  var hasHeader=/[a-zA-ZÀ-ÿ]/.test((lines[0]&&lines[0].split(sep)[0])||'');
+  var data=hasHeader?lines.slice(1):lines;
+
+  impBuffer=data.map(function(l){
+    var p=parseCSVLine(l, sep);
+    return{
+      name:p[0]||'',
+      contact:p[1]||'',
+      phone:cleanPhone(p[2]),
+      addr:p[3]||'',
+      email:p[4]||'',
+      sector:p[5]||''
+    };
+  }).filter(function(c){return c.name&&c.name.length>1;});
+
+  if(!impBuffer.length){toast('Aucune entreprise trouvee','err');return;}
+  document.getElementById('imp-count').textContent=impBuffer.length;
+  document.getElementById('imp-tbody').innerHTML=impBuffer.slice(0,8).map(function(c){
+    return'<tr><td>'+c.name+'</td><td>'+(c.phone||'—')+'</td><td>'+(c.sector||c.addr||'—')+'</td></tr>';
+  }).join('')+(impBuffer.length>8?'<tr><td colspan="3" style="color:var(--ink3);font-size:12px">… et '+(impBuffer.length-8)+' autres</td></tr>':'');
+  document.getElementById('imp-preview-zone').style.display='block';
+  document.getElementById('imp-folder').value='Import '+new Date().toLocaleDateString('fr-FR');
+  toast(impBuffer.length+' entreprises detectees','ok');
+}
+function enrichSectors(){
+  if(!impBuffer.length){toast('Aucune donnée','err');return;}
+  var updated=0,notFound=0;
+  impBuffer.forEach(function(row){
+    if(!row.name||!row.sector)return;
+    var nameLower=row.name.toLowerCase().trim();
+    // Chercher par nom exact ou partiel
+    var idx=S.companies.findIndex(function(c){
+      return c.name.toLowerCase().trim()===nameLower;
+    });
+    if(idx===-1){
+      // Essai partiel : les 6 premiers caractères
+      idx=S.companies.findIndex(function(c){
+        return c.name.toLowerCase().trim().slice(0,8)===nameLower.slice(0,8);
+      });
+    }
+    if(idx!==-1){
+      S.companies[idx].sector=row.sector;
+      // Aussi mettre à jour adresse si vide
+      if(!S.companies[idx].addr&&row.addr)S.companies[idx].addr=row.addr;
+      updated++;
+    } else {
+      notFound++;
+    }
+  });
+  save();
+  renderProspects();
+  cancelImport();
+  toast('✓ '+updated+' fiches enrichies · '+notFound+' non trouvées','ok');
+}
 function confirmImport(){if(!impBuffer.length){toast('Aucune donnée à importer','err');return;}var fn=document.getElementById('imp-folder').value.trim()||'Import';var fid='f'+Date.now();S.folders.push({id:fid,name:fn,icon:'📁'});var cnt=0;impBuffer.forEach(function(c){if(!c.name)return;S.companies.push({id:'co'+Date.now()+cnt++,name:c.name,contact:c.contact,phone:c.phone,email:c.email,addr:c.addr,sector:c.sector,temp:'cold',folderId:fid,addedAt:new Date().toISOString(),gerant:null});});S.curFolder=fid;impBuffer=[];save();document.getElementById('imp-preview-zone').style.display='none';document.getElementById('csv-paste').value='';renderFolders();renderProspects();updateHdr();toast(cnt+' prospects importés dans "'+fn+'"','ok');navTo('prospects');setTimeout(function(){var cta=document.getElementById('gerant-cta');if(cta){var without=S.companies.filter(function(c){return!c.gerant&&c.phone;}).length;if(without>0){document.getElementById('gerant-cta-sub').textContent=without+' prospects sans gérant — l\'IA peut les chercher automatiquement';cta.style.display='flex';}}},500);}
 
 // EMAIL TEMPLATE
@@ -2752,7 +2335,7 @@ function renderRelances(){
 function supprimerRelance(callId){
   var idx=S.calls.findIndex(function(c){return c.id===callId;});
   if(idx===-1)return;
-  // Effacer la date de relance (garde l'historique de l'appel)
+  // Effacer la date de relance (garde l'historique de l appel)
   S.calls[idx].followup=null;
   S.calls[idx].status='Clôturé';
   save();
