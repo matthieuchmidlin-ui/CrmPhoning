@@ -1916,9 +1916,25 @@ function savePostCall(){
     if(!rd){toast('Date requise','err');return;}
     var rdv={id:'rdv'+Date.now(),callId:postCallId,companyId:c.companyId,contact:c.contact,company:c.company,email:re,date:rd,time:rt,addr:ra,notes:document.getElementById('rdv-notes').value.trim(),status:'Confirmé',createdAt:new Date().toISOString()};
     S.rdvs.unshift(rdv);c.status='Effectué';c.rdvId=rdv.id;
+    // Mettre à jour la fiche prospect : chaud + email si manquant
+    var coRdv=c.companyId?S.companies.find(function(x){return x.id===c.companyId;}):null;
+    if(coRdv){
+      coRdv.temp='hot';
+      if(re&&!coRdv.email)coRdv.email=re;
+    }
     if(re&&c.companyId){var co2=S.companies.find(function(x){return x.id===c.companyId;});if(co2&&!co2.email)co2.email=re;}
-    save();closeGerModal();updateHdr();renderCalls();renderRdv();renderRelances();
+    save();closeGerModal();updateHdr();renderCalls();renderRdv();renderRelances();renderProspects();
     toast('RDV enregistré ! '+fmtDate(rd),'ok');
+    // Restaurer scroll
+    var savedScroll2=localStorage.getItem('scroll_precall_'+currentPid);
+    if(savedScroll2){
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          var m=document.querySelector('main');
+          if(m)m.scrollTop=parseInt(savedScroll2);
+        });
+      });
+    }
     if(re)setTimeout(function(){openRdvDetail(rdv.id);},400);else addToCalForRdv(rdv);
   } else {
     var reason=document.getElementById('pc-reason').value;
@@ -1929,7 +1945,7 @@ function savePostCall(){
     save();closeGerModal();renderCalls();renderProspects();renderRelances();updateHdr();
     toast('Appel enregistré'+(c.followup?' · Relance '+fmtDate(c.followup):''),'ok');
     var mailSubjs={'Envoyer mail de rappel':'Rappel — ','Envoyer mail dossier':'Dossier — ','Envoyer coordonnées par mail':'Nos coordonnées — '};
-    var mailBodys={'Envoyer mail de rappel':'Bonjour,\n\nJe me permets de revenir vers vous suite à notre échange.\n\nRestant disponible pour tout renseignement.\n\nCordialement,\n','Envoyer mail dossier':'Bonjour,\n\nVeuillez trouver ci-joint notre dossier de présentation.\n\nJe reste à votre disposition.\n\nCordialement,\n','Envoyer coordonnées par mail':'Bonjour,\n\nVoici mes coordonnées :\n'};
+    var mailBodys={'Envoyer mail de rappel':'Bonjour,\n\nJe me permets de revenir vers vous suite a notre echange.\n\nRestant disponible pour tout renseignement.\n\nCordialement,\n','Envoyer mail dossier':'Bonjour,\n\nVeuillez trouver ci-joint notre dossier de presentation.\n\nJe reste a votre disposition.\n\nCordialement,\n','Envoyer coordonnées par mail':'Bonjour,\n\nVoici mes coordonnees :\n'};
     if(mailSubjs[reason]){
       var coM=c.companyId?S.companies.find(function(x){return x.id===c.companyId;}):null;
       if(coM&&coM.email){
@@ -1938,11 +1954,16 @@ function savePostCall(){
         setTimeout(function(){window.location.href='mailto:'+coM.email+'?subject='+subj+'&body='+body;},400);
       } else { toast('Email non renseigné sur la fiche','err'); }
     }
-    setTimeout(function(){
-      var m=document.querySelector('main');
-      var saved=localStorage.getItem('scroll_precall_'+currentPid);
-      if(m&&saved)m.scrollTop=parseInt(saved);
-    },200);
+    // Restaurer le scroll APRES le re-rendu (requestAnimationFrame garantit que le DOM est à jour)
+    var savedScroll=localStorage.getItem('scroll_precall_'+currentPid);
+    if(savedScroll){
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          var m=document.querySelector('main');
+          if(m)m.scrollTop=parseInt(savedScroll);
+        });
+      });
+    }
   }
 }
 
